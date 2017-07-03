@@ -14,15 +14,15 @@ import java.util.Random;
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private MidiDriver midiDriver;
-    private MainActivity mainActivity;
+    private RandomNotesTaskActivity randomNotesTaskActivity;
     private volatile NotesEnum currentNote;
     private volatile int currentNoteNumber;
     private Thread currentThread;
 
-    public MidiSupport(MainActivity mainActivity) {
+    public MidiSupport(RandomNotesTaskActivity randomNotesTaskActivity) {
         midiDriver = new MidiDriver();
         midiDriver.setOnMidiStartListener(this);
-        this.mainActivity = mainActivity;
+        this.randomNotesTaskActivity = randomNotesTaskActivity;
     }
 
     public void start() {
@@ -82,10 +82,10 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                         currentNote = internNotes.get(nt);
                         playNote(currentNote.getPitch());
                         final int noteNumber = currentNoteNumber;
-                        mainActivity.runOnUiThread(new Runnable() {
+                        randomNotesTaskActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mainActivity.onMissedAnswer(noteNumber);
+                                randomNotesTaskActivity.onMissedAnswer(noteNumber);
                             }
                         });
                         synchronized (this) {

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class RandomNotesTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private MidiSupport midiSupport;
     private StatisticsStorage statisticsStorage;
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_random_notes_task);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -55,13 +55,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onResume() {
         super.onResume();
         getMidiSupport().start();
-        Log.i("MainActivity", "!!!!!!!!!!!!! Resume");
+        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Resume");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("MainActivity", "!!!!!!!!!!!!! Start");
+        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Start");
     }
 
     @Override
@@ -69,13 +69,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onPause();
         getMidiSupport().stopPlayingAsync();
         getMidiSupport().stop();
-        Log.i("MainActivity", "!!!!!!!!!!!!! Pause");
+        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Pause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("MainActivity", "!!!!!!!!!!!!! Stop");
+        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Stop");
     }
 
     @Override

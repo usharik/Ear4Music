@@ -53,7 +53,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                             break;
                         }
                         currentNote = note;
-                        playNote(note.getPitch());
+                        playNote(note.getPitch(), 1500);
                     }
                 } catch (InterruptedException ex) {
                     Log.i(getClass().getName(), "Playing interrupted");
@@ -64,7 +64,8 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
         currentThread.start();
     }
 
-    public void playNotesInRandomOrder(List<NotesEnum> notes) {
+    public void playNotesInRandomOrder(List<NotesEnum> notes, int notesPerMin) {
+        final int longitude = (int) Math.round(60000.0 / notesPerMin);
         currentNoteNumber.set(1);
         final List<NotesEnum> internNotes = new ArrayList<>(notes);
         Runnable runnable = new Runnable() {
@@ -90,7 +91,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                                 MidiSupport.this.midiSupportListener.onNewNote(finalCurrentNote);
                             }
                         });
-                        playNote(currentNote.getPitch());
+                        playNote(currentNote.getPitch(), longitude);
                         final int noteNumber = currentNoteNumber.get();
                         activity.runOnUiThread(new Runnable() {
                             @Override
@@ -128,7 +129,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
         }
     }
 
-    public void playNote(byte note) throws InterruptedException {
+    public void playNote(byte note, int longitude) throws InterruptedException {
         // Construct a note ON message for the middle C at maximum velocity on channel 1:
         byte event[] = new byte[3];
         event[0] = (byte) (0x90 | 0x00);  // 0x90 = note On, 0x00 = channel 1
@@ -137,7 +138,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
 
         // Send the MIDI event to the synthesizer.
         midiDriver.write(event);
-        Thread.sleep(1500);
+        Thread.sleep(longitude);
         stopNote(note);
     }
 

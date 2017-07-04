@@ -23,12 +23,7 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_notes_task);
-
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.task_list, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
     }
 
@@ -86,8 +81,10 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         for (String note : taskText.split(" ")) {
             melody.add(NotesEnum.valueOf(note));
         }
+        Spinner freqEdit = (Spinner) findViewById(R.id.spinnerFreq);
+        int freq = Integer.parseInt(freqEdit.getSelectedItem().toString());
         statisticsStorage = new StatisticsStorage();
-        getMidiSupport().playNotesInRandomOrder(melody);
+        getMidiSupport().playNotesInRandomOrder(melody, freq);
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setStatisticsStorage(statisticsStorage);
         pianoKeyboard.setPianoKeyboardListener(this);

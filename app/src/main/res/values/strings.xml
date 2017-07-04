@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Ear4Music</string>
+    <string name="title_activity_task_select">TaskSelectActivity</string>
     <string-array name="task_list">
         <item>C E G C2</item>
         <item>C E G B C2</item>
@@ -7,5 +8,15 @@
         <item>C E F G A B C2</item>
         <item>C D E F G A B C2</item>
     </string-array>
-    <string name="title_activity_task_select">TaskSelectActivity</string>
+    <string-array name="longitude_list">
+        <item>20</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+        <item>120</item>
+    </string-array>
 </resources>

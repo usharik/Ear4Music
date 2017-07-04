@@ -1,9 +1,8 @@
-package com.example.macbook.androidapp;
+package com.example.macbook.ear4music;
 
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import com.example.macbook.androidapp.listner.MidiSupportListner;
+import com.example.macbook.ear4music.listner.MidiSupportListner;
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;

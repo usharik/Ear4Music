@@ -1,4 +1,4 @@
-package com.example.macbook.androidapp.widget;
+package com.example.macbook.ear4music.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,9 +9,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import com.example.macbook.androidapp.NotesEnum;
-import com.example.macbook.androidapp.StatisticsStorage;
-import com.example.macbook.androidapp.listner.PianoKeyboardListener;
+import com.example.macbook.ear4music.NotesEnum;
+import com.example.macbook.ear4music.StatisticsStorage;
+import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;

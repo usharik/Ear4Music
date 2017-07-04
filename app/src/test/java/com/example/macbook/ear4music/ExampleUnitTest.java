@@ -1,7 +1,5 @@
-package com.example.macbook.androidapp;
+package com.example.macbook.ear4music;
 
-import android.util.SparseArray;
-import android.util.SparseIntArray;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-package com.example.macbook.androidapp;
+package com.example.macbook.ear4music;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

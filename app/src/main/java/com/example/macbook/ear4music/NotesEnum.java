@@ -1,4 +1,4 @@
-package com.example.macbook.androidapp;
+package com.example.macbook.ear4music;
 
 import java.util.*;
 

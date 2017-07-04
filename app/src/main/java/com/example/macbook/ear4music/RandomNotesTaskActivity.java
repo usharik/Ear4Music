@@ -1,13 +1,13 @@
-package com.example.macbook.androidapp;
+package com.example.macbook.ear4music;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import com.example.macbook.androidapp.listner.MidiSupportListner;
-import com.example.macbook.androidapp.listner.PianoKeyboardListener;
-import com.example.macbook.androidapp.widget.PianoKeyboard;
+import com.example.macbook.ear4music.listner.MidiSupportListner;
+import com.example.macbook.ear4music.listner.PianoKeyboardListener;
+import com.example.macbook.ear4music.widget.PianoKeyboard;
 
 import java.util.ArrayList;
 import java.util.List;

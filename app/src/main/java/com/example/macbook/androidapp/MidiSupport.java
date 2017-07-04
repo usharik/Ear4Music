@@ -1,7 +1,9 @@
 package com.example.macbook.androidapp;
 
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import com.example.macbook.androidapp.listner.MidiSupportListner;
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
@@ -14,15 +16,15 @@ import java.util.Random;
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private MidiDriver midiDriver;
-    private RandomNotesTaskActivity randomNotesTaskActivity;
+    private MidiSupportListner midiSupportListener;
     private volatile NotesEnum currentNote;
     private volatile int currentNoteNumber;
     private Thread currentThread;
 
-    public MidiSupport(RandomNotesTaskActivity randomNotesTaskActivity) {
+    public MidiSupport(RandomNotesTaskActivity midiSupportListener) {
         midiDriver = new MidiDriver();
         midiDriver.setOnMidiStartListener(this);
-        this.randomNotesTaskActivity = randomNotesTaskActivity;
+        this.midiSupportListener = midiSupportListener;
     }
 
     public void start() {
@@ -41,7 +43,6 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
 
     public void playNotesAsync(List<NotesEnum> melody) {
         final List<NotesEnum> internMelody = new ArrayList<>(melody);
-        Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -79,13 +80,21 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                             while (twoLastNotes.contains(nt)) nt = rnd.nextInt(internNotes.size());
                             twoLastNotes.clear();
                         }
+                        AppCompatActivity activity = (AppCompatActivity) midiSupportListener;
                         currentNote = internNotes.get(nt);
-                        playNote(currentNote.getPitch());
-                        final int noteNumber = currentNoteNumber;
-                        randomNotesTaskActivity.runOnUiThread(new Runnable() {
+                        final NotesEnum finalCurrentNote = currentNote;
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                randomNotesTaskActivity.onMissedAnswer(noteNumber);
+                                MidiSupport.this.midiSupportListener.onNewNote(finalCurrentNote);
+                            }
+                        });
+                        playNote(currentNote.getPitch());
+                        final int noteNumber = currentNoteNumber;
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MidiSupport.this.midiSupportListener.onMissedAnswer(noteNumber);
                             }
                         });
                         synchronized (this) {

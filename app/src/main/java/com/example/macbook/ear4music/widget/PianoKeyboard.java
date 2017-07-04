@@ -32,8 +32,6 @@ public class PianoKeyboard extends View {
     private Rect pressedNoteRect;
     private StatisticsStorage statisticsStorage;
     private PianoKeyboardListener pianoKeyboardListener;
-    private int w;
-    private int h;
 
     public PianoKeyboard(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,46 +43,34 @@ public class PianoKeyboard extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        this.w = w;
-        this.h = h;
+        int whiteKeySize = w/8 - 1;
+        whiteKeys.clear();
+        for(int i=0; i<8; i++) {
+            Rect rect = new Rect(i * whiteKeySize, 0, (i + 1) * whiteKeySize, h-10);
+            whiteKeys.add(rect);
+        }
+
+        int blackKeySize = whiteKeySize/2;
+        for (int blackNum : new int[] {0, 1, 3, 4, 5, 7}) {
+            Rect key = whiteKeys.get(blackNum);
+            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
+        }
+
+        int i=0;
+        notes2rect.clear();
+        for(NotesEnum note : NotesEnum.getBlack()) {
+            notes2rect.put(note, blackKeys.get(i++));
+        }
+        i=0;
+        for(NotesEnum note : NotesEnum.getWhite()) {
+            notes2rect.put(note, whiteKeys.get(i++));
+        }
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int whiteKeySize = w/8 - 1;
-        int blackKeySize = whiteKeySize/2;
-        if (whiteKeys.isEmpty()) {
-            for(int i=0; i<8; i++) {
-                Rect rect = new Rect(i * whiteKeySize, 0, (i + 1) * whiteKeySize, h-10);
-                whiteKeys.add(rect);
-            }
-        }
-        if (blackKeys.isEmpty()) {
-            Rect key = whiteKeys.get(0);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
-            key = whiteKeys.get(1);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
-            key = whiteKeys.get(3);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
-            key = whiteKeys.get(4);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
-            key = whiteKeys.get(5);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
-            key = whiteKeys.get(7);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
-        }
-        if (notes2rect.isEmpty()) {
-            int i=0;
-            for(NotesEnum note : NotesEnum.getBlack()) {
-                notes2rect.put(note, blackKeys.get(i++));
-            }
-            i=0;
-            for(NotesEnum note : NotesEnum.getWhite()) {
-                notes2rect.put(note, whiteKeys.get(i++));
-            }
-        }
         for (Rect r : whiteKeys) {
             paint.setColor(getKeyColor(r, Color.WHITE));
             paint.setStyle(Paint.Style.FILL);
@@ -174,7 +160,6 @@ public class PianoKeyboard extends View {
                         break;
                     }
                 }
-                Log.d("MULTIPLE", "X=" + x + " Y=" + y);
                 break;
             case MotionEvent.ACTION_UP:
                 pressedNote = null;

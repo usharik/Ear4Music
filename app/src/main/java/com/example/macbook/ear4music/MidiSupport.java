@@ -2,28 +2,30 @@ package com.example.macbook.ear4music;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import com.example.macbook.ear4music.listner.MidiSupportListner;
+import com.example.macbook.ear4music.listner.MidiSupportListener;
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by macbook on 02.07.17.
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private MidiDriver midiDriver;
-    private MidiSupportListner midiSupportListener;
+    private MidiSupportListener midiSupportListener;
     private volatile NotesEnum currentNote;
-    private volatile int currentNoteNumber;
+    private volatile AtomicInteger currentNoteNumber;
     private Thread currentThread;
 
     public MidiSupport(RandomNotesTaskActivity midiSupportListener) {
-        midiDriver = new MidiDriver();
-        midiDriver.setOnMidiStartListener(this);
+        this.midiDriver = new MidiDriver();
+        this.midiDriver.setOnMidiStartListener(this);
         this.midiSupportListener = midiSupportListener;
+        this.currentNoteNumber = new AtomicInteger(0);
     }
 
     public void start() {
@@ -63,7 +65,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
     }
 
     public void playNotesInRandomOrder(List<NotesEnum> notes) {
-        currentNoteNumber = 1;
+        currentNoteNumber.set(1);
         final List<NotesEnum> internNotes = new ArrayList<>(notes);
         Runnable runnable = new Runnable() {
             @Override
@@ -89,16 +91,14 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                             }
                         });
                         playNote(currentNote.getPitch());
-                        final int noteNumber = currentNoteNumber;
+                        final int noteNumber = currentNoteNumber.get();
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 MidiSupport.this.midiSupportListener.onMissedAnswer(noteNumber);
                             }
                         });
-                        synchronized (this) {
-                            currentNoteNumber++;
-                        }
+                        currentNoteNumber.incrementAndGet();
                     }
                 } catch (InterruptedException ex) {
                     Log.i(getClass().getName(), "Playing interrupted");
@@ -124,7 +124,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
 
     public int getCurrentNoteNumber() {
         synchronized (this) {
-            return currentNoteNumber;
+            return currentNoteNumber.get();
         }
     }
 

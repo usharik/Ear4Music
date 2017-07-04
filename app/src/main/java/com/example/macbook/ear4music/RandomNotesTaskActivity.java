@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import com.example.macbook.ear4music.listner.MidiSupportListner;
+import com.example.macbook.ear4music.listner.MidiSupportListener;
 import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 import com.example.macbook.ear4music.widget.PianoKeyboard;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, MidiSupportListner, PianoKeyboardListener {
+        implements AdapterView.OnItemSelectedListener, MidiSupportListener, PianoKeyboardListener {
 
     private MidiSupport midiSupport;
     private StatisticsStorage statisticsStorage;
@@ -49,7 +49,10 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         getMidiSupport().stopPlayingAsync();
+        PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
+        pianoKeyboard.setCurrentNote(null);
         getMidiSupport().stop();
+
         Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Pause");
     }
 

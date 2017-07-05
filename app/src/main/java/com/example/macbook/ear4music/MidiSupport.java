@@ -100,11 +100,13 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
     }
 
     public void stopPlayingAsync() {
-        currentThread.interrupt();
-        try {
-            currentThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (currentThread != null && !currentThread.isInterrupted()) {
+            currentThread.interrupt();
+            try {
+                currentThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

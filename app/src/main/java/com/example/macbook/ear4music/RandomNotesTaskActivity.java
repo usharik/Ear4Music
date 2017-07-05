@@ -13,15 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, MidiSupportListener, PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
+        implements AdapterView.OnItemSelectedListener, MidiSupportListener,
+        PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
 
     private MidiSupport midiSupport;
     private StatisticsStorage statisticsStorage;
-    private boolean isStarted = false;
+    private boolean isStarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.midiSupport = new MidiSupport(this);
+        this.isStarted = false;
         setContentView(R.layout.activity_random_notes_task);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
@@ -32,31 +35,30 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        getMidiSupport().start();
-        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Resume");
+        midiSupport.start();
+        Log.i(getClass().getName(), "Resume");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Start");
+        Log.i(getClass().getName(), "Start");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        getMidiSupport().stopPlayingAsync();
+        midiSupport.stopPlayingAsync();
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setCurrentNote(null);
-        getMidiSupport().stop();
-
-        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Pause");
+        midiSupport.stop();
+        Log.i(getClass().getName(), "Pause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("RandomNotesTaskActivity", "!!!!!!!!!!!!! Stop");
+        Log.i(getClass().getName(), "Stop");
     }
 
     @Override
@@ -70,7 +72,7 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     public void onStartClick(View view) {
         Button button = (Button) findViewById(R.id.buttonStart);
         if (isStarted) {
-            getMidiSupport().stopPlayingAsync();
+            midiSupport.stopPlayingAsync();
             isStarted = false;
             button.setText(R.string.start);
             return;
@@ -86,7 +88,7 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         Spinner freqEdit = (Spinner) findViewById(R.id.spinnerFreq);
         int freq = Integer.parseInt(freqEdit.getSelectedItem().toString());
         statisticsStorage = new StatisticsStorage();
-        getMidiSupport().playNotesInRandomOrder(melody, freq);
+        midiSupport.playNotesInRandomOrder(melody, freq);
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setStatisticsStorage(statisticsStorage);
         pianoKeyboard.setPianoKeyboardListener(this);
@@ -96,20 +98,19 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     public void onNewNote(NotesEnum currentNote) {
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setCurrentNote(currentNote);
-        pianoKeyboard.setCurrentNoteNumber(getMidiSupport().getCurrentNoteNumber());
+        pianoKeyboard.setCurrentNoteNumber(midiSupport.getCurrentNoteNumber());
     }
 
     @Override
     public void onMissedAnswer(int noteNumber) {
         statisticsStorage.submitAnswer(
                 noteNumber,
-                getMidiSupport().getCurrentNote(),
+                midiSupport.getCurrentNote(),
                 null);
         TextView textView = (TextView) findViewById(R.id.answerResult);
         textView.setText("Correct " + statisticsStorage.getCorrectCount() +
                 " Wrong " + statisticsStorage.getWrongCount() +
                 " Missed " + statisticsStorage.getMissedCount());
-        Log.i(Integer.toString(getMidiSupport().getCurrentNoteNumber()), "Missed");
     }
 
     @Override
@@ -118,13 +119,6 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         textView.setText("Correct " + statisticsStorage.getCorrectCount() +
                 " Wrong " + statisticsStorage.getWrongCount() +
                 " Missed " + statisticsStorage.getMissedCount());
-    }
-
-    private MidiSupport getMidiSupport() {
-        if (midiSupport == null) {
-            midiSupport = new MidiSupport(this);
-        }
-        return midiSupport;
     }
 
     @Override

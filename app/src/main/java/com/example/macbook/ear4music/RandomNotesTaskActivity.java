@@ -72,11 +72,11 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         if (isStarted) {
             getMidiSupport().stopPlayingAsync();
             isStarted = false;
-            button.setText("Start");
+            button.setText(R.string.start);
             return;
         }
         isStarted = true;
-        button.setText("Stop");
+        button.setText(R.string.stop);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         String taskText = spinner.getSelectedItem().toString();
         List<NotesEnum> melody = new ArrayList<>();

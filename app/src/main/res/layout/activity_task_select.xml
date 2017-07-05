@@ -12,7 +12,7 @@
         tools:context="com.example.macbook.ear4music.TaskSelectActivity">
 
     <Button
-            android:text="Notes in random order"
+            android:text="@string/notes_in_random_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"

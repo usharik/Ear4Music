@@ -6,9 +6,7 @@ import com.example.macbook.ear4music.listner.MidiSupportListener;
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -64,27 +62,17 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
         currentThread.start();
     }
 
-    public void playNotesInRandomOrder(List<NotesEnum> notes, int notesPerMin) {
+    public void playNotesInRandomOrder(final List<NotesEnum> notes, int notesPerMin) {
         final int longitude = (int) Math.round(60000.0 / notesPerMin);
         currentNoteNumber.set(1);
-        final List<NotesEnum> internNotes = new ArrayList<>(notes);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 try {
-                    Random rnd = new Random();
-                    HashSet<Integer> twoLastNotes = new HashSet<>();
+                    RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(notes);
                     while (!Thread.interrupted()) {
-                        int nt = rnd.nextInt(internNotes.size());
-                        if (twoLastNotes.size() < 2) {
-                            twoLastNotes.add(nt);
-                        } else {
-                            while (twoLastNotes.contains(nt)) nt = rnd.nextInt(internNotes.size());
-                            twoLastNotes.clear();
-                            twoLastNotes.add(nt);
-                        }
+                        currentNote = randomNoteGenerator.nextNote();
                         AppCompatActivity activity = (AppCompatActivity) midiSupportListener;
-                        currentNote = internNotes.get(nt);
                         final NotesEnum finalCurrentNote = currentNote;
                         activity.runOnUiThread(new Runnable() {
                             @Override

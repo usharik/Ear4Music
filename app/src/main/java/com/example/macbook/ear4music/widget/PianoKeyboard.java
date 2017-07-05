@@ -47,17 +47,19 @@ public class PianoKeyboard extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        int whiteKeySize = w/8 - 1;
+        int width = w-1;
+        int height = h-1;
+        int whiteKeySize = width/8;
         whiteKeys.clear();
         for(int i=0; i<8; i++) {
-            Rect rect = new Rect(i * whiteKeySize, 0, (i + 1) * whiteKeySize, h-10);
+            Rect rect = new Rect(i * whiteKeySize, 0, (i + 1) * whiteKeySize, height);
             whiteKeys.add(rect);
         }
 
         int blackKeySize = whiteKeySize/2;
         for (int blackNum : new int[] {0, 1, 3, 4, 5, 7}) {
             Rect key = whiteKeys.get(blackNum);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, h/2));
+            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, height/2));
         }
 
         int i=0;
@@ -69,11 +71,11 @@ public class PianoKeyboard extends View {
         for(NotesEnum note : NotesEnum.getWhite()) {
             notes2rect.put(note, whiteKeys.get(i++));
         }
-        textPaint.setTextSize(h*0.1f);
+        textPaint.setTextSize(height*0.1f);
         Rect textRect = new Rect();
         textPaint.getTextBounds("C", 0, 1, textRect);
         noteNameWidth = textRect.height();
-        super.onSizeChanged(w, h, oldw, oldh);
+        super.onSizeChanged(width, height, oldw, oldh);
     }
 
     @Override

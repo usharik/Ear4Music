@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:columnCount="2"
-            android:clipChildren="false" android:layout_alignParentTop="true" android:layout_alignParentStart="true">
+            android:clipChildren="false"
+            android:layout_alignParentTop="true" android:layout_alignParentStart="true">
 
         <TextView
                 android:text="@string/notes"
@@ -23,41 +24,54 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/textView"/>
         <Spinner
-                android:layout_width="230dp"
+                style="@style/spinner_wh"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_marginStart="10dp"
                 android:id="@+id/spinner"
-                android:entries="@array/task_list"/>
+                android:entries="@array/task_list"
+                android:layout_gravity="fill_horizontal"
+                android:layout_width="0dp"/>
         <TextView
                 android:text="@string/notes_per_minute"
                 android:layout_column="0"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/textView2"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"/>
         <Spinner
-                android:layout_width="230dp"
+                style="@style/spinner_wh"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerFreq"
-                android:entries="@array/longitude_list" android:layout_marginStart="10dp"/>
+                android:entries="@array/longitude_list"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="fill_horizontal"
+                android:layout_width="0dp"/>
         <TextView
                 android:text="@string/show_note_names"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/textView3"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"/>
         <Switch
-                android:layout_width="133dp"
-                android:layout_height="wrap_content" android:id="@+id/switchNoteNames" android:splitTrack="false"
-                android:checked="true"/>
+                style="@style/spinner_wh"
+                android:layout_height="wrap_content"
+                android:id="@+id/switchNoteNames"
+                android:splitTrack="false"
+                android:checked="true"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="fill_horizontal"
+                android:layout_width="0dp" android:paddingEnd="50dp"/>
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"
                 android:id="@+id/answerResult"
-                android:layout_marginTop="27dp"/>
+                android:layout_marginTop="10dp"/>
         <com.example.macbook.ear4music.widget.PianoKeyboard
                 android:id="@+id/piano_keyboard"
                 android:layout_height="150dp"
-                android:layout_width="match_parent"
-                android:layout_columnSpan="2"/>
+                android:layout_columnSpan="2"
+                android:layout_gravity="fill_horizontal"
+                android:layout_width="0dp"/>
         <Button
                 android:text="@string/start"
                 android:layout_width="match_parent"

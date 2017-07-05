@@ -40,6 +40,14 @@
                 android:id="@+id/spinnerFreq"
                 android:entries="@array/longitude_list" android:layout_marginStart="10dp"/>
         <TextView
+                android:text="Show note names"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textView3"/>
+        <Switch
+                android:layout_width="133dp"
+                android:layout_height="wrap_content" android:id="@+id/switchNoteNames" android:splitTrack="false"
+                android:checked="true"/>
+        <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"

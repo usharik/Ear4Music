@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.macbook.androidapp", appContext.getPackageName());
+        assertEquals("com.example.macbook.ear4music", appContext.getPackageName());
     }
 }

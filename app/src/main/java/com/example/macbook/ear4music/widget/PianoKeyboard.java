@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.macbook.ear4music.NotesEnum;
@@ -23,6 +22,7 @@ import java.util.List;
  */
 public class PianoKeyboard extends View {
     private Paint paint;
+    private Paint textPaint;
     private List<Rect> whiteKeys;
     private List<Rect> blackKeys;
     private HashMap<NotesEnum, Rect> notes2rect;
@@ -32,6 +32,8 @@ public class PianoKeyboard extends View {
     private Rect pressedNoteRect;
     private StatisticsStorage statisticsStorage;
     private PianoKeyboardListener pianoKeyboardListener;
+    private int noteNameWidth;
+    private boolean showNoteNames;
 
     public PianoKeyboard(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -39,6 +41,8 @@ public class PianoKeyboard extends View {
         blackKeys = new ArrayList<>();
         notes2rect = new LinkedHashMap<>();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        showNoteNames = true;
     }
 
     @Override
@@ -65,19 +69,29 @@ public class PianoKeyboard extends View {
         for(NotesEnum note : NotesEnum.getWhite()) {
             notes2rect.put(note, whiteKeys.get(i++));
         }
+        textPaint.setTextSize(h*0.1f);
+        Rect textRect = new Rect();
+        textPaint.getTextBounds("C", 0, 1, textRect);
+        noteNameWidth = textRect.height();
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (Rect r : whiteKeys) {
+        int i=0;
+        List<NotesEnum> whiteNotes = NotesEnum.getWhite();
+        for (Rect r : this.whiteKeys) {
             paint.setColor(getKeyColor(r, Color.WHITE));
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(r, paint);
             paint.setColor(Color.BLACK);
             paint.setStyle(Paint.Style.STROKE);
             canvas.drawRect(r, paint);
+            textPaint.setColor(Color.BLACK);
+            if (showNoteNames) {
+                canvas.drawText(whiteNotes.get(i++).name(), r.centerX() - noteNameWidth / 2, r.centerY() * 5.0f / 3.0f, textPaint);
+            }
         }
         for (Rect r : blackKeys) {
             paint.setColor(getKeyColor(r, Color.BLACK));
@@ -184,5 +198,10 @@ public class PianoKeyboard extends View {
 
     public void setPianoKeyboardListener(PianoKeyboardListener pianoKeyboardListener) {
         this.pianoKeyboardListener = pianoKeyboardListener;
+    }
+
+    public void setShowNoteNames(boolean showNoteNames) {
+        this.showNoteNames = showNoteNames;
+        this.invalidate();
     }
 }

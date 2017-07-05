@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, MidiSupportListener, PianoKeyboardListener {
+        implements AdapterView.OnItemSelectedListener, MidiSupportListener, PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
 
     private MidiSupport midiSupport;
     private StatisticsStorage statisticsStorage;
@@ -25,6 +25,8 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         setContentView(R.layout.activity_random_notes_task);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
+        Switch aSwitch = (Switch) findViewById(R.id.switchNoteNames);
+        aSwitch.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -123,5 +125,11 @@ public class RandomNotesTaskActivity extends AppCompatActivity
             midiSupport = new MidiSupport(this);
         }
         return midiSupport;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
+        pianoKeyboard.setShowNoteNames(b);
     }
 }

@@ -81,6 +81,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                         } else {
                             while (twoLastNotes.contains(nt)) nt = rnd.nextInt(internNotes.size());
                             twoLastNotes.clear();
+                            twoLastNotes.add(nt);
                         }
                         AppCompatActivity activity = (AppCompatActivity) midiSupportListener;
                         currentNote = internNotes.get(nt);

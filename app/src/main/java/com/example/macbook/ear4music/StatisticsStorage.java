@@ -1,5 +1,6 @@
 package com.example.macbook.ear4music;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,6 +23,12 @@ public class StatisticsStorage {
         boolean isMissed() {
             return answeredNote == null;
         }
+    }
+
+    public static class Result {
+        int correct = 0;
+        int wrong = 0;
+        int missed = 0;
     }
 
     private ConcurrentHashMap<Integer, Answer> answers;
@@ -47,6 +54,22 @@ public class StatisticsStorage {
                 }
             }
         }
+    }
+
+    public HashMap<NotesEnum, Result> calcFinalResult() {
+        HashMap<NotesEnum, Result> result = new HashMap<>();
+        for (int key : answers.keySet()) {
+            Answer answer = answers.get(key);
+            Result res = result.get(answer.actualNote);
+            if (res == null) {
+                res = new Result();
+                result.put(answer.actualNote, res);
+            }
+            if (answer.isCorrect()) res.correct++;
+            else if (answer.isMissed()) res.missed++;
+            else res.wrong++;
+        }
+        return result;
     }
 
     public int getCorrectCount() {

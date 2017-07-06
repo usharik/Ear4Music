@@ -10,6 +10,7 @@ import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 import com.example.macbook.ear4music.widget.PianoKeyboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
@@ -75,6 +76,16 @@ public class RandomNotesTaskActivity extends AppCompatActivity
             midiSupport.stopPlayingAsync();
             isStarted = false;
             button.setText(R.string.start);
+            TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
+            if (statisticsStorage != null) {
+                StringBuilder sb = new StringBuilder();
+                HashMap<NotesEnum, StatisticsStorage.Result> resultHashMap = statisticsStorage.calcFinalResult();
+                for (NotesEnum key : resultHashMap.keySet()) {
+                    StatisticsStorage.Result res = resultHashMap.get(key);
+                    sb.append(key.name() + " " + res.correct + " " + res.missed + " " + res.wrong + "\n");
+                }
+                textViewResult.setText(sb.toString());
+            }
             return;
         }
         isStarted = true;

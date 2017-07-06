@@ -40,6 +40,7 @@
                 android:id="@+id/textView2"/>
         <Spinner
                 style="@style/spinner_wh"
+                android:layout_column="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerFreq"
                 android:entries="@array/longitude_list"
@@ -48,11 +49,13 @@
                 android:layout_width="0dp"/>
         <TextView
                 android:text="@string/show_note_names"
+                android:layout_column="0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView3"/>
         <Switch
                 style="@style/spinner_wh"
+                android:layout_column="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/switchNoteNames"
                 android:splitTrack="false"
@@ -63,12 +66,14 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:id="@+id/answerResult"
                 android:layout_marginTop="10dp"/>
         <com.example.macbook.ear4music.widget.PianoKeyboard
                 android:id="@+id/piano_keyboard"
                 android:layout_height="150dp"
+                android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:layout_gravity="fill_horizontal"
                 android:layout_width="0dp"/>
@@ -76,9 +81,16 @@
                 android:text="@string/start"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:id="@+id/buttonStart"
-                android:onClick="onStartClick"
-                android:layout_marginBottom="161dp"/>
+                android:onClick="onStartClick"/>
+        <TextView
+                android:lines="10"
+                android:text="Result"
+                android:layout_width="match_parent"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:id="@+id/textViewResult" android:layout_height="wrap_content"/>
     </GridLayout>
 </RelativeLayout>

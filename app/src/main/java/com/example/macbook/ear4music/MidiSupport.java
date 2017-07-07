@@ -16,7 +16,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private MidiDriver midiDriver;
     private MidiSupportListener midiSupportListener;
     private volatile NotesEnum currentNote;
-    private volatile AtomicInteger currentNoteNumber;
+    private AtomicInteger currentNoteNumber;
     private Thread currentThread;
 
     public MidiSupport(RandomNotesTaskActivity midiSupportListener) {
@@ -85,7 +85,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                MidiSupport.this.midiSupportListener.onMissedAnswer(noteNumber);
+                                MidiSupport.this.midiSupportListener.onMissedNote(noteNumber);
                             }
                         });
                         currentNoteNumber.incrementAndGet();
@@ -115,9 +115,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
     }
 
     public int getCurrentNoteNumber() {
-        synchronized (this) {
-            return currentNoteNumber.get();
-        }
+        return currentNoteNumber.get();
     }
 
     public void playNote(byte note, int longitude) throws InterruptedException {

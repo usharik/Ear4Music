@@ -107,13 +107,15 @@ public class RandomNotesTaskActivity extends AppCompatActivity
 
     @Override
     public void onNewNote(NotesEnum currentNote) {
+        TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
+        textViewResult.setText("onNewNote note " + currentNote.name());
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setCurrentNote(currentNote);
         pianoKeyboard.setCurrentNoteNumber(midiSupport.getCurrentNoteNumber());
     }
 
     @Override
-    public void onMissedAnswer(int noteNumber) {
+    public void onMissedNote(int noteNumber) {
         statisticsStorage.submitAnswer(
                 noteNumber,
                 midiSupport.getCurrentNote(),
@@ -125,7 +127,9 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     }
 
     @Override
-    public void onCorrectNotePressed() {
+    public void onNotePressed(NotesEnum pressedNote) {
+        TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
+        textViewResult.setText("onNotePressed note " + pressedNote.name());
         TextView textView = (TextView) findViewById(R.id.answerResult);
         textView.setText("Correct " + statisticsStorage.getCorrectCount() +
                 " Wrong " + statisticsStorage.getWrongCount() +

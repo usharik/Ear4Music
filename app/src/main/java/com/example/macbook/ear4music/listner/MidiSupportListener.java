@@ -7,5 +7,5 @@ import com.example.macbook.ear4music.NotesEnum;
  */
 public interface MidiSupportListener {
     void onNewNote(NotesEnum currentNote);
-    void onMissedAnswer(int noteNumber);
+    void onMissedNote(int noteNumber);
 }

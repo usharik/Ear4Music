@@ -170,9 +170,7 @@ public class PianoKeyboard extends View {
                         if (statisticsStorage != null) {
                             statisticsStorage.submitAnswer(currentNoteNumber, currentNote, pressedNote);
                         }
-                        if (pressedNote.equals(currentNote)) {
-                            pianoKeyboardListener.onCorrectNotePressed();
-                        }
+                        pianoKeyboardListener.onNotePressed(pressedNote);
                         break;
                     }
                 }

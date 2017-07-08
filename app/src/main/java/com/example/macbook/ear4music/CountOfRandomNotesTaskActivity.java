@@ -9,11 +9,9 @@ import com.example.macbook.ear4music.listner.MidiSupportListener;
 import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 import com.example.macbook.ear4music.widget.PianoKeyboard;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class RandomNotesTaskActivity extends AppCompatActivity
+public class CountOfRandomNotesTaskActivity extends AppCompatActivity
         implements MidiSupportListener, PianoKeyboardListener,
         CompoundButton.OnCheckedChangeListener {
 
@@ -24,7 +22,7 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_random_notes_task);
+        setContentView(R.layout.activity_count_of_random_notes_task);
 
         this.midiSupport = new MidiSupport(this);
         this.isStarted = false;
@@ -81,16 +79,12 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         }
         isStarted = true;
         button.setText(R.string.stop);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        String taskText = spinner.getSelectedItem().toString();
-        List<NotesEnum> melody = new ArrayList<>();
-        for (String note : taskText.split(" ")) {
-            melody.add(NotesEnum.valueOf(note));
-        }
         Spinner freqEdit = (Spinner) findViewById(R.id.spinnerFreq);
         int freq = Integer.parseInt(freqEdit.getSelectedItem().toString());
         statisticsStorage = new StatisticsStorage();
-        midiSupport.playNotesInRandomOrder(melody, freq);
+        Spinner countEdit = (Spinner) findViewById(R.id.spinnerNoteCount);
+        int count = Integer.parseInt(countEdit.getSelectedItem().toString());
+        midiSupport.playCountOfRandomNotes(NotesEnum.whiteList, freq, count);
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setStatisticsStorage(statisticsStorage);
         pianoKeyboard.setPianoKeyboardListener(this);
@@ -133,3 +127,4 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         pianoKeyboard.setShowNoteNames(b);
     }
 }
+

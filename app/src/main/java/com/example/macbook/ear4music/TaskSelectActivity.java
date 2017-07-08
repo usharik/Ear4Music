@@ -17,4 +17,9 @@ public class TaskSelectActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), RandomNotesTaskActivity.class);
         startActivity(intent);
     }
+
+    public void onTask2ButtonClick(View view) {
+        Intent intent = new Intent(getApplicationContext(), CountOfRandomNotesTaskActivity.class);
+        startActivity(intent);
+    }
 }

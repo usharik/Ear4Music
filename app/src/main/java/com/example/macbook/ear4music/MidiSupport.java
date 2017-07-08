@@ -19,7 +19,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private AtomicInteger currentNoteNumber;
     private Thread currentThread;
 
-    public MidiSupport(RandomNotesTaskActivity midiSupportListener) {
+    public MidiSupport(MidiSupportListener midiSupportListener) {
         this.midiDriver = new MidiDriver();
         this.midiDriver.setOnMidiStartListener(this);
         this.midiSupportListener = midiSupportListener;
@@ -89,6 +89,51 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                             }
                         });
                         currentNoteNumber.incrementAndGet();
+                    }
+                } catch (InterruptedException ex) {
+                    Log.i(getClass().getName(), "Playing interrupted");
+                }
+            }
+        };
+        currentThread = new Thread(runnable);
+        currentThread.start();
+    }
+
+    public void playCountOfRandomNotes(final List<NotesEnum> notes, int notesPerMin, final int count) {
+        final int longitude = (int) Math.round(60000.0 / notesPerMin);
+        currentNoteNumber.set(1);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(notes);
+                    while (!Thread.interrupted()) {
+                        List<NotesEnum> notes = new ArrayList<>();
+                        for (int i=0; i<count; i++) {
+                            currentNote = randomNoteGenerator.nextNote();
+                            notes.add(currentNote);
+                            playNote(currentNote.getPitch(), longitude);
+                        }
+
+                        AppCompatActivity activity = (AppCompatActivity) midiSupportListener;
+                        for (NotesEnum note : notes) {
+                            final NotesEnum finalCurrentNote = note;
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MidiSupport.this.midiSupportListener.onNewNote(finalCurrentNote);
+                                }
+                            });
+                            Thread.sleep(longitude);
+                            final int noteNumber = currentNoteNumber.get();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MidiSupport.this.midiSupportListener.onMissedNote(noteNumber);
+                                }
+                            });
+                            currentNoteNumber.incrementAndGet();
+                        }
                     }
                 } catch (InterruptedException ex) {
                     Log.i(getClass().getName(), "Playing interrupted");

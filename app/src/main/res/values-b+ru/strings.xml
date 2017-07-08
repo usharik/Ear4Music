@@ -8,7 +8,7 @@
         <item>C   E F G A B C2</item>
         <item>C D E F G A B C2</item>
     </string-array>
-    <string-array name="longitude_list">
+    <string-array name="longitude_list_1">
         <item>20</item>
         <item>40</item>
         <item>50</item>
@@ -19,10 +19,26 @@
         <item>100</item>
         <item>120</item>
     </string-array>
+    <string-array name="longitude_list_2">
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+        <item>120</item>
+    </string-array>
+    <string-array name="note_count_list">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
     <string name="notes">Ноты</string>
     <string name="notes_per_minute">Нот в минуту</string>
     <string name="show_note_names">Показывать названия нот</string>
+    <string name="notes_count">Кол-во нот</string>
     <string name="start">Старт</string>
     <string name="stop">Стоп</string>
     <string name="notes_in_random_order">Ноты в случайном порядке</string>
+    <string name="count_of_random_notes">Последовательности из случайных нот</string>
 </resources>

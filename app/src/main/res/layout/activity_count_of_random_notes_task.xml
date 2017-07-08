@@ -2,14 +2,14 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/random_notes_task_activity"
+        android:id="@+id/activity_count_of_random_notes_task"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context="com.example.macbook.ear4music.RandomNotesTaskActivity">
+        tools:context="com.example.macbook.ear4music.CountOfRandomNotesTaskActivity">
 
     <GridLayout
             android:layout_width="match_parent"
@@ -19,19 +19,21 @@
             android:layout_alignParentTop="true" android:layout_alignParentStart="true">
 
         <TextView
-                android:text="@string/notes"
+                android:text="@string/notes_count"
                 android:layout_column="0"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/textView"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/textView1"/>
         <Spinner
                 style="@style/spinner_wh"
-                android:layout_height="wrap_content"
                 android:layout_column="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerNoteCount"
+                android:entries="@array/note_count_list"
                 android:layout_marginStart="10dp"
-                android:id="@+id/spinner"
-                android:entries="@array/task_list"
                 android:layout_gravity="fill_horizontal"
                 android:layout_width="0dp"/>
+
         <TextView
                 android:text="@string/notes_per_minute"
                 android:layout_column="0"
@@ -43,7 +45,7 @@
                 android:layout_column="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerFreq"
-                android:entries="@array/longitude_list_1"
+                android:entries="@array/longitude_list_2"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="fill_horizontal"
                 android:layout_width="0dp"/>
@@ -92,4 +94,5 @@
                 android:layout_columnSpan="2"
                 android:id="@+id/textViewResult" android:layout_height="wrap_content"/>
     </GridLayout>
+
 </RelativeLayout>

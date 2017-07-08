@@ -2,10 +2,10 @@
     <string name="app_name">Ear4Music</string>
     <string name="title_activity_task_select">TaskSelectActivity</string>
     <string-array name="task_list">
-        <item>C   E   G     C2</item>
-        <item>C   E   G   B C2</item>
-        <item>C   E F G   B C2</item>
-        <item>C   E F G A B C2</item>
+        <item>C E G C2</item>
+        <item>C E G B C2</item>
+        <item>C E F G B C2</item>
+        <item>C E F G A B C2</item>
         <item>C D E F G A B C2</item>
     </string-array>
     <string-array name="longitude_list">
@@ -19,9 +19,22 @@
         <item>100</item>
         <item>120</item>
     </string-array>
+    <string-array name="task_type_list">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="result_table_columns">
+        <item>Note</item>
+        <item>Correct</item>
+        <item>Wrong</item>
+        <item>Missed</item>
+    </string-array>
     <string name="notes">Notes</string>
     <string name="notes_per_minute">Notes per minute</string>
     <string name="show_note_names">Show note names</string>
+    <string name="task_type">Notes in sequence</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="notes_in_random_order">Notes in random order</string>

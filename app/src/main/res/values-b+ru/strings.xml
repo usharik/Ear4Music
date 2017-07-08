@@ -19,9 +19,22 @@
         <item>100</item>
         <item>120</item>
     </string-array>
+    <string-array name="task_type_list">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="result_table_columns">
+        <item>Нота</item>
+        <item>Правильно</item>
+        <item>Ошибка</item>
+        <item>Пропущено</item>
+    </string-array>
     <string name="notes">Ноты</string>
     <string name="notes_per_minute">Нот в минуту</string>
     <string name="show_note_names">Показывать названия нот</string>
+    <string name="task_type">Нот в последовательности</string>
     <string name="start">Старт</string>
     <string name="stop">Стоп</string>
     <string name="notes_in_random_order">Ноты в случайном порядке</string>

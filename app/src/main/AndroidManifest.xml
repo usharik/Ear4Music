@@ -7,16 +7,18 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-            android:testOnly="false">
-        <activity android:name="com.example.macbook.ear4music.TaskSelectActivity">
+            android:testOnly="false"
+            android:theme="@style/AppTheme">
+        <activity android:name=".TaskSelectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.example.macbook.ear4music.RandomNotesTaskActivity">
+        <activity android:name=".RandomNotesTaskActivity">
+        </activity>
+        <activity android:name=".TaskResultActivity">
         </activity>
     </application>
 

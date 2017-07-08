@@ -1,5 +1,8 @@
 package com.example.macbook.ear4music;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,29 +11,46 @@ import android.widget.*;
 import com.example.macbook.ear4music.listner.MidiSupportListener;
 import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 import com.example.macbook.ear4music.widget.PianoKeyboard;
+import de.codecrafters.tableview.TableView;
+import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, MidiSupportListener,
+        implements MidiSupportListener,
         PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
 
     private MidiSupport midiSupport;
     private StatisticsStorage statisticsStorage;
     private boolean isStarted;
+    private int taskId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.midiSupport = new MidiSupport(this);
         this.isStarted = false;
+        this.taskId = 1;
         setContentView(R.layout.activity_random_notes_task);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setOnItemSelectedListener(this);
         Switch aSwitch = (Switch) findViewById(R.id.switchNoteNames);
         aSwitch.setOnCheckedChangeListener(this);
+
+        Spinner taskTypeSpinner = (Spinner) findViewById(R.id.spinnerTaskType);
+        taskTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                taskId = (int) id;
+                Log.i(getClass().getName(), "pos " + pos + " id " +id);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -62,29 +82,14 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         Log.i(getClass().getName(), "Stop");
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-    }
-
     public void onStartClick(View view) {
         Button button = (Button) findViewById(R.id.buttonStart);
         if (isStarted) {
             midiSupport.stopPlayingAsync();
             isStarted = false;
             button.setText(R.string.start);
-            TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
             if (statisticsStorage != null) {
-                StringBuilder sb = new StringBuilder();
-                HashMap<NotesEnum, StatisticsStorage.Result> resultHashMap = statisticsStorage.calcFinalResult();
-                for (NotesEnum key : resultHashMap.keySet()) {
-                    StatisticsStorage.Result res = resultHashMap.get(key);
-                    sb.append(key.name() + " " + res.correct + " " + res.missed + " " + res.wrong + "\n");
-                }
-                textViewResult.setText(sb.toString());
+                startResultActivity();
             }
             return;
         }
@@ -99,14 +104,50 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         Spinner freqEdit = (Spinner) findViewById(R.id.spinnerFreq);
         int freq = Integer.parseInt(freqEdit.getSelectedItem().toString());
         statisticsStorage = new StatisticsStorage();
-        midiSupport.playNotesInRandomOrder(melody, freq);
+        if (taskId == 0) {
+            midiSupport.playNotesInRandomOrder(melody, freq);
+        } else {
+            midiSupport.playCountOfRandomNotes(melody, freq, taskId+1);
+        }
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
         pianoKeyboard.setStatisticsStorage(statisticsStorage);
         pianoKeyboard.setPianoKeyboardListener(this);
     }
 
+    private void startResultActivity() {
+        List<String[]> resultTable = new ArrayList<>();
+        HashMap<NotesEnum, StatisticsStorage.Result> resultHashMap = statisticsStorage.calcFinalResult();
+        for (NotesEnum key : resultHashMap.keySet()) {
+            StatisticsStorage.Result res = resultHashMap.get(key);
+            float sum = (res.correct + res.wrong + res.missed)/100f;
+            Locale current = getCurrentLocale();
+            resultTable.add(new String[] {
+                    key.name(),
+                    String.format(current, "%d/%.1f%%", res.correct, res.correct/sum),
+                    String.format(current, "%d/%.1f%%", res.wrong, res.wrong/sum),
+                    String.format(current, "%d/%.1f%%", res.missed, res.missed/sum)});
+        }
+        String[][] arr = new String[resultTable.size()][];
+        arr = resultTable.toArray(arr);
+        Intent intent = new Intent(getApplicationContext(), TaskResultActivity.class);
+        intent.putExtra("taskResult", arr);
+        startActivity(intent);
+    }
+
+    private Locale getCurrentLocale() {
+        Locale locale;
+        Context applicationContext = getApplicationContext();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = applicationContext.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            locale = applicationContext.getResources().getConfiguration().locale;
+        }
+        return locale;
+    }
+
     @Override
     public void onNewNote(NotesEnum currentNote) {
+        Log.i(getClass().getName(), "New" + currentNote.name());
         TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
         textViewResult.setText("onNewNote note " + currentNote.name());
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
@@ -121,19 +162,23 @@ public class RandomNotesTaskActivity extends AppCompatActivity
                 midiSupport.getCurrentNote(),
                 null);
         TextView textView = (TextView) findViewById(R.id.answerResult);
-        textView.setText("Correct " + statisticsStorage.getCorrectCount() +
-                " Wrong " + statisticsStorage.getWrongCount() +
-                " Missed " + statisticsStorage.getMissedCount());
+        textView.setText(getNoteCount());
     }
 
     @Override
     public void onNotePressed(NotesEnum pressedNote) {
+        Log.i(getClass().getName(), "Pressed" + pressedNote.name());
         TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
         textViewResult.setText("onNotePressed note " + pressedNote.name());
         TextView textView = (TextView) findViewById(R.id.answerResult);
-        textView.setText("Correct " + statisticsStorage.getCorrectCount() +
+        textView.setText(getNoteCount());
+    }
+
+    private String getNoteCount() {
+        return  "Overall " + statisticsStorage.getOverallCount() +
+                " Correct " + statisticsStorage.getCorrectCount() +
                 " Wrong " + statisticsStorage.getWrongCount() +
-                " Missed " + statisticsStorage.getMissedCount());
+                " Missed " + statisticsStorage.getMissedCount();
     }
 
     @Override

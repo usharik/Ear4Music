@@ -1,13 +1,16 @@
 package com.example.macbook.ear4music;
 
+import android.util.Log;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by macbook on 03.07.17.
  */
-public class StatisticsStorage {
-    private static class Answer {
+public class StatisticsStorage implements Serializable {
+    private static class Answer implements Serializable {
         NotesEnum actualNote;
         NotesEnum answeredNote;
 
@@ -41,7 +44,7 @@ public class StatisticsStorage {
     }
 
     public void submitAnswer(int noteNumber, NotesEnum actualNote, NotesEnum answeredNote) {
-        if (!answers.containsKey(noteNumber)) {
+        if (!answers.containsKey(noteNumber) && actualNote != null) {
             Answer answer = new Answer(actualNote, answeredNote);
             answers.put(noteNumber, answer);
             if (answer.isCorrect()) {
@@ -53,6 +56,7 @@ public class StatisticsStorage {
                     wrongCount++;
                 }
             }
+            Log.i(getClass().getName(), "Aswer is " + Boolean.toString(answer.isMissed()));
         }
     }
 
@@ -82,5 +86,9 @@ public class StatisticsStorage {
 
     public int getMissedCount() {
         return missedCount;
+    }
+
+    public int getOverallCount() {
+        return correctCount + wrongCount + missedCount;
     }
 }

@@ -56,7 +56,6 @@ public class StatisticsStorage implements Serializable {
                     wrongCount++;
                 }
             }
-            Log.i(getClass().getName(), "Aswer is " + Boolean.toString(answer.isMissed()));
         }
     }
 

@@ -81,14 +81,13 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                             }
                         });
                         playNote(currentNote.getPitch(), longitude);
-                        final int noteNumber = currentNoteNumber.get();
+                        final int noteNumber = currentNoteNumber.getAndIncrement();
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 MidiSupport.this.midiSupportListener.onMissedNote(noteNumber);
                             }
                         });
-                        currentNoteNumber.incrementAndGet();
                     }
                 } catch (InterruptedException ex) {
                     Log.i(getClass().getName(), "Playing interrupted");
@@ -126,14 +125,13 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
                                 }
                             });
                             Thread.sleep(longitude);
-                            final int noteNumber = currentNoteNumber.get();
+                            final int noteNumber = currentNoteNumber.getAndIncrement();
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     MidiSupport.this.midiSupportListener.onMissedNote(noteNumber);
                                 }
                             });
-                            currentNoteNumber.incrementAndGet();
                         }
                     }
                 } catch (InterruptedException ex) {

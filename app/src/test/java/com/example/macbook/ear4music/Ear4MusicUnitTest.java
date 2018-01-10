@@ -1,5 +1,10 @@
 package com.example.macbook.ear4music;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.observers.DefaultObserver;
+import io.reactivex.schedulers.Schedulers;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -60,7 +65,7 @@ public class Ear4MusicUnitTest {
 
         HashMap<NotesEnum, StatisticsStorage.Result> actual = statisticsStorage.calcFinalResult();
         assertEquals(expected.size(), actual.size());
-        for(NotesEnum key : actual.keySet()) {
+        for (NotesEnum key : actual.keySet()) {
             assertEquals(expected.get(key).correct, actual.get(key).correct);
             assertEquals(expected.get(key).wrong, actual.get(key).wrong);
             assertEquals(expected.get(key).missed, actual.get(key).missed);
@@ -68,10 +73,10 @@ public class Ear4MusicUnitTest {
     }
 
     private int submitAnswers(StatisticsStorage statisticsStorage, int num, NotesEnum current, NotesEnum pressed, int count) {
-        for(int i=num;i<num+count;i++) {
+        for (int i = num; i < num + count; i++) {
             statisticsStorage.submitAnswer(i, current, pressed);
         }
-        return num+count;
+        return num + count;
     }
 
     @Test
@@ -79,7 +84,7 @@ public class Ear4MusicUnitTest {
         RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(NotesEnum.getWhite());
         NotesEnum curr = null;
         NotesEnum next = null;
-        for (int i=0;i<10000;i++) {
+        for (int i = 0; i < 10000; i++) {
             if (curr == null) {
                 curr = randomNoteGenerator.nextNote();
             } else if (next == null) {
@@ -97,11 +102,55 @@ public class Ear4MusicUnitTest {
     public void randomNoteGenerator_TestAllNoteExistsInGeneratedSequence() {
         RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(NotesEnum.getWhite());
         HashSet<NotesEnum> sequence = new HashSet<>();
-        for (int i=0;i<10000;i++) {
+        for (int i = 0; i < 10000; i++) {
             sequence.add(randomNoteGenerator.nextNote());
         }
         for (NotesEnum note : NotesEnum.getWhite()) {
             assertTrue(sequence.contains(note));
+        }
+    }
+
+    @Test
+    public void testRxJava() {
+        final Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                int cnt = 0;
+                for (;;) {
+                    e.onNext(String.valueOf(cnt));
+                    Thread.sleep(1000);
+                    System.out.println("Generator thread " + Thread.currentThread().getId());
+                    cnt++;
+                }
+            }
+        });
+
+        observable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(new DefaultObserver<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        System.out.println(s);
+                        System.out.println("Subscriber thread " + Thread.currentThread().getId());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

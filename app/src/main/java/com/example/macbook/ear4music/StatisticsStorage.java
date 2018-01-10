@@ -3,6 +3,7 @@ package com.example.macbook.ear4music;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,12 +36,24 @@ public class StatisticsStorage implements Serializable {
     }
 
     private ConcurrentHashMap<Integer, Answer> answers;
+    private ArrayList<RandomNotesTaskActivity.NoteInfo> noteInfos;
     private int correctCount;
     private int wrongCount;
     private int missedCount;
 
     public StatisticsStorage() {
         answers = new ConcurrentHashMap<>();
+        noteInfos = new ArrayList<>();
+    }
+
+    public void putNoteInfo(RandomNotesTaskActivity.NoteInfo noteInfo) {
+        noteInfos.add(noteInfo);
+    }
+
+    public void calculate() {
+        for (RandomNotesTaskActivity.NoteInfo noteInfo : noteInfos) {
+            submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote);
+        }
     }
 
     public void submitAnswer(int noteNumber, NotesEnum actualNote, NotesEnum answeredNote) {

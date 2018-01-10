@@ -8,30 +8,42 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import com.example.macbook.ear4music.listner.MidiSupportListener;
 import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 import com.example.macbook.ear4music.widget.PianoKeyboard;
-import de.codecrafters.tableview.TableView;
-import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DefaultObserver;
+import io.reactivex.schedulers.Schedulers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
-        implements MidiSupportListener,
-        PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
+        implements PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
 
     private MidiSupport midiSupport;
     private StatisticsStorage statisticsStorage;
     private boolean isStarted;
+    private AtomicBoolean stop;
     private int taskId;
+
+
+    public static class NoteInfo {
+        public int num;
+        public NotesEnum note;
+        public NotesEnum pressedNote;
+
+        public NoteInfo(int num, NotesEnum note, NotesEnum pressedNote) {
+            this.num=num;
+            this.note=note;
+            this.pressedNote=pressedNote;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.midiSupport = new MidiSupport(this);
+        this.midiSupport = new MidiSupport();
         this.isStarted = false;
         this.taskId = 1;
         setContentView(R.layout.activity_random_notes_task);
@@ -69,9 +81,8 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        midiSupport.stopPlayingAsync();
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
-        pianoKeyboard.setCurrentNote(null);
+        pianoKeyboard.setCurrentNoteInfo(null);
         midiSupport.stop();
         Log.i(getClass().getName(), "Pause");
     }
@@ -82,10 +93,14 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         Log.i(getClass().getName(), "Stop");
     }
 
+    private int getNumberFromSpinner(Spinner spinner) {
+        return Integer.parseInt(spinner.getSelectedItem().toString());
+    }
+
     public void onStartClick(View view) {
         Button button = (Button) findViewById(R.id.buttonStart);
         if (isStarted) {
-            midiSupport.stopPlayingAsync();
+            stop.set(true);
             isStarted = false;
             button.setText(R.string.start);
             if (statisticsStorage != null) {
@@ -101,20 +116,63 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         for (String note : taskText.split(" ")) {
             melody.add(NotesEnum.valueOf(note));
         }
-        Spinner freqEdit = (Spinner) findViewById(R.id.spinnerFreq);
-        int freq = Integer.parseInt(freqEdit.getSelectedItem().toString());
+        int freq = getNumberFromSpinner((Spinner) findViewById(R.id.spinnerFreq));
+        int notesInSequence = getNumberFromSpinner((Spinner) findViewById(R.id.spinnerTaskType));
         statisticsStorage = new StatisticsStorage();
-        if (taskId == 0) {
-            midiSupport.playNotesInRandomOrder(melody, freq);
+
+        stop = new AtomicBoolean(false);
+
+        if (notesInSequence == 1) {
+            midiSupport.newNotesPlayingObservable(melody, freq, 0, stop)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DefaultObserver<NoteInfo>() {
+                        @Override
+                        public void onNext(NoteInfo note) {
+                            PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
+                            pianoKeyboard.setCurrentNoteInfo(note);
+                            statisticsStorage.putNoteInfo(note);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
         } else {
-            midiSupport.playCountOfRandomNotes(melody, freq, taskId+1);
+            final ArrayList<NoteInfo> notes = new ArrayList<>();
+            midiSupport.newNotesPlayingObservable(melody, freq, notesInSequence, stop)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DefaultObserver<NoteInfo>() {
+                        @Override
+                        public void onNext(NoteInfo note) {
+                            notes.add(note);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            
+                        }
+                    });
         }
+
         PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
-        pianoKeyboard.setStatisticsStorage(statisticsStorage);
         pianoKeyboard.setPianoKeyboardListener(this);
     }
 
     private void startResultActivity() {
+        statisticsStorage.calculate();
         List<String[]> resultTable = new ArrayList<>();
         HashMap<NotesEnum, StatisticsStorage.Result> resultHashMap = statisticsStorage.calcFinalResult();
         for (NotesEnum key : resultHashMap.keySet()) {
@@ -143,26 +201,6 @@ public class RandomNotesTaskActivity extends AppCompatActivity
             locale = applicationContext.getResources().getConfiguration().locale;
         }
         return locale;
-    }
-
-    @Override
-    public void onNewNote(NotesEnum currentNote) {
-        Log.i(getClass().getName(), "New" + currentNote.name());
-        TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
-        textViewResult.setText("onNewNote note " + currentNote.name());
-        PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
-        pianoKeyboard.setCurrentNote(currentNote);
-        pianoKeyboard.setCurrentNoteNumber(midiSupport.getCurrentNoteNumber());
-    }
-
-    @Override
-    public void onMissedNote(int noteNumber) {
-        statisticsStorage.submitAnswer(
-                noteNumber,
-                midiSupport.getCurrentNote(),
-                null);
-        TextView textView = (TextView) findViewById(R.id.answerResult);
-        textView.setText(getNoteCount());
     }
 
     @Override

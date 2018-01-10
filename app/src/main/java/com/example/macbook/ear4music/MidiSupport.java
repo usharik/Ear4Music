@@ -2,11 +2,14 @@ package com.example.macbook.ear4music;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import com.example.macbook.ear4music.listner.MidiSupportListener;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,15 +17,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private MidiDriver midiDriver;
-    private MidiSupportListener midiSupportListener;
     private volatile NotesEnum currentNote;
     private AtomicInteger currentNoteNumber;
     private Thread currentThread;
 
-    public MidiSupport(MidiSupportListener midiSupportListener) {
+    public MidiSupport() {
         this.midiDriver = new MidiDriver();
         this.midiDriver.setOnMidiStartListener(this);
-        this.midiSupportListener = midiSupportListener;
         this.currentNoteNumber = new AtomicInteger(0);
     }
 
@@ -62,104 +63,23 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
         currentThread.start();
     }
 
-    public void playNotesInRandomOrder(final List<NotesEnum> notes, int notesPerMin) {
-        final int longitude = (int) Math.round(60000.0 / notesPerMin);
-        currentNoteNumber.set(1);
-        Runnable runnable = new Runnable() {
+    public Observable<RandomNotesTaskActivity.NoteInfo> newNotesPlayingObservable(final List<NotesEnum> notes, final int notesPerMin, final int notesCount, final AtomicBoolean stop) {
+        return Observable.create(new ObservableOnSubscribe<RandomNotesTaskActivity.NoteInfo>() {
             @Override
-            public void run() {
-                try {
-                    RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(notes);
-                    while (!Thread.interrupted()) {
-                        currentNote = randomNoteGenerator.nextNote();
-                        AppCompatActivity activity = (AppCompatActivity) midiSupportListener;
-                        final NotesEnum finalCurrentNote = currentNote;
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MidiSupport.this.midiSupportListener.onNewNote(finalCurrentNote);
-                            }
-                        });
-                        playNote(currentNote.getPitch(), longitude);
-                        final int noteNumber = currentNoteNumber.getAndIncrement();
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MidiSupport.this.midiSupportListener.onMissedNote(noteNumber);
-                            }
-                        });
-                    }
-                } catch (InterruptedException ex) {
-                    Log.i(getClass().getName(), "Playing interrupted");
+            public void subscribe(ObservableEmitter<RandomNotesTaskActivity.NoteInfo> e) throws Exception {
+                final int longitude = (int) Math.round(60000.0 / notesPerMin);
+                RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(notes);
+                int cnt=0;
+                while (!stop.get() && (notesCount == 0 || cnt < notesCount)) {
+                    final int noteNumber = currentNoteNumber.getAndIncrement();
+                    currentNote = randomNoteGenerator.nextNote();
+                    e.onNext(new RandomNotesTaskActivity.NoteInfo(noteNumber, currentNote, null));
+                    playNote(currentNote.getPitch(), longitude);
+                    cnt++;
                 }
+                e.onComplete();
             }
-        };
-        currentThread = new Thread(runnable);
-        currentThread.start();
-    }
-
-    public void playCountOfRandomNotes(final List<NotesEnum> notes, int notesPerMin, final int count) {
-        final int longitude = (int) Math.round(60000.0 / notesPerMin);
-        currentNoteNumber.set(1);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(notes);
-                    while (!Thread.interrupted()) {
-                        List<NotesEnum> notes = new ArrayList<>();
-                        for (int i=0; i<count; i++) {
-                            currentNote = randomNoteGenerator.nextNote();
-                            Log.i(getClass().getName(), currentNote.name());
-                            notes.add(currentNote);
-                            playNote(currentNote.getPitch(), longitude);
-                        }
-
-                        AppCompatActivity activity = (AppCompatActivity) midiSupportListener;
-                        for (NotesEnum note : notes) {
-                            final NotesEnum finalCurrentNote = note;
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MidiSupport.this.midiSupportListener.onNewNote(finalCurrentNote);
-                                }
-                            });
-                            Thread.sleep(longitude);
-                            final int noteNumber = currentNoteNumber.getAndIncrement();
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MidiSupport.this.midiSupportListener.onMissedNote(noteNumber);
-                                }
-                            });
-                        }
-                    }
-                } catch (InterruptedException ex) {
-                    Log.i(getClass().getName(), "Playing interrupted");
-                }
-            }
-        };
-        currentThread = new Thread(runnable);
-        currentThread.start();
-    }
-
-    public void stopPlayingAsync() {
-        if (currentThread != null && !currentThread.isInterrupted()) {
-            currentThread.interrupt();
-            try {
-                currentThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public NotesEnum getCurrentNote() {
-        return currentNote;
-    }
-
-    public int getCurrentNoteNumber() {
-        return currentNoteNumber.get();
+        });
     }
 
     public void playNote(byte note, int longitude) throws InterruptedException {

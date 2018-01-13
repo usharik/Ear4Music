@@ -3,6 +3,8 @@ package com.example.macbook.ear4music;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DefaultObserver;
 import io.reactivex.schedulers.Schedulers;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -149,6 +152,24 @@ public class Ear4MusicUnitTest {
 
         try {
             Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testRxJavaInterval() {
+        Observable<Long> interval = Observable.interval(1, TimeUnit.SECONDS);
+
+        interval.subscribe(new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) throws Exception {
+                System.out.println(aLong);
+            }
+        });
+
+        try {
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

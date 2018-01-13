@@ -11,12 +11,19 @@ import android.widget.*;
 import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 import com.example.macbook.ear4music.widget.PianoKeyboard;
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.DefaultObserver;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class RandomNotesTaskActivity extends AppCompatActivity
         implements PianoKeyboardListener, CompoundButton.OnCheckedChangeListener {
@@ -26,17 +33,20 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     private boolean isStarted;
     private AtomicBoolean stop;
     private int taskId;
-
+    private Subject<NoteInfo> keyboardBehaviorSubject;
+    private Disposable noteEmitterDisposable;
+    private Disposable keyboardDisposable;
+    private AtomicLong noteNumber = new AtomicLong();
 
     public static class NoteInfo {
-        public int num;
+        public long num;
         public NotesEnum note;
         public NotesEnum pressedNote;
 
-        public NoteInfo(int num, NotesEnum note, NotesEnum pressedNote) {
-            this.num=num;
-            this.note=note;
-            this.pressedNote=pressedNote;
+        public NoteInfo(Long num, NotesEnum note, NotesEnum pressedNote) {
+            this.num = num;
+            this.note = note;
+            this.pressedNote = pressedNote;
         }
     }
 
@@ -55,7 +65,7 @@ public class RandomNotesTaskActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
                 taskId = (int) id;
-                Log.i(getClass().getName(), "pos " + pos + " id " +id);
+                Log.i(getClass().getName(), "pos " + pos + " id " + id);
             }
 
             @Override
@@ -100,9 +110,14 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     public void onStartClick(View view) {
         Button button = (Button) findViewById(R.id.buttonStart);
         if (isStarted) {
-            stop.set(true);
             isStarted = false;
             button.setText(R.string.start);
+            if (noteEmitterDisposable != null && !noteEmitterDisposable.isDisposed()) {
+                noteEmitterDisposable.dispose();
+            }
+            if (keyboardDisposable != null && !keyboardDisposable.isDisposed()) {
+                keyboardDisposable.dispose();
+            }
             if (statisticsStorage != null) {
                 startResultActivity();
             }
@@ -116,53 +131,65 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         for (String note : taskText.split(" ")) {
             melody.add(NotesEnum.valueOf(note));
         }
-        int freq = getNumberFromSpinner((Spinner) findViewById(R.id.spinnerFreq));
-        int notesInSequence = getNumberFromSpinner((Spinner) findViewById(R.id.spinnerTaskType));
+        final int freq = getNumberFromSpinner((Spinner) findViewById(R.id.spinnerFreq));
+        final int notesInSequence = getNumberFromSpinner((Spinner) findViewById(R.id.spinnerTaskType));
         statisticsStorage = new StatisticsStorage();
 
-        stop = new AtomicBoolean(false);
+        final int longitude = (int) Math.round(60000.0 / freq);
+        Observable<Long> timer = Observable.interval(longitude, TimeUnit.MILLISECONDS);
+        keyboardBehaviorSubject = PublishSubject.create();
+        final RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(melody);
 
         if (notesInSequence == 1) {
-            midiSupport.newNotesPlayingObservable(melody, freq, 0, stop)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DefaultObserver<NoteInfo>() {
-                        @Override
-                        public void onNext(NoteInfo note) {
-                            PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
-                            pianoKeyboard.setCurrentNoteInfo(note);
-                            statisticsStorage.putNoteInfo(note);
-                        }
+            noteEmitterDisposable = timer.subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long num) throws Exception {
+                    NoteInfo noteInfo = new NoteInfo(num, randomNoteGenerator.nextNote(), null);
+                    PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
+                    pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                    midiSupport.playNote(noteInfo.note.getPitch(), longitude);
+                    statisticsStorage.submitAnswer(noteInfo);
+                }
+            });
 
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
+            keyboardDisposable = keyboardBehaviorSubject.subscribe(new Consumer<NoteInfo>() {
+                @Override
+                public void accept(NoteInfo noteInfo) throws Exception {
+                    statisticsStorage.submitAnswer(noteInfo);
+                }
+            });
         } else {
-            final ArrayList<NoteInfo> notes = new ArrayList<>();
-            midiSupport.newNotesPlayingObservable(melody, freq, notesInSequence, stop)
+            noteNumber.set(0);
+            Observable<NoteInfo[]> observable = Observable.create(new ObservableOnSubscribe<NoteInfo[]>() {
+                @Override
+                public void subscribe(ObservableEmitter<NoteInfo[]> e) throws Exception {
+                    while(isStarted) {
+                        NoteInfo[] notes = new NoteInfo[notesInSequence];
+                        for (int i = 0; i < notesInSequence; i++) {
+                            notes[i] = new NoteInfo(noteNumber.getAndIncrement(), randomNoteGenerator.nextNote(), null);
+                            midiSupport.playNote(notes[i].note.getPitch(), longitude);
+                        }
+                        e.onNext(notes);
+                    }
+                }
+            });
+            noteEmitterDisposable = observable
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DefaultObserver<NoteInfo>() {
+                    .flatMap(new Function<NoteInfo[], Observable<NoteInfo>>() {
                         @Override
-                        public void onNext(NoteInfo note) {
-                            notes.add(note);
+                        public Observable<NoteInfo> apply(NoteInfo[] noteInfos) throws Exception {
+                            return Observable.fromArray(noteInfos);
                         }
-
+                    })
+                    .subscribe(new Consumer<NoteInfo>() {
                         @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            
+                        public void accept(final NoteInfo noteInfo) throws Exception {
+                            PianoKeyboard pianoKeyboard = (PianoKeyboard) findViewById(R.id.piano_keyboard);
+                            pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                            NoteInfo pressed = keyboardBehaviorSubject
+                                    .timeout(longitude, TimeUnit.MILLISECONDS, Observable.just(noteInfo))
+                                    .blockingFirst();
+                            statisticsStorage.submitAnswer(pressed);
                         }
                     });
         }
@@ -177,13 +204,13 @@ public class RandomNotesTaskActivity extends AppCompatActivity
         HashMap<NotesEnum, StatisticsStorage.Result> resultHashMap = statisticsStorage.calcFinalResult();
         for (NotesEnum key : resultHashMap.keySet()) {
             StatisticsStorage.Result res = resultHashMap.get(key);
-            float sum = (res.correct + res.wrong + res.missed)/100f;
+            float sum = (res.correct + res.wrong + res.missed) / 100f;
             Locale current = getCurrentLocale();
-            resultTable.add(new String[] {
+            resultTable.add(new String[]{
                     key.name(),
-                    String.format(current, "%d/%.1f%%", res.correct, res.correct/sum),
-                    String.format(current, "%d/%.1f%%", res.wrong, res.wrong/sum),
-                    String.format(current, "%d/%.1f%%", res.missed, res.missed/sum)});
+                    String.format(current, "%d/%.1f%%", res.correct, res.correct / sum),
+                    String.format(current, "%d/%.1f%%", res.wrong, res.wrong / sum),
+                    String.format(current, "%d/%.1f%%", res.missed, res.missed / sum)});
         }
         String[][] arr = new String[resultTable.size()][];
         arr = resultTable.toArray(arr);
@@ -204,16 +231,14 @@ public class RandomNotesTaskActivity extends AppCompatActivity
     }
 
     @Override
-    public void onNotePressed(NotesEnum pressedNote) {
-        Log.i(getClass().getName(), "Pressed" + pressedNote.name());
-        TextView textViewResult = (TextView) findViewById(R.id.textViewResult);
-        textViewResult.setText("onNotePressed note " + pressedNote.name());
+    public void onNotePressed(NoteInfo noteInfo) {
+        keyboardBehaviorSubject.onNext(noteInfo);
         TextView textView = (TextView) findViewById(R.id.answerResult);
         textView.setText(getNoteCount());
     }
 
     private String getNoteCount() {
-        return  "Overall " + statisticsStorage.getOverallCount() +
+        return "Overall " + statisticsStorage.getOverallCount() +
                 " Correct " + statisticsStorage.getCorrectCount() +
                 " Wrong " + statisticsStorage.getWrongCount() +
                 " Missed " + statisticsStorage.getMissedCount();

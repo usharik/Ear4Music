@@ -1,10 +1,10 @@
 package com.example.macbook.ear4music.listner;
 
-import com.example.macbook.ear4music.NotesEnum;
+import com.example.macbook.ear4music.RandomNotesTaskActivity;
 
 /**
  * Created by macbook on 04.07.17.
  */
 public interface PianoKeyboardListener {
-    void onNotePressed(NotesEnum pressedNote);
+    void onNotePressed(RandomNotesTaskActivity.NoteInfo pressedNote);
 }

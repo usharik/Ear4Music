@@ -1,7 +1,5 @@
 package com.example.macbook.ear4music;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +33,7 @@ public class StatisticsStorage implements Serializable {
         int missed = 0;
     }
 
-    private ConcurrentHashMap<Integer, Answer> answers;
+    private ConcurrentHashMap<Long, Answer> answers;
     private ArrayList<RandomNotesTaskActivity.NoteInfo> noteInfos;
     private int correctCount;
     private int wrongCount;
@@ -46,17 +44,17 @@ public class StatisticsStorage implements Serializable {
         noteInfos = new ArrayList<>();
     }
 
-    public void putNoteInfo(RandomNotesTaskActivity.NoteInfo noteInfo) {
-        noteInfos.add(noteInfo);
-    }
-
     public void calculate() {
         for (RandomNotesTaskActivity.NoteInfo noteInfo : noteInfos) {
             submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote);
         }
     }
 
-    public void submitAnswer(int noteNumber, NotesEnum actualNote, NotesEnum answeredNote) {
+    public void submitAnswer(RandomNotesTaskActivity.NoteInfo noteInfo) {
+        submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote);
+    }
+
+    public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote) {
         if (!answers.containsKey(noteNumber) && actualNote != null) {
             Answer answer = new Answer(actualNote, answeredNote);
             answers.put(noteNumber, answer);
@@ -74,7 +72,7 @@ public class StatisticsStorage implements Serializable {
 
     public HashMap<NotesEnum, Result> calcFinalResult() {
         HashMap<NotesEnum, Result> result = new HashMap<>();
-        for (int key : answers.keySet()) {
+        for (long key : answers.keySet()) {
             Answer answer = answers.get(key);
             Result res = result.get(answer.actualNote);
             if (res == null) {

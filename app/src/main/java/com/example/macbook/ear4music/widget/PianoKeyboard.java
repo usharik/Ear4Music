@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.macbook.ear4music.NotesEnum;
@@ -79,6 +80,7 @@ public class PianoKeyboard extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Log.d("DRAW", "default");
         int i=0;
         List<NotesEnum> whiteNotes = NotesEnum.getWhite();
         for (Rect r : this.whiteKeys) {
@@ -104,10 +106,10 @@ public class PianoKeyboard extends View {
         if (!r.equals(pressedNoteRect)) {
             return defaultColor;
         }
-        if (currentNoteInfo == null) {
+        if (this.currentNoteInfo == null) {
             return Color.GRAY;
         }
-        return currentNoteInfo.note == pressedNote ? Color.GREEN : Color.RED;
+        return this.currentNoteInfo.note == pressedNote ? Color.GREEN : Color.RED;
     }
 
 //    @Override
@@ -156,6 +158,9 @@ public class PianoKeyboard extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (currentNoteInfo == null) {
+                    return true;
+                }
                 int x=(int) event.getX();
                 int y=(int) event.getY();
                 pressedNote = null;
@@ -168,12 +173,15 @@ public class PianoKeyboard extends View {
                             currentNoteInfo.pressedNote=note;
                         }
                         pressedNoteRect = rect;
-                        pianoKeyboardListener.onNotePressed(pressedNote);
+                        currentNoteInfo.pressedNote=pressedNote;
                         break;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                if (currentNoteInfo != null) {
+                    pianoKeyboardListener.onNotePressed(currentNoteInfo);
+                }
                 pressedNote = null;
                 pressedNoteRect = null;
                 break;
@@ -183,7 +191,7 @@ public class PianoKeyboard extends View {
     }
 
     public void setCurrentNoteInfo(RandomNotesTaskActivity.NoteInfo currentNoteInfo) {
-        this.currentNoteInfo = currentNoteInfo;
+        this.currentNoteInfo=currentNoteInfo;
     }
 
     public void setPianoKeyboardListener(PianoKeyboardListener pianoKeyboardListener) {

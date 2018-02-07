@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.content.Intent" />
+        <variable name="viewModel" type="com.example.macbook.ear4music.TaskListRowViewModel" />
+    </data>
+
+    <com.example.macbook.ear4music.widget.ProgressRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/list_item_rect"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/row_margin"
+        android:paddingBottom="@dimen/row_padding_vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/row_padding_vertical"
+        app:percentValue="@{viewModel.donePercent}">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="@{@stringArray/task_name[viewModel.nameId]}"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/setOfNotesId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"/>
+
+        <TextView
+            android:id="@+id/notesPerMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text=""/>
+
+    </com.example.macbook.ear4music.widget.ProgressRelativeLayout>
+</layout>

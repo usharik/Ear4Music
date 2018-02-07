@@ -2,28 +2,34 @@
     <string name="app_name">Ear4Music</string>
     <string name="title_activity_task_select">TaskSelectActivity</string>
     <string-array name="task_list">
-        <item>C E G C2</item>
-        <item>C E G B C2</item>
-        <item>C E F G B C2</item>
-        <item>C E F G A B C2</item>
+        <item>C   E   G     C2</item>
+        <item>C   E   G   B C2</item>
+        <item>C   E F G   B C2</item>
+        <item>C   E F G A B C2</item>
         <item>C D E F G A B C2</item>
+        <item>B</item>
+        <item>F</item>
+        <item>A</item>
+        <item>D</item>
     </string-array>
-    <string-array name="longitude_list">
-        <item>20</item>
-        <item>40</item>
-        <item>50</item>
-        <item>60</item>
-        <item>70</item>
-        <item>80</item>
-        <item>90</item>
-        <item>100</item>
-        <item>120</item>
+    <string-array name="task_name">
+        <item>Learn notes C E G C2</item>
+        <item>Learn note B</item>
+        <item>Learn note F</item>
+        <item>Learn note A</item>
+        <item>Learn note D</item>
     </string-array>
-    <string-array name="task_type_list">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+    <string-array name="task_instruction">
+        <item>Listen to the intonations of notes C, E, G, C2 and learn the certain keys on piano keyboard. Temp %d.</item>
+        <item>Listen to the intonation of note B and learn the certain key on piano keyboard. Temp %d.</item>
+        <item>Listen to the intonation of note F and learn the certain key on piano keyboard. Temp %d.</item>
+        <item>Listen to the intonation of note A and learn the certain key on piano keyboard. Temp %d.</item>
+        <item>Listen to the intonation of note D and learn the certain key on piano keyboard. Temp %d.</item>
+        <item>Listen to the intonation and press the correct key. Temp %d.</item>
+        <item>Listen to the notes and press the correct key. Temp %d.</item>
+        <item>Listen to the two note series and press them in pause after. Temp %d.</item>
+        <item>Listen to the three note series and press them in pause after. Temp %d.</item>
+        <item>Listen to the four note series and press them in pause after. Temp %d.</item>
     </string-array>
     <string-array name="result_table_columns">
         <item>Note</item>
@@ -31,11 +37,28 @@
         <item>Wrong</item>
         <item>Missed</item>
     </string-array>
-    <string name="notes">Notes</string>
+    <string name="setOfNotesId">Notes</string>
     <string name="notes_per_minute">Notes per minute</string>
     <string name="show_note_names">Show note names</string>
     <string name="task_type">Notes in sequence</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
-    <string name="notes_in_random_order">Notes in random order</string>
+    <string name="select_notes">Select notes to learn</string>
+    <string name="select_sub_task">Select task</string>
+    <string name="title_activity_sub_task_select">SubTaskSelect</string>
+    <string name="notes_with_intonations">Notes with intonations</string>
+    <string name="just_notes">Just notes</string>
+    <string name="series_of_notes">Series of %d notes</string>
+    <string name="task_accomplished_with_time">Task accomplished by %d%%. Average answer time %d ms.</string>
+    <string name="task_accomplished">Task accomplished by %d%%.</string>
+    <string name="next_task">Next task</string>
+    <string name="repeat">Repeat</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="progress">Overall %d Correct %d, Wrong %d Missed %d</string>
+    <string name="favourite">Add to favourites</string>
+    <string name="temp">Temp</string>
+    <string name="all_tasks">All tasks</string>
+    <string name="favourite_tasks">Favourite tasks</string>
 </resources>

@@ -1,16 +1,18 @@
 package com.example.macbook.ear4music.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.example.macbook.ear4music.NoteInfo;
 import com.example.macbook.ear4music.NotesEnum;
-import com.example.macbook.ear4music.RandomNotesTaskActivity;
+import com.example.macbook.ear4music.R;
 import com.example.macbook.ear4music.listner.PianoKeyboardListener;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class PianoKeyboard extends View {
     private List<Rect> blackKeys;
     private HashMap<NotesEnum, Rect> notes2rect;
     private NotesEnum pressedNote;
-    private RandomNotesTaskActivity.NoteInfo currentNoteInfo;
+    private NoteInfo currentNoteInfo;
     private Rect pressedNoteRect;
     private PianoKeyboardListener pianoKeyboardListener;
     private int noteNameWidth;
@@ -41,7 +43,11 @@ public class PianoKeyboard extends View {
         notes2rect = new LinkedHashMap<>();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        showNoteNames = true;
+
+        TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.PianoKeyboard, 0, 0);
+        showNoteNames = arr.getBoolean(R.styleable.PianoKeyboard_showNoteNames, true);
+        arr.recycle();
+
     }
 
     @Override
@@ -49,16 +55,22 @@ public class PianoKeyboard extends View {
         int width = w-1;
         int height = h-1;
         int whiteKeySize = width/8;
+        int restSpace = width - whiteKeySize*8;
         whiteKeys.clear();
         for(int i=0; i<8; i++) {
             Rect rect = new Rect(i * whiteKeySize, 0, (i + 1) * whiteKeySize, height);
             whiteKeys.add(rect);
         }
+        whiteKeys.get(7).right += restSpace;
 
         int blackKeySize = whiteKeySize/2;
         for (int blackNum : new int[] {0, 1, 3, 4, 5, 7}) {
             Rect key = whiteKeys.get(blackNum);
-            blackKeys.add(new Rect(key.right - blackKeySize/2, 0, key.right + blackKeySize/2, height/2));
+            blackKeys.add(new Rect(
+                    key.right - blackKeySize/2,
+                    0,
+                    key.right + (blackNum != 7 ? blackKeySize/2 : 0),
+                    height/2));
         }
 
         int i=0;
@@ -80,11 +92,11 @@ public class PianoKeyboard extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d("DRAW", "default");
         int i=0;
         List<NotesEnum> whiteNotes = NotesEnum.getWhite();
         for (Rect r : this.whiteKeys) {
-            paint.setColor(getKeyColor(r, Color.WHITE));
+            NotesEnum note = whiteNotes.get(i++);
+            paint.setColor(getKeyColor(r, note, Color.WHITE));
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(r, paint);
             paint.setColor(Color.BLACK);
@@ -92,24 +104,27 @@ public class PianoKeyboard extends View {
             canvas.drawRect(r, paint);
             textPaint.setColor(Color.BLACK);
             if (showNoteNames) {
-                canvas.drawText(whiteNotes.get(i++).name(), r.centerX() - noteNameWidth / 2, r.centerY() * 5.0f / 3.0f, textPaint);
+                canvas.drawText(note.name(), r.centerX() - noteNameWidth / 2, r.centerY() * 5.0f / 3.0f, textPaint);
             }
         }
         for (Rect r : blackKeys) {
-            paint.setColor(getKeyColor(r, Color.BLACK));
+            paint.setColor(getKeyColor(r, null, Color.BLACK));
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(r, paint);
         }
     }
 
-    private int getKeyColor(Rect r, int defaultColor) {
+    private int getKeyColor(Rect r, NotesEnum note, int defaultColor) {
+        if (currentNoteInfo != null && note != null && currentNoteInfo.isHighlighted && currentNoteInfo.note == note) {
+            return Color.GREEN;
+        }
         if (!r.equals(pressedNoteRect)) {
             return defaultColor;
         }
-        if (this.currentNoteInfo == null) {
+        if (currentNoteInfo == null) {
             return Color.GRAY;
         }
-        return this.currentNoteInfo.note == pressedNote ? Color.GREEN : Color.RED;
+        return currentNoteInfo.note == pressedNote ? Color.GREEN : Color.RED;
     }
 
 //    @Override
@@ -190,7 +205,7 @@ public class PianoKeyboard extends View {
         return true;
     }
 
-    public void setCurrentNoteInfo(RandomNotesTaskActivity.NoteInfo currentNoteInfo) {
+    public void setCurrentNoteInfo(NoteInfo currentNoteInfo) {
         this.currentNoteInfo=currentNoteInfo;
     }
 
@@ -198,8 +213,12 @@ public class PianoKeyboard extends View {
         this.pianoKeyboardListener = pianoKeyboardListener;
     }
 
+    public boolean isShowNoteNames() {
+        return showNoteNames;
+    }
+
     public void setShowNoteNames(boolean showNoteNames) {
         this.showNoteNames = showNoteNames;
-        this.invalidate();
+        invalidate();
     }
 }

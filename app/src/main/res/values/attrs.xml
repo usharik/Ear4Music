@@ -3,8 +3,15 @@
     <declare-styleable name="PianoKeyboard">
         <attr name="octaveCount" format="integer" />
         <attr name="orientation" format="enum">
-            <enum name="horizontal" value="0"/>
-            <enum name="vertical" value="1"/>
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
         </attr>
+        <attr name="showNoteNames" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="ProgressRelativeLayout">
+        <attr name="percentValue" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="ToggleImageButton">
+        <attr name="checked" />
     </declare-styleable>
 </resources>

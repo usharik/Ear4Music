@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.example.macbook.ear4music"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,6 +21,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -35,7 +39,7 @@ configurations {
     unitTestRuntime.extendsFrom unitTestCompile
 }
 
-task unitTest(type:Test, dependsOn: assemble) {
+task unitTest(type: Test, dependsOn: assemble) {
     description = "run unit tests"
     testClassesDir = project.sourceSets.unitTest.output.classesDir
     classpath = project.sourceSets.unitTest.runtimeClasspath
@@ -43,16 +47,28 @@ task unitTest(type:Test, dependsOn: assemble) {
 
 build.dependsOn unitTest
 
+greendao {
+    schemaVersion 1000
+}
+
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile "android.arch.lifecycle:runtime:1.1.0"
+    compile "android.arch.lifecycle:extensions:1.1.0"
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile 'com.github.billthefarmer:mididriver:v1.14'
-    compile 'de.codecrafters.tableview:tableview:2.6.0'
-    compile 'com.android.support:design:25.4.0'
     compile 'io.reactivex.rxjava2:rxjava:2.1.6'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'org.greenrobot:greendao:3.2.2'
+    compile 'com.google.dagger:dagger-android:2.12'
+    compile 'com.google.dagger:dagger-android-support:2.12'
     testCompile 'junit:junit:4.12'
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.12'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.12'
 }

@@ -7,23 +7,29 @@
         <item>C   E F G   B C2</item>
         <item>C   E F G A B C2</item>
         <item>C D E F G A B C2</item>
+        <item>B</item>
+        <item>F</item>
+        <item>A</item>
+        <item>D</item>
     </string-array>
-    <string-array name="longitude_list">
-        <item>20</item>
-        <item>40</item>
-        <item>50</item>
-        <item>60</item>
-        <item>70</item>
-        <item>80</item>
-        <item>90</item>
-        <item>100</item>
-        <item>120</item>
+    <string-array name="task_name">
+        <item>Разучиваем ноты C E G C2</item>
+        <item>Добавляем ноту B</item>
+        <item>Добавляем ноту F</item>
+        <item>Добавляем ноту A</item>
+        <item>Добавляем ноту D</item>
     </string-array>
-    <string-array name="task_type_list">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+    <string-array name="task_instruction">
+        <item>Прослушайте интонации ладового тяготения для нот До, Ми, Соль, До (2 октавы) и запомните соответствующие им клавиши фортепиано. Темп %d.</item>
+        <item>Прослушайте интонации ладового тяготения для ноты Си и запомните соответствующую клавишу. Темп %d.</item>
+        <item>Прослушайте интонации ладового тяготения для ноты Фа и запомните соответствующую клавишу. Темп %d.</item>
+        <item>Прослушайте интонации ладового тяготения для ноты Ля и запомните соответствующую клавишу. Темп %d.</item>
+        <item>Прослушайте интонации ладового тяготения для ноты Ре и запомните соответствующую клавишу. Темп %d.</item>
+        <item>Прослушайте интонации нот и в паузе нажимайте клавишу, соответствующую ноте. Темп %d.</item>
+        <item>Прослушайте ноты и нажимайте соответствующие им клавиши. Темп %d.</item>
+        <item>Прослушайте серии из двух нот и отгадывайте их нажимая клавиши в паузе между сериями. Темп %d.</item>
+        <item>Прослушайте серии из трех нот и отгадывайте их нажимая клавиши в паузе между сериями. Темп %d.</item>
+        <item>Прослушайте серии из четырех нот и отгадывайте их нажимая клавиши в паузе между сериями. Темп %d.</item>
     </string-array>
     <string-array name="result_table_columns">
         <item>Нота</item>
@@ -31,11 +37,27 @@
         <item>Ошибка</item>
         <item>Пропущено</item>
     </string-array>
-    <string name="notes">Ноты</string>
+    <string name="setOfNotesId">Ноты</string>
     <string name="notes_per_minute">Нот в минуту</string>
     <string name="show_note_names">Показывать названия нот</string>
     <string name="task_type">Нот в последовательности</string>
     <string name="start">Старт</string>
     <string name="stop">Стоп</string>
-    <string name="notes_in_random_order">Ноты в случайном порядке</string>
+    <string name="select_notes">Выберите ноты для изучения</string>
+    <string name="select_sub_task">Выберите задание</string>
+    <string name="notes_with_intonations">Ноты с интонациями</string>
+    <string name="just_notes">Просто ноты</string>
+    <string name="series_of_notes">Последовательности из %d нот</string>
+    <string name="task_accomplished_with_time">Задание выполнено на %d%%. Среднее время ответа %d мс.</string>
+    <string name="task_accomplished">Task accomplished by %d%%.</string>
+    <string name="next_task">Следующее задание</string>
+    <string name="repeat">Повторить</string>
+    <string name="ok">OK</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="progress">Всего %d Правильно %d, Ошибок %d Пропущено %d</string>
+    <string name="favourite">Добавить в избранное</string>
+    <string name="temp">Темп</string>
+    <string name="all_tasks">Все задания</string>
+    <string name="favourite_tasks">Избранные задания</string>
 </resources>

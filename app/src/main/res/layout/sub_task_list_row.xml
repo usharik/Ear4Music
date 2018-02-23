@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.content.Intent" />
+        <variable name="viewModel" type="com.example.macbook.ear4music.SubTaskListRowViewModel" />
+    </data>
+
+    <com.example.macbook.ear4music.widget.ProgressRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/list_item_rect"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/row_margin"
+        android:paddingBottom="@dimen/row_padding_vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/row_padding_vertical"
+        app:percentValue="@{viewModel.correctAnswerPercent}">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="@{viewModel.subTaskDescription}"
+            tools:text="Just notes"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingEnd="10dp" />
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/name"
+            android:layout_alignParentTop="true"
+            android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"
+            tools:text="C E G C2"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_alignParentStart="true"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="@string/temp"
+            tools:text="Temp" />
+
+        <TextView
+            android:id="@+id/setOfNotesId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_toEndOf="@id/temp"
+            android:textSize="16sp"
+            android:text="@{viewModel.notesPerMinute}"
+            tools:text="35" />
+
+        <com.example.macbook.ear4music.widget.ToggleImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_alignParentEnd="true"
+            android:background="#00ffffff"
+            app:checked="@={viewModel.favourite}"
+            app:srcCompat="@drawable/star" />
+
+    </com.example.macbook.ear4music.widget.ProgressRelativeLayout>
+</layout>

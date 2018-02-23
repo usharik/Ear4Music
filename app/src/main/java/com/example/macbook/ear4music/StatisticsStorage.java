@@ -2,6 +2,8 @@ package com.example.macbook.ear4music;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,10 +14,12 @@ public class StatisticsStorage implements Serializable {
     private static class Answer implements Serializable {
         NotesEnum actualNote;
         NotesEnum answeredNote;
+        long delay;
 
-        Answer(NotesEnum actualNote, NotesEnum answeredNote) {
+        Answer(NotesEnum actualNote, NotesEnum answeredNote, long delay) {
             this.actualNote = actualNote;
             this.answeredNote = answeredNote;
+            this.delay = delay;
         }
 
         boolean isCorrect() {
@@ -34,7 +38,7 @@ public class StatisticsStorage implements Serializable {
     }
 
     private ConcurrentHashMap<Long, Answer> answers;
-    private ArrayList<RandomNotesTaskActivity.NoteInfo> noteInfos;
+    private ArrayList<NoteInfo> noteInfos;
     private int correctCount;
     private int wrongCount;
     private int missedCount;
@@ -45,18 +49,19 @@ public class StatisticsStorage implements Serializable {
     }
 
     public void calculate() {
-        for (RandomNotesTaskActivity.NoteInfo noteInfo : noteInfos) {
-            submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote);
+        for (NoteInfo noteInfo : noteInfos) {
+            submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote, noteInfo.time);
         }
     }
 
-    public void submitAnswer(RandomNotesTaskActivity.NoteInfo noteInfo) {
-        submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote);
+    public void submitAnswer(NoteInfo noteInfo) {
+        submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote, noteInfo.time);
     }
 
-    public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote) {
+    public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote, Date noteTime) {
         if (!answers.containsKey(noteNumber) && actualNote != null) {
-            Answer answer = new Answer(actualNote, answeredNote);
+            Date answerTime = Calendar.getInstance().getTime();
+            Answer answer = new Answer(actualNote, answeredNote, answerTime.getTime() - noteTime.getTime());
             answers.put(noteNumber, answer);
             if (answer.isCorrect()) {
                 correctCount++;
@@ -68,6 +73,21 @@ public class StatisticsStorage implements Serializable {
                 }
             }
         }
+    }
+
+    public long getAvgAnswerTime() {
+        long cnt=0;
+        long sum=0;
+        for (Answer answer : answers.values()) {
+            if (!answer.isMissed()) {
+                sum+=answer.delay;
+                cnt++;
+            }
+        }
+        if (cnt == 0) {
+            return 0;
+        }
+        return sum/cnt;
     }
 
     public HashMap<NotesEnum, Result> calcFinalResult() {
@@ -100,5 +120,9 @@ public class StatisticsStorage implements Serializable {
 
     public int getOverallCount() {
         return correctCount + wrongCount + missedCount;
+    }
+
+    public int getCorrectPercent() {
+        return (int) (correctCount / (double) getOverallCount() * 100.0);
     }
 }

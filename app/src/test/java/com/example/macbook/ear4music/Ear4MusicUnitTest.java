@@ -1,40 +1,38 @@
 package com.example.macbook.ear4music;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DefaultObserver;
-import io.reactivex.schedulers.Schedulers;
+import com.example.macbook.ear4music.service.RandomNoteGenerator;
+
 import org.junit.Test;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
 public class Ear4MusicUnitTest {
 
+    private static final Date time = Calendar.getInstance().getTime();
+
     @Test
     public void statisticsStorage_TestCorrectAnswerSubmission() {
         StatisticsStorage statisticsStorage = new StatisticsStorage();
-        statisticsStorage.submitAnswer(1, NotesEnum.C, NotesEnum.C);
-        statisticsStorage.submitAnswer(2, NotesEnum.D, NotesEnum.D);
-        statisticsStorage.submitAnswer(2, NotesEnum.D, NotesEnum.E);
+        statisticsStorage.submitAnswer(1, NotesEnum.C, NotesEnum.C, time);
+        statisticsStorage.submitAnswer(2, NotesEnum.D, NotesEnum.D, time);
+        statisticsStorage.submitAnswer(2, NotesEnum.D, NotesEnum.E, time);
 
-        statisticsStorage.submitAnswer(3, NotesEnum.C, NotesEnum.E);
-        statisticsStorage.submitAnswer(4, NotesEnum.D, NotesEnum.F);
-        statisticsStorage.submitAnswer(5, NotesEnum.C, NotesEnum.G);
-        statisticsStorage.submitAnswer(5, NotesEnum.C, NotesEnum.C);
+        statisticsStorage.submitAnswer(3, NotesEnum.C, NotesEnum.E, time);
+        statisticsStorage.submitAnswer(4, NotesEnum.D, NotesEnum.F, time);
+        statisticsStorage.submitAnswer(5, NotesEnum.C, NotesEnum.G, time);
+        statisticsStorage.submitAnswer(5, NotesEnum.C, NotesEnum.C, time);
 
-        statisticsStorage.submitAnswer(6, NotesEnum.C, null);
-        statisticsStorage.submitAnswer(7, NotesEnum.D, null);
-        statisticsStorage.submitAnswer(8, NotesEnum.C, null);
-        statisticsStorage.submitAnswer(9, NotesEnum.D, null);
-        statisticsStorage.submitAnswer(9, NotesEnum.D, NotesEnum.D);
+        statisticsStorage.submitAnswer(6, NotesEnum.C, null, time);
+        statisticsStorage.submitAnswer(7, NotesEnum.D, null, time);
+        statisticsStorage.submitAnswer(8, NotesEnum.C, null, time);
+        statisticsStorage.submitAnswer(9, NotesEnum.D, null, time);
+        statisticsStorage.submitAnswer(9, NotesEnum.D, NotesEnum.D, time);
 
         assertEquals(2, statisticsStorage.getCorrectCount());
         assertEquals(3, statisticsStorage.getWrongCount());
@@ -77,14 +75,14 @@ public class Ear4MusicUnitTest {
 
     private int submitAnswers(StatisticsStorage statisticsStorage, int num, NotesEnum current, NotesEnum pressed, int count) {
         for (int i = num; i < num + count; i++) {
-            statisticsStorage.submitAnswer(i, current, pressed);
+            statisticsStorage.submitAnswer(i, current, pressed, time);
         }
         return num + count;
     }
 
     @Test
     public void randomNoteGenerator_TestNoteMoreTwoNotesRunning() {
-        RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(NotesEnum.getWhite());
+        RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(NotesEnum.getWhite(), 20000);
         NotesEnum curr = null;
         NotesEnum next = null;
         for (int i = 0; i < 10000; i++) {
@@ -103,75 +101,13 @@ public class Ear4MusicUnitTest {
 
     @Test
     public void randomNoteGenerator_TestAllNoteExistsInGeneratedSequence() {
-        RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(NotesEnum.getWhite());
+        RandomNoteGenerator randomNoteGenerator = new RandomNoteGenerator(NotesEnum.getWhite(), 20000);
         HashSet<NotesEnum> sequence = new HashSet<>();
         for (int i = 0; i < 10000; i++) {
             sequence.add(randomNoteGenerator.nextNote());
         }
         for (NotesEnum note : NotesEnum.getWhite()) {
             assertTrue(sequence.contains(note));
-        }
-    }
-
-    @Test
-    public void testRxJava() {
-        final Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
-
-            @Override
-            public void subscribe(ObservableEmitter<String> e) throws Exception {
-                int cnt = 0;
-                for (;;) {
-                    e.onNext(String.valueOf(cnt));
-                    Thread.sleep(1000);
-                    System.out.println("Generator thread " + Thread.currentThread().getId());
-                    cnt++;
-                }
-            }
-        });
-
-        observable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread())
-                .subscribe(new DefaultObserver<String>() {
-                    @Override
-                    public void onNext(String s) {
-                        System.out.println(s);
-                        System.out.println("Subscriber thread " + Thread.currentThread().getId());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testRxJavaInterval() {
-        Observable<Long> interval = Observable.interval(1, TimeUnit.SECONDS);
-
-        interval.subscribe(new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) throws Exception {
-                System.out.println(aLong);
-            }
-        });
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }

@@ -10,6 +10,7 @@ import com.example.macbook.ear4music.service.DbService;
 import com.example.macbook.ear4music.service.MelodyNoteGenerator;
 import com.example.macbook.ear4music.service.NoteGenerator;
 import com.example.macbook.ear4music.service.RandomNoteGenerator;
+import com.example.macbook.ear4music.service.StatisticsStorage;
 
 import java.util.List;
 

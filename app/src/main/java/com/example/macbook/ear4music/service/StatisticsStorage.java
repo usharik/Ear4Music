@@ -1,4 +1,7 @@
-package com.example.macbook.ear4music;
+package com.example.macbook.ear4music.service;
+
+import com.example.macbook.ear4music.NoteInfo;
+import com.example.macbook.ear4music.NotesEnum;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,9 +35,9 @@ public class StatisticsStorage implements Serializable {
     }
 
     public static class Result {
-        int correct = 0;
-        int wrong = 0;
-        int missed = 0;
+        public int correct = 0;
+        public int wrong = 0;
+        public int missed = 0;
     }
 
     private ConcurrentHashMap<Long, Answer> answers;

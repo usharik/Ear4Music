@@ -45,12 +45,13 @@
     <string name="stop">Stop</string>
     <string name="select_notes">Select notes to learn</string>
     <string name="select_sub_task">Select task</string>
-    <string name="title_activity_sub_task_select">SubTaskSelect</string>
     <string name="notes_with_intonations">Notes with intonations</string>
     <string name="just_notes">Just notes</string>
     <string name="series_of_notes">Series of %d notes</string>
-    <string name="task_accomplished_with_time">Task accomplished by %d%%. Average answer time %d ms.</string>
-    <string name="task_accomplished">Task accomplished by %d%%.</string>
+    <string name="task_completed_header">Task completed</string>
+    <string name="task_instruction_header">Task instruction</string>
+    <string name="task_accomplished_with_time">Correct answers %d%%.%nAverage answer time %d ms.</string>
+    <string name="task_accomplished">Correct answers %d%%.</string>
     <string name="next_task">Next task</string>
     <string name="repeat">Repeat</string>
     <string name="ok">OK</string>

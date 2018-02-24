@@ -1,6 +1,7 @@
 package com.example.macbook.ear4music;
 
 import com.example.macbook.ear4music.service.RandomNoteGenerator;
+import com.example.macbook.ear4music.service.StatisticsStorage;
 
 import org.junit.Test;
 

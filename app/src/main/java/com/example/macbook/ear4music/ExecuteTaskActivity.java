@@ -12,6 +12,7 @@ import android.view.View;
 import com.example.macbook.ear4music.databinding.ExecuteTaskActivityBinding;
 import com.example.macbook.ear4music.framework.ViewActivity;
 import com.example.macbook.ear4music.service.MidiSupport;
+import com.example.macbook.ear4music.service.StatisticsStorage;
 import com.example.macbook.ear4music.service.Utils;
 
 import io.reactivex.Observable;
@@ -75,12 +76,6 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(getClass().getName(), "Start");
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
 
@@ -93,12 +88,6 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         binding.pianoKeyboard.setCurrentNoteInfo(null);
         midiSupport.stop();
         Log.i(getClass().getName(), "Pause");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(getClass().getName(), "Stop");
     }
 
     private List<NotesEnum> getMelodyFromString(String str) {
@@ -161,7 +150,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     .subscribeOn(Schedulers.io())
                     .doOnNext((notes) -> {
                         binding.pianoKeyboard.setCurrentNoteInfo(notes[0]);
-                        runOnUiThread(this::invalidateUi);
+                        runOnUiThread(this::invalidatePianoKeyboard);
                         if (notes[0].isPlayWithScale) {
                             midiSupport.playNoteWithScale(notes[0].note, notes[0].longitude);
                         } else {
@@ -180,6 +169,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             Disposable noteEmitterDisposable = notesEmitterObservable
                     .subscribeOn(Schedulers.io())
                     .flatMap((notes) -> {
+                        binding.pianoKeyboard.setCurrentNoteInfo(null);
                         for (NoteInfo nt : notes) {
                             midiSupport.playNote(nt.note, nt.longitude);
                         }
@@ -209,7 +199,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                 .show(ft, "dialog");
     }
 
-    private void invalidateUi() {
+    private void invalidatePianoKeyboard() {
         binding.pianoKeyboard.invalidate();
         binding.answerResult.setText(getNoteCount());
     }
@@ -223,10 +213,11 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             message = getResources().getString(R.string.task_accomplished, getCorrectAnswerPercent());
         }
         new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.task_completed_header))
                 .setMessage(message)
                 .setPositiveButton(R.string.next_task, this::onNextTask)
-                .setNegativeButton(R.string.repeat, this::onRepeatTask)
-                .setNeutralButton(R.string.stop, (v1, v2) -> getViewModel().setStarted(false))
+                .setNegativeButton(R.string.repeat, (v1, v2) -> runTask())
+                .setNeutralButton(R.string.stop, (v1, v2) -> onTaskStop())
                 .setCancelable(false)
                 .show();
     }
@@ -240,14 +231,10 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         showInstructionAndRunTask();
     }
 
-    private void onRepeatTask(DialogInterface var1, int var2) {
-        runTask();
-    }
-
     private void onTaskStop() {
         getViewModel().setStarted(false);
-        binding.buttonStart.setText(R.string.start);
-        storeTaskResults();
+        binding.pianoKeyboard.setCurrentNoteInfo(null);
+        invalidatePianoKeyboard();
     }
 
     private void showInstructionAndRunTask() {
@@ -257,6 +244,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         }
         String[] taskInstr = getResources().getStringArray(R.array.task_instruction);
         new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.task_instruction_header))
                 .setMessage(String.format(taskInstr[getViewModel().getInstructionId()], getViewModel().getNotesPerMinute()))
                 .setPositiveButton(R.string.ok, (v1, v2) -> runTask())
                 .setCancelable(false)

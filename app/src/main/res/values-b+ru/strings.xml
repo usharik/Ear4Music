@@ -48,8 +48,10 @@
     <string name="notes_with_intonations">Ноты с интонациями</string>
     <string name="just_notes">Просто ноты</string>
     <string name="series_of_notes">Последовательности из %d нот</string>
-    <string name="task_accomplished_with_time">Задание выполнено на %d%%. Среднее время ответа %d мс.</string>
-    <string name="task_accomplished">Task accomplished by %d%%.</string>
+    <string name="task_completed_header">Задание выполнено</string>
+    <string name="task_instruction_header">Инструкция к заданию</string>
+    <string name="task_accomplished_with_time">Правильных ответов %d%%.%nСреднее время ответа %d мс.</string>
+    <string name="task_accomplished">Правильных ответов %d%%.</string>
     <string name="next_task">Следующее задание</string>
     <string name="repeat">Повторить</string>
     <string name="ok">OK</string>

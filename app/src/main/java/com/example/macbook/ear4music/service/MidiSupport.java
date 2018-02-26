@@ -6,18 +6,22 @@ import com.example.macbook.ear4music.NotesEnum;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
+import io.reactivex.functions.Action;
+
 /**
  * Created by macbook on 02.07.17.
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private MidiDriver midiDriver;
+    private Action afterMidiStarted;
 
     public MidiSupport() {
         this.midiDriver = new MidiDriver();
         this.midiDriver.setOnMidiStartListener(this);
     }
 
-    public void start() {
+    public synchronized void start(Action afterMidiStarted) {
+        this.afterMidiStarted = afterMidiStarted;
         midiDriver.start();
         int[] config = midiDriver.config();
         Log.d(getClass().getName(), "Midi started");
@@ -27,7 +31,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
         Log.d(getClass().getName(), "mixBufferSize: " + config[3]);
     }
 
-    public void stop() {
+    public synchronized void stop() {
         midiDriver.stop();
     }
 
@@ -76,6 +80,10 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
 
     @Override
     public void onMidiStart() {
-
+        try {
+            afterMidiStarted.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

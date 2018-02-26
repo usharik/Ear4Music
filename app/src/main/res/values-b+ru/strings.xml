@@ -57,7 +57,7 @@
     <string name="ok">OK</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
-    <string name="progress">Всего %d Правильно %d, Ошибок %d Пропущено %d</string>
+    <string name="progress">Всего %d Правильно %d Ошибок %d Пропущено %d</string>
     <string name="favourite">Добавить в избранное</string>
     <string name="temp">Темп</string>
     <string name="all_tasks">Все задания</string>

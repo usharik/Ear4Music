@@ -5,6 +5,7 @@ import android.app.Application;
 import com.example.macbook.ear4music.service.AppState;
 import com.example.macbook.ear4music.service.DbService;
 import com.example.macbook.ear4music.service.MidiSupport;
+import com.example.macbook.ear4music.service.StatisticsStorage;
 
 import javax.inject.Singleton;
 
@@ -27,6 +28,12 @@ class ServiceModule {
     @Singleton
     MidiSupport provideMidiSupport() {
         return new MidiSupport();
+    }
+
+    @Provides
+    @Singleton
+    StatisticsStorage provideStatisticsStorage() {
+        return new StatisticsStorage();
     }
 
     @Provides

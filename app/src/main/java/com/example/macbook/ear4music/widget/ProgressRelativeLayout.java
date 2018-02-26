@@ -46,8 +46,9 @@ public class ProgressRelativeLayout extends RelativeLayout {
             mPaint.setAlpha(128);
             canvas.drawRect(3, 3, (float) (canvas.getWidth() * percentValue / 100.0) - 3, 15, mPaint);
             mPaint.setStyle(Paint.Style.STROKE);
-            mPaint.setColor(Color.rgb(0, 92, 0));
+            mPaint.setColor(getResources().getColor(R.color.darkGreen));
             canvas.drawRect(3, 3, (float) (canvas.getWidth() * percentValue / 100.0) - 3, 15, mPaint);
+            canvas.drawRect(3, 3, (float) (canvas.getWidth() - 3), 15, mPaint);
         }
         super.dispatchDraw(canvas);
     }

@@ -63,7 +63,7 @@ public class PianoKeyboard extends View {
         }
         whiteKeys.get(7).right += restSpace;
 
-        int blackKeySize = whiteKeySize/2;
+        int blackKeySize = Math.round(whiteKeySize*0.6f);
         for (int blackNum : new int[] {0, 1, 3, 4, 5, 7}) {
             Rect key = whiteKeys.get(blackNum);
             blackKeys.add(new Rect(

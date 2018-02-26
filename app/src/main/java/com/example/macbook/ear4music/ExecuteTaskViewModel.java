@@ -42,13 +42,15 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
 
     private final DbService dbService;
     private final AppState appState;
-    private StatisticsStorage statisticsStorage;
+    private final StatisticsStorage statisticsStorage;
 
     @Inject
     ExecuteTaskViewModel(final DbService dbService,
-                         final AppState appState) {
+                         final AppState appState,
+                         final StatisticsStorage statisticsStorage) {
         this.dbService = dbService;
         this.appState = appState;
+        this.statisticsStorage = statisticsStorage;
     }
 
     public void syncWithAppState() {
@@ -251,9 +253,5 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
 
     public StatisticsStorage getStatisticsStorage() {
         return statisticsStorage;
-    }
-
-    public void resetStatisticsStorage() {
-        statisticsStorage = new StatisticsStorage();
     }
 }

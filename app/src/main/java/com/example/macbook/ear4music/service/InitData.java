@@ -12,7 +12,7 @@ import com.example.macbook.ear4music.model.TaskDao;
  */
 
 public class InitData {
-    public static final long dbVersion = 10L;
+    public static final long dbVersion = 12L;
 
     // <string-array name="task_name">
     private static final int learn_C_E_G_C2 = 0;
@@ -46,7 +46,7 @@ public class InitData {
         SubTaskDao subTaskDao = daoSession.getSubTaskDao();
         long taskId = task1.getId();
         SubTask prevSubTask;
-        prevSubTask = insertSubTask(subTaskDao, null, new SubTask(null, taskId, null, 15, true, true, 1, 0, 0, learn_intonation_C_E_G_C2, false));
+        prevSubTask = insertSubTask(subTaskDao, null, new SubTask(null, taskId, null, 15, true, true, 1, 4, 0, learn_intonation_C_E_G_C2, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 10, 0, learn_intonation_2, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 20, true, false, 1, 10, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 25, true, false, 1, 13, 0, null, false));
@@ -72,8 +72,8 @@ public class InitData {
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 65, false, false, 4, 9, 0, learn_4_note_series, false));
 
         taskId = task2.getId();
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 0, 0, learn_intonation_B, false));
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 10, 0, null, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 1, 0, learn_intonation_B, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 10, 0, learn_intonation_2, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 20, true, false, 1, 12, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 25, true, false, 1, 15, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 30, true, false, 1, 18, 0, null, false));
@@ -98,8 +98,8 @@ public class InitData {
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 70, false, false, 4, 12, 0, learn_4_note_series, false));
 
         taskId = task3.getId();
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 0, 0, learn_intonation_F, false));
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 11, 0, null, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 1, 0, learn_intonation_F, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 11, 0, learn_intonation_2, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 20, true, false, 1, 15, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 25, true, false, 1, 17, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 30, true, false, 1, 21, 0, null, false));
@@ -124,8 +124,8 @@ public class InitData {
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 75, false, false, 4, 14, 0, learn_4_note_series, false));
 
         taskId = task4.getId();
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 0, 0, learn_intonation_A, false));
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 13, 0, null, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 1, 0, learn_intonation_A, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 13, 0, learn_intonation_2, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 20, true, false, 1, 17, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 25, true, false, 1, 19, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 30, true, false, 1, 22, 0, null, false));
@@ -150,8 +150,8 @@ public class InitData {
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 80, false, false, 4, 14, 0, learn_4_note_series, false));
 
         taskId = task5.getId();
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 0, 0, learn_intonation_D, false));
-        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 13, 0, null, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, true, 1, 1, 0, learn_intonation_D, false));
+        prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 15, true, false, 1, 13, 0, learn_intonation_2, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 20, true, false, 1, 17, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 25, true, false, 1, 19, 0, null, false));
         prevSubTask = insertSubTask(subTaskDao, prevSubTask, new SubTask(null, taskId, null, 30, true, false, 1, 22, 0, null, false));

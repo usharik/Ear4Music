@@ -35,6 +35,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
     private ExecuteTaskActivityBinding binding;
     private Subject<NoteInfo> keyboardPublishSubject;
+    private Subject<Boolean> taskStatePublishSubject;
     private CompositeDisposable compositeDisposable;
 
     @Override
@@ -46,22 +47,27 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     protected void onResume() {
         super.onResume();
 
+        taskStatePublishSubject = PublishSubject.create();
+
+        taskStatePublishSubject.doOnNext((isStarted) -> {
+            binding.buttonStart.setEnabled(true);
+            getViewModel().setStarted(isStarted);
+            if (isStarted) {
+                midiSupport.start(this::showInstructionAndRunTask);
+            }
+        }).subscribe();
+
         binding = DataBindingUtil.setContentView(this, R.layout.execute_task_activity);
 
-        binding.pianoKeyboard.setPianoKeyboardListener((noteInfo) -> {
-            keyboardPublishSubject.onNext(noteInfo);
-            binding.answerResult.setText(getNoteCount());
-        });
+        binding.pianoKeyboard.setPianoKeyboardListener(noteInfo -> keyboardPublishSubject.onNext(noteInfo));
 
-        midiSupport.start();
-
-        ExecuteTaskViewModel viewModel = getViewModel();
-        viewModel.setStarted(false);
-        viewModel.syncWithAppState();
+        getViewModel().setStarted(false);
+        getViewModel().syncWithAppState();
         setActivityTitle();
 
-        binding.setViewModel(viewModel);
+        binding.setViewModel(getViewModel());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        binding.answerResult.setText(getNoteCount());
         Log.i(getClass().getName(), "Resume");
     }
 
@@ -78,15 +84,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (getViewModel().isStarted()) {
-            if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
-                compositeDisposable.dispose();
-            }
-        }
-
-        binding.pianoKeyboard.setCurrentNoteInfo(null);
-        midiSupport.stop();
+        stopTask();
         Log.i(getClass().getName(), "Pause");
     }
 
@@ -98,25 +96,23 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         return melody;
     }
 
-    private void stopIfNeeded() {
-        if (getViewModel().isStarted()) {
-            if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
-                compositeDisposable.dispose();
-            }
-            storeTaskResults();
+    private void startTask() {
+        taskStatePublishSubject.onNext(true);
+    }
 
-            return;
+    private void stopTask() {
+        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
         }
-        getViewModel().setStarted(true);
     }
 
     public void onStartClick(View view) {
-        stopIfNeeded();
-        if (!getViewModel().isStarted()) {
-            return;
+        binding.buttonStart.setEnabled(false);
+        if (getViewModel().isStarted()) {
+            stopTask();
+        } else {
+            startTask();
         }
-
-        showInstructionAndRunTask();
     }
 
     private String getMelody() {
@@ -143,8 +139,9 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         Observable<NoteInfo[]> notesEmitterObservable = getViewModel().createNotesEmitterObservable(melody);
         compositeDisposable = new CompositeDisposable();
 
-        getViewModel().resetStatisticsStorage();
         final StatisticsStorage statStore = getViewModel().getStatisticsStorage();
+        statStore.reset();
+        binding.progressBar.setProgress(0);
         if (notesInSequence == 1) {
             Disposable noteEmitterDisposable = notesEmitterObservable
                     .subscribeOn(Schedulers.io())
@@ -156,7 +153,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                         } else {
                             midiSupport.playNote(notes[0].note, notes[0].longitude);
                         }
-                        getViewModel().getStatisticsStorage().submitAnswer(notes[0]);
+                        statStore.submitAnswer(notes[0]);
+                        runOnUiThread(() -> updateProgressViews(notes[0]));
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnComplete(this::onTaskComplete)
@@ -182,6 +180,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                                 .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS, Observable.just(noteInfo))
                                 .blockingFirst();
                         statStore.submitAnswer(pressed);
+                        runOnUiThread(() -> updateProgressViews(pressed));
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnComplete(this::onTaskComplete)
@@ -201,6 +200,11 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
     private void invalidatePianoKeyboard() {
         binding.pianoKeyboard.invalidate();
+        binding.answerResult.setText(getNoteCount());
+    }
+
+    private void updateProgressViews(NoteInfo noteInfo) {
+        binding.progressBar.setProgress((int) (noteInfo.num+1) * 100 / getViewModel().getSequencesInSubTask() / getViewModel().getNotesInSequence());
         binding.answerResult.setText(getNoteCount());
     }
 
@@ -232,9 +236,10 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     private void onTaskStop() {
-        getViewModel().setStarted(false);
+        midiSupport.stop();
         binding.pianoKeyboard.setCurrentNoteInfo(null);
         invalidatePianoKeyboard();
+        taskStatePublishSubject.onNext(false);
     }
 
     private void showInstructionAndRunTask() {

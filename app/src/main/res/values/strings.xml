@@ -57,7 +57,7 @@
     <string name="ok">OK</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="progress">Overall %d Correct %d, Wrong %d Missed %d</string>
+    <string name="progress">Overall %d Correct %d Wrong %d Missed %d</string>
     <string name="favourite">Add to favourites</string>
     <string name="temp">Temp</string>
     <string name="all_tasks">All tasks</string>

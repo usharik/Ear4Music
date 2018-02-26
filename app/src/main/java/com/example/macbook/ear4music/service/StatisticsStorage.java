@@ -42,13 +42,20 @@ public class StatisticsStorage implements Serializable {
 
     private ConcurrentHashMap<Long, Answer> answers;
     private ArrayList<NoteInfo> noteInfos;
-    private int correctCount;
-    private int wrongCount;
-    private int missedCount;
+    private int correctCount = 0;
+    private int wrongCount = 0;
+    private int missedCount= 0;
 
     public StatisticsStorage() {
+        reset();
+    }
+
+    public void reset() {
         answers = new ConcurrentHashMap<>();
         noteInfos = new ArrayList<>();
+        correctCount = 0;
+        wrongCount = 0;
+        missedCount= 0;
     }
 
     public void calculate() {
@@ -126,6 +133,10 @@ public class StatisticsStorage implements Serializable {
     }
 
     public int getCorrectPercent() {
-        return (int) (correctCount / (double) getOverallCount() * 100.0);
+        int overallCount = getOverallCount();
+        if (overallCount == 0) {
+            return 0;
+        }
+        return (int) (correctCount / (double) overallCount * 100.0);
     }
 }

@@ -23,12 +23,16 @@ public class TaskSelectViewModel extends ViewModelObservable {
     private List<Task> taskList;
     private final DbService dbService;
     private final AppState appState;
+    private int taskListPosition;
+    private int favouriteTaskListPosition;
 
     @Inject
     public TaskSelectViewModel(final DbService dbService,
                                final AppState appState) {
         this.dbService = dbService;
         this.appState = appState;
+        this.taskListPosition = 0;
+        this.favouriteTaskListPosition = 0;
     }
 
     TaskAdapter getTaskAdapter() {
@@ -59,5 +63,23 @@ public class TaskSelectViewModel extends ViewModelObservable {
 
     public void setCurrentTab(int currentTab) {
         appState.setCurrentTab(currentTab);
+    }
+
+    public int getTaskListPosition() {
+        return taskListPosition;
+    }
+
+    public TaskSelectViewModel setTaskListPosition(int taskListPosition) {
+        this.taskListPosition = taskListPosition;
+        return this;
+    }
+
+    public int getFavouriteTaskListPosition() {
+        return favouriteTaskListPosition;
+    }
+
+    public TaskSelectViewModel setFavouriteTaskListPosition(int favouriteTaskListPosition) {
+        this.favouriteTaskListPosition = favouriteTaskListPosition;
+        return this;
     }
 }

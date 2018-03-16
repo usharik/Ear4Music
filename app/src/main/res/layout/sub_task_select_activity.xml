@@ -17,7 +17,7 @@
         tools:context="com.example.macbook.ear4music.SubTaskSelectActivity">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/sub_task_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"

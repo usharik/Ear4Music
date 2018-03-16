@@ -21,12 +21,14 @@ public class SubTaskSelectViewModel extends ViewModelObservable {
     private final DbService dbService;
     private final AppState appState;
     private Task task;
+    private int subTaskListPosition;
 
     @Inject
     public SubTaskSelectViewModel(final DbService dbService,
                                   final AppState appState) {
         this.dbService = dbService;
         this.appState = appState;
+        this.subTaskListPosition = 0;
     }
 
     public void syncWithAppState() {
@@ -55,5 +57,14 @@ public class SubTaskSelectViewModel extends ViewModelObservable {
                 .where(SubTaskDao.Properties.TaskId.eq(task.getId()))
                 .list();
         return new SubTaskAdapter(subTaskList, dbService.getDaoSession());
+    }
+
+    public int getSubTaskListPosition() {
+        return subTaskListPosition;
+    }
+
+    public SubTaskSelectViewModel setSubTaskListPosition(int subTaskListPosition) {
+        this.subTaskListPosition = subTaskListPosition;
+        return this;
     }
 }

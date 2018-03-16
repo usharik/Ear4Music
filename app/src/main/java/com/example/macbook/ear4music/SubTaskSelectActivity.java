@@ -32,13 +32,14 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
         getViewModel().syncWithAppState();
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        binding.recyclerView.setLayoutManager(mLayoutManager);
-        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        binding.recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.subTaskList.setLayoutManager(mLayoutManager);
+        binding.subTaskList.setItemAnimator(new DefaultItemAnimator());
+        binding.subTaskList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.subTaskList.getLayoutManager().scrollToPosition(getViewModel().getSubTaskListPosition());
 
         binding.setViewModel(getViewModel());
         SubTaskAdapter subTaskAdapter = getViewModel().getTaskAdapter();
-        binding.recyclerView.setAdapter(subTaskAdapter);
+        binding.subTaskList.setAdapter(subTaskAdapter);
         itemClickDisposable = subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
 
         setTitle(getResources().getString(R.string.select_sub_task));
@@ -49,6 +50,7 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
     protected void onPause() {
         super.onPause();
 
+        getViewModel().setSubTaskListPosition(Utilits.getScrollPosition(binding.subTaskList));
         if (itemClickDisposable != null) {
             itemClickDisposable.dispose();
         }

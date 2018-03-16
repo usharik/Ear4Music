@@ -36,7 +36,7 @@
                     android:layout_height="match_parent">
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycler_view"
+                        android:id="@+id/task_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
@@ -50,7 +50,7 @@
                     android:layout_height="match_parent">
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycler_view_1"
+                        android:id="@+id/favourite_task_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"

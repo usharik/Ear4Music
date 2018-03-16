@@ -43,24 +43,33 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         binding.setViewModel(getViewModel());
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        binding.recyclerView.setLayoutManager(mLayoutManager);
-        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        binding.recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.taskList.setLayoutManager(mLayoutManager);
+        binding.taskList.setItemAnimator(new DefaultItemAnimator());
+        binding.taskList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.taskList.getLayoutManager().scrollToPosition(getViewModel().getTaskListPosition());
 
         TaskAdapter taskAdapter = getViewModel().getTaskAdapter();
-        binding.recyclerView.setAdapter(taskAdapter);
+        binding.taskList.setAdapter(taskAdapter);
         taskAdapter.getItemClickObservable().subscribe(this::onTaskSelect);
 
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        binding.recyclerView1.setLayoutManager(mLayoutManager);
-        binding.recyclerView1.setItemAnimator(new DefaultItemAnimator());
-        binding.recyclerView1.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.favouriteTaskList.setLayoutManager(mLayoutManager);
+        binding.favouriteTaskList.setItemAnimator(new DefaultItemAnimator());
+        binding.favouriteTaskList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.favouriteTaskList.getLayoutManager().scrollToPosition(getViewModel().getFavouriteTaskListPosition());
 
         SubTaskAdapter subTaskAdapter = getViewModel().getFavouriteSubTaskAdapter();
-        binding.recyclerView1.setAdapter(subTaskAdapter);
+        binding.favouriteTaskList.setAdapter(subTaskAdapter);
         subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
 
         setTitle(getResources().getString(R.string.select_notes));
+    }
+
+    @Override
+    protected void onPause() {
+        getViewModel().setTaskListPosition(Utilits.getScrollPosition(binding.taskList));
+        getViewModel().setFavouriteTaskListPosition(Utilits.getScrollPosition(binding.favouriteTaskList));
+        super.onPause();
     }
 
     public void onTaskSelect(Task task) {

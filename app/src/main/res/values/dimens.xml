@@ -6,4 +6,6 @@
 
     <dimen name="row_padding_vertical">10dp</dimen>
     <dimen name="row_margin">3px</dimen>
+    <dimen name="text_label_height">32dp</dimen>
+    <dimen name="text_label_width">150dp</dimen>
 </resources>

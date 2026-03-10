@@ -12,7 +12,7 @@ import com.example.macbook.ear4music.model.SubTask;
 
 public final class Utils {
     public static String getSubTaskDescription(Resources res, SubTask subTask) {
-        if (subTask.getIsPlayWithScale()) {
+        if (subTask.isPlayWithScale()) {
             return res.getString(R.string.notes_with_intonations);
         } else if (subTask.getNotesInSequence() > 1) {
             return res.getString(R.string.series_of_notes, subTask.getNotesInSequence());

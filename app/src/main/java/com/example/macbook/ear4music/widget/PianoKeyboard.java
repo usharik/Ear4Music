@@ -24,11 +24,11 @@ import java.util.List;
  * Created by macbook on 03.07.17.
  */
 public class PianoKeyboard extends View {
-    private Paint paint;
-    private Paint textPaint;
-    private List<Rect> whiteKeys;
-    private List<Rect> blackKeys;
-    private HashMap<NotesEnum, Rect> notes2rect;
+    private final Paint paint;
+    private final Paint textPaint;
+    private final List<Rect> whiteKeys;
+    private final List<Rect> blackKeys;
+    private final HashMap<NotesEnum, Rect> notes2rect;
     private NotesEnum pressedNote;
     private NoteInfo currentNoteInfo;
     private Rect pressedNoteRect;
@@ -104,7 +104,7 @@ public class PianoKeyboard extends View {
             canvas.drawRect(r, paint);
             textPaint.setColor(Color.BLACK);
             if (showNoteNames) {
-                canvas.drawText(note.name(), r.centerX() - noteNameWidth / 2, r.centerY() * 5.0f / 3.0f, textPaint);
+                canvas.drawText(note.name(), r.centerX() - noteNameWidth / 2f, r.centerY() * 5.0f / 3.0f, textPaint);
             }
         }
         for (Rect r : blackKeys) {

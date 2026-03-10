@@ -1,57 +1,68 @@
 package com.example.macbook.ear4music.service;
 
 import android.app.Application;
-import android.database.Cursor;
 
-import com.example.macbook.ear4music.model.DaoMaster;
-import com.example.macbook.ear4music.model.DaoSession;
-import com.example.macbook.ear4music.model.Options;
+import com.example.macbook.ear4music.model.SubTask;
 import com.example.macbook.ear4music.model.Task;
-
-import org.greenrobot.greendao.database.Database;
+import com.example.macbook.ear4music.model.room.RoomDaoSession;
 
 import java.util.List;
-
-import static com.example.macbook.ear4music.service.InitData.initData;
 
 /**
  * Created by au185034 on 23/02/2018.
  */
 
 public class DbService {
-    private DaoSession daoSession;
-    private DaoMaster.DevOpenHelper helper;
+    private final RoomDaoSession roomSession;
 
     public DbService(Application application) {
-        helper = new DaoMaster.DevOpenHelper(application, "ear4-music-db");
-        Database db = helper.getWritableDb();
-        DaoMaster.createAllTables(db, true);
-        daoSession = new DaoMaster(db).newSession();
-        List<Options> options = daoSession.getOptionsDao().queryBuilder().limit(1).list();
-        if (options.size() != 1) {
-            DaoMaster.dropAllTables(db, true);
-            DaoMaster.createAllTables(db, false);
-            initData(daoSession);
-        } else if (options.get(0).getVersion() < InitData.dbVersion) {
-            DaoMaster.dropAllTables(db, true);
-            DaoMaster.createAllTables(db, false);
-            initData(daoSession);
-        }
+        roomSession = new RoomDaoSession(application);
     }
 
-    public DaoSession getDaoSession() {
-        return daoSession;
+    public RoomDaoSession getRoomSession() {
+        return roomSession;
+    }
+
+    // Compatibility: present an implementation of the old DaoSession interface backed by Room
+    public com.example.macbook.ear4music.model.DaoSession getDaoSession() {
+        return new com.example.macbook.ear4music.model.room.RoomDaoSessionCompat(roomSession);
+    }
+
+    // Backwards-compatible helpers used by the app
+    public List<Task> getAllTasks() {
+        return roomSession.getAllTasks();
+    }
+
+    public Task findTaskById(long id) {
+        return roomSession.findTaskById(id);
+    }
+
+    public List<SubTask> findSubTasksByTaskId(long taskId) {
+        return roomSession.findSubTasksByTaskId(taskId);
+    }
+
+    public SubTask findSubTaskById(long id) {
+        return roomSession.findSubTaskById(id);
+    }
+
+    public List<SubTask> findFavouriteSubTasks() {
+        return roomSession.findFavouriteSubTasks();
+    }
+
+    public void updateSubTask(SubTask subTask) {
+        roomSession.updateSubTask(subTask);
     }
 
     public void updateTaskDonePercent(Task task) {
-        Database db = helper.getWritableDb();
-        Cursor cursor1 = db.rawQuery("select count(*) from SUB_TASK where TASK_ID = ?", new String[]{ Long.toString(task.getId()) });
-        Cursor cursor2 = db.rawQuery("select count(*) from SUB_TASK where TASK_ID = ? and CORRECT_ANSWER_PERCENT != 0", new String[]{ Long.toString(task.getId()) });
-        if (cursor1.moveToNext() && cursor2.moveToNext()) {
-            int allCnt = cursor1.getInt(0);
-            int doneCnt = cursor2.getInt(0);
+        List<SubTask> all = findSubTasksByTaskId(task.getId());
+        int allCnt = all.size();
+        int doneCnt = 0;
+        for (SubTask s : all) {
+            if (s.getCorrectAnswerPercent() != 0) doneCnt++;
+        }
+        if (allCnt > 0) {
             task.setDonePercent(doneCnt * 100 / allCnt);
-            daoSession.getTaskDao().update(task);
+            roomSession.updateTask(task);
         }
     }
 }

@@ -4,9 +4,7 @@ import com.example.macbook.ear4music.adapter.SubTaskAdapter;
 import com.example.macbook.ear4music.adapter.TaskAdapter;
 import com.example.macbook.ear4music.framework.ViewModelObservable;
 import com.example.macbook.ear4music.model.SubTask;
-import com.example.macbook.ear4music.model.SubTaskDao;
 import com.example.macbook.ear4music.model.Task;
-import com.example.macbook.ear4music.model.TaskDao;
 import com.example.macbook.ear4music.service.AppState;
 import com.example.macbook.ear4music.service.DbService;
 
@@ -36,17 +34,14 @@ public class TaskSelectViewModel extends ViewModelObservable {
     }
 
     TaskAdapter getTaskAdapter() {
-        TaskDao taskDao = dbService.getDaoSession().getTaskDao();
         taskList = new ArrayList<>();
-        taskList.addAll(taskDao.queryBuilder().list());
+        taskList.addAll(dbService.getAllTasks());
         return new TaskAdapter(taskList);
     }
 
     SubTaskAdapter getFavouriteSubTaskAdapter() {
-        List<SubTask> subTaskList = dbService.getDaoSession().queryBuilder(SubTask.class)
-                .where(SubTaskDao.Properties.IsFavourite.eq(true))
-                .list();
-        return new SubTaskAdapter(subTaskList, dbService.getDaoSession());
+        List<SubTask> subTaskList = dbService.findFavouriteSubTasks();
+        return new SubTaskAdapter(subTaskList, dbService);
     }
 
     public void setTask(Task task) {

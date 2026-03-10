@@ -1,10 +1,9 @@
 package com.example.macbook.ear4music;
 
-import android.databinding.Bindable;
+import androidx.databinding.Bindable;
 
 import com.example.macbook.ear4music.framework.ViewModelObservable;
 import com.example.macbook.ear4music.model.SubTask;
-import com.example.macbook.ear4music.model.SubTaskDao;
 import com.example.macbook.ear4music.service.AppState;
 import com.example.macbook.ear4music.service.DbService;
 import com.example.macbook.ear4music.service.MelodyNoteGenerator;
@@ -100,9 +99,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
 
     public void setSubTaskId(long subTaskId) {
         this.subTaskId = subTaskId;
-        SubTask subTask = dbService.getDaoSession().queryBuilder(SubTask.class)
-                .where(SubTaskDao.Properties.Id.eq(this.subTaskId))
-                .list().get(0);
+        SubTask subTask = dbService.findSubTaskById(this.subTaskId);
         setSubTask(subTask);
     }
 
@@ -169,11 +166,9 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
 
     public void setCorrectAnswerPercent(int correctAnswerPercent) {
         this.correctPercent = correctAnswerPercent;
-        SubTask subTask = dbService.getDaoSession().queryBuilder(SubTask.class)
-                .where(SubTaskDao.Properties.Id.eq(subTaskId))
-                .list().get(0);
+        SubTask subTask = dbService.findSubTaskById(subTaskId);
         subTask.setCorrectAnswerPercent(correctAnswerPercent);
-        dbService.getDaoSession().update(subTask);
+        dbService.updateSubTask(subTask);
         dbService.updateTaskDonePercent(subTask.getTask());
     }
 
@@ -188,7 +183,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         notifyPropertyChanged(BR.showNoteNames);
         subTask.setFavourite(favourite);
         appState.getSubTask().setFavourite(favourite);
-        dbService.getDaoSession().update(subTask);
+        dbService.updateSubTask(subTask);
     }
 
     public Integer getInstructionId() {

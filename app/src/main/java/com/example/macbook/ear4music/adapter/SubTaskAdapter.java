@@ -1,12 +1,12 @@
 package com.example.macbook.ear4music.adapter;
 
 import android.content.res.Resources;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.macbook.ear4music.SubTaskListRowViewModel;
-import com.example.macbook.ear4music.model.DaoSession;
+import com.example.macbook.ear4music.service.DbService;
 import com.example.macbook.ear4music.service.Utils;
 import com.example.macbook.ear4music.databinding.SubTaskListRowBinding;
 import com.example.macbook.ear4music.model.SubTask;
@@ -22,12 +22,11 @@ import io.reactivex.subjects.PublishSubject;
 
 public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHolder> {
 
-    private final DaoSession daoSession;
-
-    private List<SubTask> subTaskList;
+    private final List<SubTask> subTaskList;
     private final PublishSubject<SubTask> onClickSubject = PublishSubject.create();
+    private final DbService dbService;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final SubTaskListRowBinding binding;
 
         public MyViewHolder(SubTaskListRowBinding binding) {
@@ -45,9 +44,9 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHo
         }
     }
 
-    public SubTaskAdapter(List<SubTask> subTaskList, DaoSession daoSession) {
+    public SubTaskAdapter(List<SubTask> subTaskList, DbService dbService) {
         this.subTaskList = subTaskList;
-        this.daoSession = daoSession;
+        this.dbService = dbService;
     }
 
     @Override
@@ -62,7 +61,7 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHo
         final SubTask subTask = subTaskList.get(position);
 
         Resources res = holder.getBinding().getRoot().getResources();
-        SubTaskListRowViewModel viewModel = new SubTaskListRowViewModel(subTask, Utils.getSubTaskDescription(res, subTask), daoSession);
+        SubTaskListRowViewModel viewModel = new SubTaskListRowViewModel(subTask, Utils.getSubTaskDescription(res, subTask), dbService.getDaoSession());
         holder.bind(viewModel);
         holder.itemView.setOnClickListener((v) -> onClickSubject.onNext(subTask));
     }

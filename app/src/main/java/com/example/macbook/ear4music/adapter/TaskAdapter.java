@@ -1,6 +1,6 @@
 package com.example.macbook.ear4music.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -15,10 +15,10 @@ import io.reactivex.subjects.PublishSubject;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> {
 
-    private List<Task> taskList;
+    private final List<Task> taskList;
     private final PublishSubject<Task> onClickSubject = PublishSubject.create();
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TaskListRowBinding binding;
 
         public MyViewHolder(TaskListRowBinding binding) {

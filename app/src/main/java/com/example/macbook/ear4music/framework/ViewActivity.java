@@ -1,23 +1,20 @@
 package com.example.macbook.ear4music.framework;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
-import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.support.HasSupportFragmentInjector;
 
 /**
  * Created by macbook on 17.02.2018.
  */
 
-public abstract class ViewActivity<T extends ViewModel> extends AppCompatActivity implements HasSupportFragmentInjector {
+public abstract class ViewActivity<T extends ViewModel> extends AppCompatActivity {
     private T viewModel;
 
     @Inject
@@ -32,17 +29,11 @@ public abstract class ViewActivity<T extends ViewModel> extends AppCompatActivit
     protected void onResume() {
         super.onResume();
         AndroidInjection.inject(this);
-        viewModel = ViewModelProviders
-                .of(this, appViewModelFactory)
+        viewModel = new ViewModelProvider(this.getViewModelStore(), appViewModelFactory)
                 .get(getViewModelClass());
     }
 
     public T getViewModel() {
         return viewModel;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingAndroidInjector;
     }
 }

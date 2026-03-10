@@ -1,7 +1,7 @@
 package com.example.macbook.ear4music.di;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.macbook.ear4music.ExecuteTaskViewModel;
 import com.example.macbook.ear4music.SubTaskSelectViewModel;

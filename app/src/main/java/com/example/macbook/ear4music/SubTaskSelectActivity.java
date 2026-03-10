@@ -1,11 +1,11 @@
 package com.example.macbook.ear4music;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.macbook.ear4music.adapter.SubTaskAdapter;
 import com.example.macbook.ear4music.databinding.SubTaskSelectActivityBinding;
@@ -50,7 +50,7 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
     protected void onPause() {
         super.onPause();
 
-        getViewModel().setSubTaskListPosition(Utilits.getScrollPosition(binding.subTaskList));
+        getViewModel().setSubTaskListPosition(Utilities.getScrollPosition(binding.subTaskList));
         if (itemClickDisposable != null) {
             itemClickDisposable.dispose();
         }

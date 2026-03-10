@@ -21,10 +21,11 @@ public enum NotesEnum {
     C2((byte) 12, false);
 
     static final byte C1 = 0x3C;
-    byte pitch;
-    boolean sharp;
     static List<NotesEnum> whiteList;
     static List<NotesEnum> blackList;
+
+    final byte pitch;
+    final boolean sharp;
 
     NotesEnum(byte pitch, boolean sharp) {
         this.pitch = (byte) (pitch + C1);

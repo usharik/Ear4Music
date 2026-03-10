@@ -3,7 +3,6 @@ package com.example.macbook.ear4music;
 import com.example.macbook.ear4music.adapter.SubTaskAdapter;
 import com.example.macbook.ear4music.framework.ViewModelObservable;
 import com.example.macbook.ear4music.model.SubTask;
-import com.example.macbook.ear4music.model.SubTaskDao;
 import com.example.macbook.ear4music.model.Task;
 import com.example.macbook.ear4music.service.AppState;
 import com.example.macbook.ear4music.service.DbService;
@@ -17,7 +16,6 @@ import javax.inject.Inject;
  */
 
 public class SubTaskSelectViewModel extends ViewModelObservable {
-    private List<SubTask> subTaskList;
     private final DbService dbService;
     private final AppState appState;
     private Task task;
@@ -53,10 +51,8 @@ public class SubTaskSelectViewModel extends ViewModelObservable {
     }
 
     SubTaskAdapter getTaskAdapter() {
-        subTaskList = dbService.getDaoSession().queryBuilder(SubTask.class)
-                .where(SubTaskDao.Properties.TaskId.eq(task.getId()))
-                .list();
-        return new SubTaskAdapter(subTaskList, dbService.getDaoSession());
+        List<SubTask> subTaskList = dbService.findSubTasksByTaskId(task.getId());
+        return new SubTaskAdapter(subTaskList, dbService);
     }
 
     public int getSubTaskListPosition() {

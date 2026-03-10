@@ -1,22 +1,19 @@
 package com.example.macbook.ear4music.service;
 
 import android.util.Log;
-
 import com.example.macbook.ear4music.NotesEnum;
-
 import org.billthefarmer.mididriver.MidiDriver;
-
 import io.reactivex.functions.Action;
 
 /**
  * Created by macbook on 02.07.17.
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
-    private MidiDriver midiDriver;
+    private final MidiDriver midiDriver;
     private Action afterMidiStarted;
 
     public MidiSupport() {
-        this.midiDriver = new MidiDriver();
+        this.midiDriver = MidiDriver.getInstance();
         this.midiDriver.setOnMidiStartListener(this);
     }
 
@@ -37,7 +34,7 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
 
     public void playNote(NotesEnum note, int longitude) {
         // Construct a note ON message for the middle C at maximum velocity on channel 1:
-        byte event[] = new byte[3];
+        byte[] event = new byte[3];
         event[0] = (byte) (0x90 | 0x00);  // 0x90 = note On, 0x00 = channel 1
         event[1] = note.getPitch();  // 0x3C = middle C
         event[2] = (byte) 0x7F;  // 0x7F = the maximum velocity (127)

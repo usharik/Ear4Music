@@ -1,14 +1,14 @@
 package com.example.macbook.ear4music;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
+import androidx.fragment.app.FragmentTransaction;
 import com.example.macbook.ear4music.databinding.ExecuteTaskActivityBinding;
 import com.example.macbook.ear4music.framework.ViewActivity;
 import com.example.macbook.ear4music.service.MidiSupport;
@@ -192,7 +192,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     private void countDownDialog(Runnable action) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.addToBackStack(null);
         CountDownDialog.newInstance(action)
                 .show(ft, "dialog");

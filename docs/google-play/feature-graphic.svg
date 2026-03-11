@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E2A78"/>
+      <stop offset="50%" stop-color="#3949AB"/>
+      <stop offset="100%" stop-color="#8E24AA"/>
+    </linearGradient>
+    <radialGradient id="glowLeft" cx="22%" cy="28%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowRight" cx="82%" cy="22%" r="48%">
+      <stop offset="0%" stop-color="#FFD166" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#FFD166" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="500" fill="url(#bg)"/>
+  <rect width="1024" height="500" fill="url(#glowLeft)"/>
+  <rect width="1024" height="500" fill="url(#glowRight)"/>
+
+  <ellipse cx="256" cy="250" rx="182" ry="214" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="12"/>
+  <ellipse cx="256" cy="250" rx="142" ry="168" fill="none" stroke="#FFD166" stroke-opacity="0.20" stroke-width="10"/>
+  <ellipse cx="256" cy="250" rx="108" ry="128" fill="none" stroke="#FFFFFF" stroke-opacity="0.10" stroke-width="8"/>
+
+  <circle cx="255" cy="250" r="140" fill="#FFFFFF" fill-opacity="0.05"/>
+  <circle cx="825" cy="118" r="120" fill="#FFD166" fill-opacity="0.10"/>
+
+  <g transform="translate(182 126) scale(24)">
+    <path fill="#0D153F" fill-opacity="0.30" d="M8.5,0A5.5,5.5 0,0 0,3 5.5v7.047a3.453,3.453 0,0 0,6.687 1.212l0.51,-1.363a4.6,4.6 0,0 1,0.67 -1.197l2.008,-2.581A5.34,5.34 0,0 0,8.66 0zM7,5.5v2.695q0.168,-0.09 0.332,-0.192c0.327,-0.208 0.577,-0.44 0.72,-0.727a0.5,0.5 0,1 1,0.895 0.448c-0.256,0.513 -0.673,0.865 -1.079,1.123A9,9 0,0 1,7 9.313V11.5a0.5,0.5 0,0 1,-1 0v-6a2.5,2.5 0,0 1,5 0V6a0.5,0.5 0,0 1,-1 0v-0.5a1.5,1.5 0,1 0,-3 0"/>
+  </g>
+  <g transform="translate(172 116) scale(24)">
+    <path fill="#F7F8FF" d="M8.5,0A5.5,5.5 0,0 0,3 5.5v7.047a3.453,3.453 0,0 0,6.687 1.212l0.51,-1.363a4.6,4.6 0,0 1,0.67 -1.197l2.008,-2.581A5.34,5.34 0,0 0,8.66 0zM7,5.5v2.695q0.168,-0.09 0.332,-0.192c0.327,-0.208 0.577,-0.44 0.72,-0.727a0.5,0.5 0,1 1,0.895 0.448c-0.256,0.513 -0.673,0.865 -1.079,1.123A9,9 0,0 1,7 9.313V11.5a0.5,0.5 0,0 1,-1 0v-6a2.5,2.5 0,0 1,5 0V6a0.5,0.5 0,0 1,-1 0v-0.5a1.5,1.5 0,1 0,-3 0"/>
+  </g>
+
+  <g transform="translate(358 128) scale(15.8)">
+    <path fill="#0D153F" fill-opacity="0.30" d="M6,13c0,1.105 -1.12,2 -2.5,2S1,14.105 1,13s1.12,-2 2.5,-2 2.5,0.896 2.5,2m9,-2c0,1.105 -1.12,2 -2.5,2s-2.5,-0.895 -2.5,-2 1.12,-2 2.5,-2 2.5,0.895 2.5,2"/>
+    <path fill="#0D153F" fill-opacity="0.30" d="M14,11V2h1v9zM6,3v10H5V3z"/>
+    <path fill="#0D153F" fill-opacity="0.30" d="M5,2.905a1,1 0,0 1,0.9 -0.995l8,-0.8a1,1 0,0 1,1.1 0.995V3L5,4z"/>
+  </g>
+  <g transform="translate(348 118) scale(15.8)">
+    <path fill="#FFD166" d="M6,13c0,1.105 -1.12,2 -2.5,2S1,14.105 1,13s1.12,-2 2.5,-2 2.5,0.896 2.5,2m9,-2c0,1.105 -1.12,2 -2.5,2s-2.5,-0.895 -2.5,-2 1.12,-2 2.5,-2 2.5,0.895 2.5,2"/>
+    <path fill="#FFD166" d="M14,11V2h1v9zM6,3v10H5V3z"/>
+    <path fill="#FFD166" d="M5,2.905a1,1 0,0 1,0.9 -0.995l8,-0.8a1,1 0,0 1,1.1 0.995V3L5,4z"/>
+  </g>
+
+  <text x="548" y="228" fill="#F7F8FF" font-size="82" font-weight="700" font-family="DejaVu Sans, Arial, sans-serif">Ear4Music</text>
+  <text x="552" y="286" fill="#FFD166" font-size="30" font-weight="600" font-family="DejaVu Sans, Arial, sans-serif">C · D · E · F · G · A · B</text>
+
+  <g opacity="0.18" fill="#F7F8FF">
+    <rect x="548" y="332" width="360" height="10" rx="5"/>
+    <rect x="548" y="362" width="290" height="10" rx="5"/>
+    <rect x="548" y="392" width="240" height="10" rx="5"/>
+  </g>
+</svg>

@@ -50,14 +50,14 @@
     <string name="series_of_notes">Series of %d notes</string>
     <string name="task_completed_header">Task completed</string>
     <string name="task_instruction_header">Task instruction</string>
-    <string name="task_accomplished_with_time">Correct answers %d%%.%nAverage answer time %d ms.</string>
+    <string name="task_accomplished_with_time">Correct answers %1$d%%.\nAverage answer time %2$d ms.</string>
     <string name="task_accomplished">Correct answers %d%%.</string>
     <string name="next_task">Next task</string>
     <string name="repeat">Repeat</string>
     <string name="ok">OK</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="progress">Overall %d Correct %d Wrong %d Missed %d</string>
+    <string name="progress">Overall %1$d Correct %2$d Wrong %3$d Missed %4$d</string>
     <string name="favourite">Add to favourites</string>
     <string name="temp">Temp</string>
     <string name="all_tasks">All tasks</string>

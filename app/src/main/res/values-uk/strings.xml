@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Ear4Music</string>
+    <string name="title_activity_task_select">TaskSelectActivity</string>
+    <string-array name="task_list">
+        <item>C   E   G     C2</item>
+        <item>C   E   G   B C2</item>
+        <item>C   E F G   B C2</item>
+        <item>C   E F G A B C2</item>
+        <item>C D E F G A B C2</item>
+        <item>B</item>
+        <item>F</item>
+        <item>A</item>
+        <item>D</item>
+    </string-array>
+    <string-array name="task_name">
+        <item>Вивчити ноти C E G C2</item>
+        <item>Вивчити ноту B</item>
+        <item>Вивчити ноту F</item>
+        <item>Вивчити ноту A</item>
+        <item>Вивчити ноту D</item>
+    </string-array>
+    <string-array name="task_instruction">
+        <item>Прослухайте інтонації нот C, E, G, C2 і запам’ятайте відповідні клавіші на фортепіано. Темп %d.</item>
+        <item>Прослухайте інтонацію ноти B і запам’ятайте відповідну клавішу на фортепіано. Темп %d.</item>
+        <item>Прослухайте інтонацію ноти F і запам’ятайте відповідну клавішу на фортепіано. Темп %d.</item>
+        <item>Прослухайте інтонацію ноти A і запам’ятайте відповідну клавішу на фортепіано. Темп %d.</item>
+        <item>Прослухайте інтонацію ноти D і запам’ятайте відповідну клавішу на фортепіано. Темп %d.</item>
+        <item>Прослухайте інтонацію й натисніть правильну клавішу. Темп %d.</item>
+        <item>Прослухайте ноти й натисніть правильну клавішу. Темп %d.</item>
+        <item>Прослухайте серію з двох нот і натисніть їх під час паузи після відтворення. Темп %d.</item>
+        <item>Прослухайте серію з трьох нот і натисніть їх під час паузи після відтворення. Темп %d.</item>
+        <item>Прослухайте серію з чотирьох нот і натисніть їх під час паузи після відтворення. Темп %d.</item>
+    </string-array>
+    <string-array name="result_table_columns">
+        <item>Нота</item>
+        <item>Правильно</item>
+        <item>Помилка</item>
+        <item>Пропущено</item>
+    </string-array>
+    <string name="setOfNotesId">Ноти</string>
+    <string name="notes_per_minute">Нот за хвилину</string>
+    <string name="show_note_names">Показувати назви нот</string>
+    <string name="task_type">Нот у послідовності</string>
+    <string name="start">Старт</string>
+    <string name="stop">Стоп</string>
+    <string name="select_notes">Виберіть ноти для вивчення</string>
+    <string name="select_sub_task">Виберіть завдання</string>
+    <string name="notes_with_intonations">Ноти з інтонаціями</string>
+    <string name="just_notes">Просто ноти</string>
+    <string name="series_of_notes">Послідовності з %d нот</string>
+    <string name="task_completed_header">Завдання виконано</string>
+    <string name="task_instruction_header">Інструкція до завдання</string>
+    <string name="task_accomplished_with_time">Правильних відповідей %1$d%%.\nСередній час відповіді %2$d мс.</string>
+    <string name="task_accomplished">Правильних відповідей %d%%.</string>
+    <string name="next_task">Наступне завдання</string>
+    <string name="repeat">Повторити</string>
+    <string name="ok">OK</string>
+    <string name="yes">Так</string>
+    <string name="no">Ні</string>
+    <string name="progress">Загалом %1$d Правильно %2$d Помилок %3$d Пропущено %4$d</string>
+    <string name="favourite">Додати до обраного</string>
+    <string name="temp">Темп</string>
+    <string name="all_tasks">Усі завдання</string>
+    <string name="favourite_tasks">Обрані завдання</string>
+</resources>

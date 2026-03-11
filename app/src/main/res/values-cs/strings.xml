@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Ear4Music</string>
+    <string name="title_activity_task_select">TaskSelectActivity</string>
+    <string-array name="task_list">
+        <item>C   E   G     C2</item>
+        <item>C   E   G   B C2</item>
+        <item>C   E F G   B C2</item>
+        <item>C   E F G A B C2</item>
+        <item>C D E F G A B C2</item>
+        <item>B</item>
+        <item>F</item>
+        <item>A</item>
+        <item>D</item>
+    </string-array>
+    <string-array name="task_name">
+        <item>Naučit se noty C E G C2</item>
+        <item>Naučit se notu B</item>
+        <item>Naučit se notu F</item>
+        <item>Naučit se notu A</item>
+        <item>Naučit se notu D</item>
+    </string-array>
+    <string-array name="task_instruction">
+        <item>Poslouchejte intonace not C, E, G, C2 a naučte se odpovídající klávesy na klavíru. Tempo %d.</item>
+        <item>Poslouchejte intonaci noty B a naučte se odpovídající klávesu na klavíru. Tempo %d.</item>
+        <item>Poslouchejte intonaci noty F a naučte se odpovídající klávesu na klavíru. Tempo %d.</item>
+        <item>Poslouchejte intonaci noty A a naučte se odpovídající klávesu na klavíru. Tempo %d.</item>
+        <item>Poslouchejte intonaci noty D a naučte se odpovídající klávesu na klavíru. Tempo %d.</item>
+        <item>Poslouchejte intonaci a stiskněte správnou klávesu. Tempo %d.</item>
+        <item>Poslouchejte noty a stiskněte správnou klávesu. Tempo %d.</item>
+        <item>Poslouchejte řadu dvou not a během následné pauzy je stiskněte. Tempo %d.</item>
+        <item>Poslouchejte řadu tří not a během následné pauzy je stiskněte. Tempo %d.</item>
+        <item>Poslouchejte řadu čtyř not a během následné pauzy je stiskněte. Tempo %d.</item>
+    </string-array>
+    <string-array name="result_table_columns">
+        <item>Nota</item>
+        <item>Správně</item>
+        <item>Chybně</item>
+        <item>Vynecháno</item>
+    </string-array>
+    <string name="setOfNotesId">Noty</string>
+    <string name="notes_per_minute">Not za minutu</string>
+    <string name="show_note_names">Zobrazit názvy not</string>
+    <string name="task_type">Not v sekvenci</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="select_notes">Vyberte noty k procvičení</string>
+    <string name="select_sub_task">Vyberte úkol</string>
+    <string name="notes_with_intonations">Noty s intonací</string>
+    <string name="just_notes">Pouze noty</string>
+    <string name="series_of_notes">Sekvence %d not</string>
+    <string name="task_completed_header">Úkol dokončen</string>
+    <string name="task_instruction_header">Instrukce k úkolu</string>
+    <string name="task_accomplished_with_time">Správné odpovědi %1$d%%.\nPrůměrný čas odpovědi %2$d ms.</string>
+    <string name="task_accomplished">Správné odpovědi %d%%.</string>
+    <string name="next_task">Další úkol</string>
+    <string name="repeat">Opakovat</string>
+    <string name="ok">OK</string>
+    <string name="yes">Ano</string>
+    <string name="no">Ne</string>
+    <string name="progress">Celkem %1$d Správně %2$d Chybně %3$d Vynecháno %4$d</string>
+    <string name="favourite">Přidat do oblíbených</string>
+    <string name="temp">Tempo</string>
+    <string name="all_tasks">Všechny úkoly</string>
+    <string name="favourite_tasks">Oblíbené úkoly</string>
+</resources>

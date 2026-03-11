@@ -1,65 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="viewModel" type="com.example.macbook.ear4music.TaskSelectViewModel" />
+        <variable name="viewModel" type="ru.usharik.ear4music.TaskSelectViewModel" />
     </data>
 
-    <TabHost
-        android:id="@+id/tab_host"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:currentTab="@={viewModel.currentTab}"
-        tools:context="com.example.macbook.ear4music.TaskSelectActivity">
+        android:background="@drawable/screen_background"
+        android:orientation="vertical"
+        tools:context="ru.usharik.ear4music.TaskSelectActivity">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_bar_background"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/textInverse" />
 
         <LinearLayout
+            android:id="@+id/tab_content_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/screen_section_spacing"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/screen_section_spacing"
             android:orientation="vertical">
 
-            <TabWidget
-                android:id="@android:id/tabs"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_layout_background"
+                android:elevation="0dp"
+                android:padding="4dp"
+                app:tabGravity="fill"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorColor="@color/colorAccent"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed"
+                app:tabRippleColor="@color/task_select_tab_ripple"
+                app:tabSelectedTextColor="@color/textInverse"
+                app:tabTextAppearance="@style/TextAppearance.Ear4Music.Tab"
+                app:tabTextColor="@color/task_select_tab_text" />
 
             <FrameLayout
-                android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/screen_section_spacing"
+                android:layout_weight="1">
 
-                <RelativeLayout
-                    android:id="@+id/tab1"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/task_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="@dimen/list_content_padding_bottom"
+                    android:scrollbars="vertical" />
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/task_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:scrollbars="vertical" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/tab2"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/favourite_task_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/favourite_task_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:scrollbars="vertical" />
-                </RelativeLayout>
-
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="@dimen/list_content_padding_bottom"
+                    android:scrollbars="vertical"
+                    android:visibility="gone" />
             </FrameLayout>
         </LinearLayout>
-    </TabHost>
+    </LinearLayout>
 
 </layout>

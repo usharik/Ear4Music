@@ -1,0 +1,23 @@
+Zásady ochrany soukromí pro Ear4Music
+
+Poslední aktualizace: 2026-03-11
+
+Ear4Music je offline aplikace pro rozvoj hudebního sluchu.
+
+1. Osobní údaje
+Aplikace nevyžaduje registraci účtu a úmyslně neshromažďuje osobní údaje, jako jsou jméno, e-mailová adresa, telefonní číslo, kontakty, poloha, fotografie nebo záznamy z mikrofonu.
+
+2. Internet a služby třetích stran
+Aktuální verze aplikace nevyžaduje oprávnění k internetu a neobsahuje reklamu, analytické nástroje ani služby pro hlášení pádů.
+
+3. Data ukládaná do zařízení
+Aplikace může do zařízení ukládat údaje související s tréninkem, například průběh cvičení, výsledky, oblíbené položky a nastavení aplikace.
+
+4. Zálohy
+Pro aplikaci je povoleno systémové zálohování Androidu. V závislosti na nastavení zařízení a zálohování Google mohou být lokálně uložená data aplikace zahrnuta do systémových záloh.
+
+5. Odstranění dat
+Data aplikace můžete kdykoli smazat v nastavení Androidu nebo odinstalováním aplikace.
+
+6. Změny těchto zásad
+Tyto zásady mohou být aktualizovány, pokud se změní funkce aplikace.

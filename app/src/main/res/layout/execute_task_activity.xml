@@ -7,192 +7,244 @@
 
         <variable
             name="viewModel"
-            type="com.example.macbook.ear4music.ExecuteTaskViewModel" />
+            type="ru.usharik.ear4music.ExecuteTaskViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:clipChildren="false"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:background="@drawable/screen_background"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="@dimen/text_label_width"
-            android:layout_height="@dimen/text_label_height"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            android:text="@string/setOfNotesId"/>
-
-        <TextView
-            android:id="@+id/tvSetOfNotes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textView"
-
-            android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"
-            tools:text="C E G C2" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="@dimen/text_label_width"
-            android:layout_height="@dimen/text_label_height"
-
-            app:layout_constraintTop_toBottomOf="@id/textView"
-            app:layout_constraintStart_toStartOf="parent"
-
-            android:text="@string/notes_per_minute" />
-
-        <TextView
-            android:id="@+id/tvNotesPerMinute"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@{Integer.toString(viewModel.notesPerMinute)}"
-
-            app:layout_constraintTop_toTopOf="@id/textView2"
-            app:layout_constraintStart_toEndOf="@id/textView2"
-
-            tools:text="35" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="@dimen/text_label_width"
-            android:layout_height="@dimen/text_label_height"
-
-            app:layout_constraintTop_toBottomOf="@id/textView2"
-            app:layout_constraintStart_toStartOf="parent"
-
-            android:text="@string/task_type" />
-
-        <TextView
-            android:id="@+id/tvNotesInSequence"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@{Integer.toString(viewModel.notesInSequence)}"
-
-            app:layout_constraintTop_toTopOf="@id/textView7"
-            app:layout_constraintStart_toEndOf="@id/textView7"
-
-            tools:text="1" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="@dimen/text_label_width"
-            android:layout_height="@dimen/text_label_height"
-
-            app:layout_constraintTop_toBottomOf="@id/textView7"
-            app:layout_constraintStart_toStartOf="parent"
-
-            android:text="@string/show_note_names" />
-
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:background="@drawable/rect_background"
-            android:layout_height="25dp"
-            android:layout_width="100dp"
-            android:layout_marginStart="10dp"
-            android:textOn="@string/yes"
-            android:textOff="@string/no"
-
-            app:layout_constraintTop_toTopOf="@id/textView3"
-            app:layout_constraintStart_toEndOf="@id/textView3"
-
-            android:checked="@={viewModel.showNoteNames}" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="@dimen/text_label_width"
-            android:layout_height="@dimen/text_label_height"
-
-            app:layout_constraintTop_toBottomOf="@id/textView3"
-            app:layout_constraintStart_toStartOf="parent"
-
-            android:text="@string/favourite" />
-
-        <com.example.macbook.ear4music.widget.ToggleImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
-
-            android:background="#00ffffff"
-            app:checked="@={viewModel.favourite}"
-            app:layout_constraintStart_toEndOf="@id/textView5"
-            app:layout_constraintTop_toTopOf="@id/textView5"
-            app:srcCompat="@drawable/star" />
-
-        <TextView
-            android:id="@+id/answerResult"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="15dp"
-
-            android:layout_marginTop="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@id/textView5"
-            tools:text="Overall 0 Correct 0 Wrong 0 Missed 0" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_marginTop="5dp"
-            android:progressDrawable="@drawable/progress_bar"
-
-            app:layout_constraintTop_toBottomOf="@id/answerResult"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            tools:progress="10" />
-
-        <com.example.macbook.ear4music.widget.PianoKeyboard
-            android:id="@+id/piano_keyboard"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            app:showNoteNames="@{viewModel.showNoteNames}"
-
-            app:layout_constraintTop_toBottomOf="@id/progressBar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideLine"/>
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideLine"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.90" />
+            android:background="@drawable/app_bar_background"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/textInverse" />
 
-        <Button
-            android:id="@+id/buttonStart"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/content_container"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/rect_background"
-            android:onClick="onStartClick"
-            android:text="@{viewModel.started ? @string/stop : @string/start}"
+            android:layout_weight="1"
+            android:animateLayoutChanges="true"
+            android:clipChildren="false"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
-            app:layout_constraintTop_toBottomOf="@id/guideLine"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            <LinearLayout
+                android:id="@+id/details_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/surface_card"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            tools:text="Start" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-    </android.support.constraint.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/setOfNotesId"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaLabel" />
+
+                    <TextView
+                        android:id="@+id/tvSetOfNotes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaValue"
+                        tools:text="C E G C2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/notes_per_minute"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaLabel" />
+
+                    <TextView
+                        android:id="@+id/tvNotesPerMinute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{Integer.toString(viewModel.notesPerMinute)}"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaValue"
+                        tools:text="35" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/task_type"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaLabel" />
+
+                    <TextView
+                        android:id="@+id/tvNotesInSequence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{Integer.toString(viewModel.notesInSequence)}"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaValue"
+                        tools:text="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/show_note_names"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaLabel" />
+
+                    <ToggleButton
+                        android:id="@+id/toggleButton"
+                        android:layout_width="96dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/rect_background"
+                        android:checked="@={viewModel.showNoteNames}"
+                        android:minHeight="40dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/toggle_button_text"
+                        android:textOff="@string/no"
+                        android:textOn="@string/yes" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/favourite"
+                        android:textAppearance="@style/TextAppearance.Ear4Music.MetaLabel" />
+
+                    <ru.usharik.ear4music.widget.ToggleImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="@dimen/icon_button_size"
+                        android:layout_height="@dimen/icon_button_size"
+                        android:background="@drawable/icon_button_background"
+                        android:contentDescription="@string/favourite"
+                        android:padding="8dp"
+                        android:scaleType="centerInside"
+                        app:checked="@={viewModel.favourite}"
+                        app:srcCompat="@drawable/star" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/status_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_section_spacing"
+                android:background="@drawable/surface_card"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/details_card">
+
+                <TextView
+                    android:id="@+id/answerResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Ear4Music.Stat"
+                    tools:text="Overall 0 Correct 0 Wrong 0 Missed 0" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_marginTop="10dp"
+                    android:progressDrawable="@drawable/progress_bar"
+                    tools:progress="10" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/keyboard_card"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/screen_section_spacing"
+                android:layout_marginBottom="@dimen/screen_section_spacing"
+                android:background="@drawable/surface_card"
+                android:elevation="2dp"
+                android:padding="12dp"
+                app:layout_constraintBottom_toTopOf="@id/buttonStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/status_card">
+
+                <ru.usharik.ear4music.widget.PianoKeyboard
+                    android:id="@+id/piano_keyboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/piano_surface"
+                    app:showNoteNames="@{viewModel.showNoteNames}" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/buttonStart"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:background="@drawable/primary_button_background"
+                android:onClick="onStartClick"
+                android:text="@{viewModel.started ? @string/stop : @string/start}"
+                android:textAllCaps="false"
+                android:textColor="@color/textInverse"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Start" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

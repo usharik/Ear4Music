@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="10dp"
+        android:top="26dp"
+        android:right="50dp"
+        android:bottom="42dp">
+        <shape android:shape="oval">
+            <stroke
+                android:width="2dp"
+                android:color="#33FFFFFF" />
+            <solid android:color="#00000000" />
+        </shape>
+    </item>
+
+    <item
+        android:left="18dp"
+        android:top="34dp"
+        android:right="42dp"
+        android:bottom="34dp">
+        <shape android:shape="oval">
+            <stroke
+                android:width="2dp"
+                android:color="#26FFD166" />
+            <solid android:color="#00000000" />
+        </shape>
+    </item>
+
+    <item
+        android:left="18dp"
+        android:top="18dp"
+        android:right="18dp"
+        android:bottom="18dp"
+        android:drawable="@drawable/ic_launcher_symbol" />
+</layer-list>

@@ -2,22 +2,25 @@ Privacy Policy for Ear4Music
 
 Last updated: 2026-03-11
 
-Ear4Music is an offline ear-training app.
+Ear4Music is an ear-training app. Its learning features work locally on your device, and the current version also includes banner advertising.
 
 1. Personal data
 The app does not require account registration and does not intentionally collect personal data such as your name, email address, phone number, contacts, location, photos, or microphone recordings.
 
-2. Internet and third parties
-The app does not request Internet permission in the current version and does not include advertising, analytics, or crash-reporting services.
+2. Internet access
+The current version of the app requests Internet and network state access to load and display banner ads.
 
-3. Data stored on your device
+3. Advertising and third-party services
+The app uses Google Mobile Ads SDK (AdMob) to display banner ads. When ads are requested or shown, Google and its partners may process technical and advertising-related data according to their own privacy policies, for example device identifiers, IP address, approximate location derived from IP, diagnostics, and ad interaction data. For more information, please refer to Google's Privacy Policy and AdMob documentation.
+
+4. Data stored on your device
 The app may store training-related information on your device, such as exercise progress, results, favourites, and app preferences.
 
-4. Backups
+5. Backups
 Android system backup is enabled for the app. Depending on your device and Google backup settings, locally stored app data may be included in system backups.
 
-5. Data deletion
+6. Data deletion
 You can delete the app data at any time in Android settings or by uninstalling the app.
 
-6. Changes to this policy
+7. Changes to this policy
 This policy may be updated if the app functionality changes.

@@ -2,6 +2,8 @@ package ru.usharik.ear4music;
 
 import android.app.Application;
 
+import com.google.android.gms.ads.MobileAds;
+
 import ru.usharik.ear4music.di.DaggerAppComponent;
 
 import javax.inject.Inject;
@@ -23,6 +25,7 @@ public class App extends Application implements HasAndroidInjector {
     public void onCreate() {
         super.onCreate();
         DaggerAppComponent.builder().create(this).inject(this);
+        new Thread(() -> MobileAds.initialize(this, initializationStatus -> {})).start();
     }
 
     @Override

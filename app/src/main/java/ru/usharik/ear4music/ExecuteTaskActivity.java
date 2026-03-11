@@ -9,11 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
+import com.google.android.gms.ads.AdView;
 import ru.usharik.ear4music.databinding.ExecuteTaskActivityBinding;
+import ru.usharik.ear4music.framework.BannerAdLoader;
 import ru.usharik.ear4music.framework.ViewActivity;
 import ru.usharik.ear4music.model.SubTask;
 import ru.usharik.ear4music.service.MidiSupport;
@@ -36,16 +39,9 @@ import javax.inject.Inject;
 public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     public static final String EXTRA_SUB_TASK_ID = "ru.usharik.ear4music.extra.SUB_TASK_ID";
 
-    private static final class DialogActionSpec {
-        private final int labelResId;
-        private final boolean primary;
-        private final Runnable action;
-
-        private DialogActionSpec(int labelResId, boolean primary, Runnable action) {
-            this.labelResId = labelResId;
-            this.primary = primary;
-            this.action = action;
-        }
+    private record DialogActionSpec(int labelResId,
+                                    boolean primary,
+                                    Runnable action) {
     }
 
     @Inject
@@ -55,6 +51,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private Subject<NoteInfo> keyboardPublishSubject;
     private Subject<Boolean> taskStatePublishSubject;
     private CompositeDisposable compositeDisposable;
+    private AdView bannerAdView;
 
     @Override
     protected Class<ExecuteTaskViewModel> getViewModelClass() {
@@ -92,6 +89,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         setActivityTitle();
 
         binding.setViewModel(getViewModel());
+        loadBanner(binding.bannerContainer);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -111,9 +109,19 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
     @Override
     protected void onPause() {
+        BannerAdLoader.destroy(binding.bannerContainer, bannerAdView);
+        bannerAdView = null;
         super.onPause();
         stopTask();
         Log.i(getClass().getName(), "Pause");
+    }
+
+    private void loadBanner(FrameLayout container) {
+        container.post(() -> bannerAdView = BannerAdLoader.loadAnchoredBanner(
+                this,
+                container,
+                BuildConfig.ADMOB_EXECUTE_BANNER_AD_UNIT_ID,
+                bannerAdView));
     }
 
     private List<NotesEnum> getMelodyFromString(String str) {

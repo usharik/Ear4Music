@@ -34,9 +34,9 @@
             android:animateLayoutChanges="true"
             android:clipChildren="false"
             android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingTop="16dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            android:paddingBottom="12dp">
 
             <LinearLayout
                 android:id="@+id/details_card"
@@ -45,7 +45,7 @@
                 android:background="@drawable/surface_card"
                 android:elevation="2dp"
                 android:orientation="vertical"
-                android:padding="20dp"
+                android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -76,7 +76,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -100,7 +100,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -124,7 +124,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -138,11 +138,11 @@
 
                     <ToggleButton
                         android:id="@+id/toggleButton"
-                        android:layout_width="96dp"
-                        android:layout_height="40dp"
+                        android:layout_width="88dp"
+                        android:layout_height="34dp"
                         android:background="@drawable/rect_background"
                         android:checked="@={viewModel.showNoteNames}"
-                        android:minHeight="40dp"
+                        android:minHeight="34dp"
                         android:textAllCaps="false"
                         android:textColor="@color/toggle_button_text"
                         android:textOff="@string/no"
@@ -152,7 +152,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -166,11 +166,11 @@
 
                     <ru.usharik.ear4music.widget.ToggleImageButton
                         android:id="@+id/imageButton"
-                        android:layout_width="@dimen/icon_button_size"
-                        android:layout_height="@dimen/icon_button_size"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
                         android:background="@drawable/icon_button_background"
                         android:contentDescription="@string/favourite"
-                        android:padding="8dp"
+                        android:padding="6dp"
                         android:scaleType="centerInside"
                         app:checked="@={viewModel.favourite}"
                         app:srcCompat="@drawable/star" />
@@ -181,11 +181,11 @@
                 android:id="@+id/status_card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_section_spacing"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/surface_card"
                 android:elevation="2dp"
                 android:orientation="vertical"
-                android:padding="16dp"
+                android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/details_card">
@@ -201,8 +201,8 @@
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="12dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="8dp"
                     android:progressDrawable="@drawable/progress_bar"
                     tools:progress="10" />
             </LinearLayout>
@@ -211,12 +211,11 @@
                 android:id="@+id/keyboard_card"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/screen_section_spacing"
-                android:layout_marginBottom="@dimen/screen_section_spacing"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/surface_card"
                 android:elevation="2dp"
-                android:padding="12dp"
-                app:layout_constraintBottom_toTopOf="@id/buttonStart"
+                android:padding="8dp"
+                app:layout_constraintBottom_toTopOf="@id/bottom_action_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/status_card">
@@ -229,21 +228,36 @@
                     app:showNoteNames="@{viewModel.showNoteNames}" />
             </FrameLayout>
 
-            <Button
-                android:id="@+id/buttonStart"
+            <LinearLayout
+                android:id="@+id/bottom_action_container"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:background="@drawable/primary_button_background"
-                android:onClick="onStartClick"
-                android:text="@{viewModel.started ? @string/stop : @string/start}"
-                android:textAllCaps="false"
-                android:textColor="@color/textInverse"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="Start" />
+                app:layout_constraintTop_toBottomOf="@id/keyboard_card">
+
+                <Button
+                    android:id="@+id/buttonStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/primary_button_background"
+                    android:onClick="onStartClick"
+                    android:text="@{viewModel.started ? @string/stop : @string/start}"
+                    android:textAllCaps="false"
+                    android:textColor="@color/textInverse"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="Start" />
+
+                <FrameLayout
+                    android:id="@+id/bannerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

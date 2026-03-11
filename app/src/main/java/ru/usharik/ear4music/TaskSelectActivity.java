@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 
+import com.google.android.gms.ads.AdView;
 import ru.usharik.ear4music.adapter.SubTaskAdapter;
 import ru.usharik.ear4music.adapter.TaskAdapter;
 import ru.usharik.ear4music.databinding.TaskSelectActivityBinding;
+import ru.usharik.ear4music.framework.BannerAdLoader;
 import ru.usharik.ear4music.framework.ViewActivity;
 import ru.usharik.ear4music.model.SubTask;
 import ru.usharik.ear4music.model.Task;
@@ -18,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
 
     private TaskSelectActivityBinding binding;
+    private AdView bannerAdView;
 
     @Override
     protected Class<TaskSelectViewModel> getViewModelClass() {
@@ -35,6 +39,7 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         applySystemBarInsets(binding.tabLayout, true, false, true, false);
         applySystemBarInsets(binding.taskList, true, false, true, true);
         applySystemBarInsets(binding.favouriteTaskList, true, false, true, true);
+        applySystemBarInsets(binding.bannerContainer, true, false, true, true);
 
         setupTabs();
 
@@ -57,6 +62,15 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
 
         setTitle(getResources().getString(R.string.select_notes));
+        loadBanner(binding.bannerContainer);
+    }
+
+    private void loadBanner(FrameLayout container) {
+        container.post(() -> bannerAdView = BannerAdLoader.loadAnchoredBanner(
+                this,
+                container,
+                BuildConfig.ADMOB_TASK_SELECT_BANNER_AD_UNIT_ID,
+                bannerAdView));
     }
 
     private void setupTabs() {
@@ -97,6 +111,8 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
     protected void onPause() {
         getViewModel().setTaskListPosition(Utilities.getScrollPosition(binding.taskList));
         getViewModel().setFavouriteTaskListPosition(Utilities.getScrollPosition(binding.favouriteTaskList));
+        BannerAdLoader.destroy(binding.bannerContainer, bannerAdView);
+        bannerAdView = null;
         super.onPause();
     }
 

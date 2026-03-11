@@ -6,12 +6,16 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.macbook.ear4music.SubTaskListRowViewModel;
-import com.example.macbook.ear4music.service.DbService;
+import com.example.macbook.ear4music.repository.SubTaskRepository;
 import com.example.macbook.ear4music.service.Utils;
 import com.example.macbook.ear4music.databinding.SubTaskListRowBinding;
 import com.example.macbook.ear4music.model.SubTask;
+import com.example.macbook.ear4music.model.Task;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
@@ -24,7 +28,8 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHo
 
     private final List<SubTask> subTaskList;
     private final PublishSubject<SubTask> onClickSubject = PublishSubject.create();
-    private final DbService dbService;
+    private final SubTaskRepository subTaskRepository;
+    private final Map<Long, Task> tasksById;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final SubTaskListRowBinding binding;
@@ -44,9 +49,25 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHo
         }
     }
 
-    public SubTaskAdapter(List<SubTask> subTaskList, DbService dbService) {
+    public SubTaskAdapter(List<SubTask> subTaskList,
+                          List<Task> tasks,
+                          SubTaskRepository subTaskRepository) {
         this.subTaskList = subTaskList;
-        this.dbService = dbService;
+        this.subTaskRepository = subTaskRepository;
+        this.tasksById = createTaskIndex(tasks);
+    }
+
+    private Map<Long, Task> createTaskIndex(List<Task> tasks) {
+        if (tasks == null || tasks.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Map<Long, Task> taskIndex = new HashMap<>();
+        for (Task task : tasks) {
+            if (task != null && task.getId() != null) {
+                taskIndex.put(task.getId(), task);
+            }
+        }
+        return taskIndex;
     }
 
     @Override
@@ -61,7 +82,8 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHo
         final SubTask subTask = subTaskList.get(position);
 
         Resources res = holder.getBinding().getRoot().getResources();
-        SubTaskListRowViewModel viewModel = new SubTaskListRowViewModel(subTask, Utils.getSubTaskDescription(res, subTask), dbService.getDaoSession());
+        Task task = tasksById.get(subTask.getTaskId());
+        SubTaskListRowViewModel viewModel = new SubTaskListRowViewModel(subTask, Utils.getSubTaskDescription(res, subTask), task, subTaskRepository);
         holder.bind(viewModel);
         holder.itemView.setOnClickListener((v) -> onClickSubject.onNext(subTask));
     }

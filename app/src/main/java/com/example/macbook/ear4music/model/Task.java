@@ -3,6 +3,7 @@ package com.example.macbook.ear4music.model;
 import java.io.Serializable;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -27,6 +28,7 @@ public class Task implements Serializable {
     public Task() {
     }
 
+    @Ignore
     public Task(Long id, int nameId, int setOfNotesId, int setOfNotesHighlightingId,
             int donePercent) {
         this.id = id;

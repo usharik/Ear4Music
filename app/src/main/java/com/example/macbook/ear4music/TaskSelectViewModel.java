@@ -5,8 +5,9 @@ import com.example.macbook.ear4music.adapter.TaskAdapter;
 import com.example.macbook.ear4music.framework.ViewModelObservable;
 import com.example.macbook.ear4music.model.SubTask;
 import com.example.macbook.ear4music.model.Task;
+import com.example.macbook.ear4music.repository.SubTaskRepository;
+import com.example.macbook.ear4music.repository.TaskRepository;
 import com.example.macbook.ear4music.service.AppState;
-import com.example.macbook.ear4music.service.DbService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,30 +19,32 @@ import javax.inject.Inject;
  */
 
 public class TaskSelectViewModel extends ViewModelObservable {
-    private List<Task> taskList;
-    private final DbService dbService;
+    private final TaskRepository taskRepository;
+    private final SubTaskRepository subTaskRepository;
     private final AppState appState;
     private int taskListPosition;
     private int favouriteTaskListPosition;
 
     @Inject
-    public TaskSelectViewModel(final DbService dbService,
+    public TaskSelectViewModel(final TaskRepository taskRepository,
+                               final SubTaskRepository subTaskRepository,
                                final AppState appState) {
-        this.dbService = dbService;
+        this.taskRepository = taskRepository;
+        this.subTaskRepository = subTaskRepository;
         this.appState = appState;
         this.taskListPosition = 0;
         this.favouriteTaskListPosition = 0;
     }
 
     TaskAdapter getTaskAdapter() {
-        taskList = new ArrayList<>();
-        taskList.addAll(dbService.getAllTasks());
+        List<Task> taskList = new ArrayList<>();
+        taskList.addAll(taskRepository.getAll());
         return new TaskAdapter(taskList);
     }
 
     SubTaskAdapter getFavouriteSubTaskAdapter() {
-        List<SubTask> subTaskList = dbService.findFavouriteSubTasks();
-        return new SubTaskAdapter(subTaskList, dbService);
+        List<SubTask> subTaskList = subTaskRepository.findFavourites();
+        return new SubTaskAdapter(subTaskList, taskRepository.getAll(), subTaskRepository);
     }
 
     public void setTask(Task task) {
@@ -50,6 +53,11 @@ public class TaskSelectViewModel extends ViewModelObservable {
 
     public void setSubTask(SubTask subTask) {
         appState.setSubTask(subTask);
+        if (subTask == null || subTask.getTaskId() <= 0L) {
+            appState.setTask(null);
+            return;
+        }
+        appState.setTask(taskRepository.findById(subTask.getTaskId()));
     }
 
     public int getCurrentTab() {

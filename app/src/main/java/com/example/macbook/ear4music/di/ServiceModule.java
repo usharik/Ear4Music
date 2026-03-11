@@ -2,8 +2,10 @@ package com.example.macbook.ear4music.di;
 
 import android.app.Application;
 
+import com.example.macbook.ear4music.model.room.AppDatabase;
+import com.example.macbook.ear4music.repository.SubTaskRepository;
+import com.example.macbook.ear4music.repository.TaskRepository;
 import com.example.macbook.ear4music.service.AppState;
-import com.example.macbook.ear4music.service.DbService;
 import com.example.macbook.ear4music.service.MidiSupport;
 import com.example.macbook.ear4music.service.StatisticsStorage;
 
@@ -20,8 +22,20 @@ import dagger.Provides;
 class ServiceModule {
     @Provides
     @Singleton
-    DbService provideDbService(Application application) {
-        return new DbService(application);
+    AppDatabase provideAppDatabase(Application application) {
+        return AppDatabase.create(application);
+    }
+
+    @Provides
+    @Singleton
+    TaskRepository provideTaskRepository(AppDatabase appDatabase) {
+        return new TaskRepository(appDatabase);
+    }
+
+    @Provides
+    @Singleton
+    SubTaskRepository provideSubTaskRepository(AppDatabase appDatabase) {
+        return new SubTaskRepository(appDatabase);
     }
 
     @Provides

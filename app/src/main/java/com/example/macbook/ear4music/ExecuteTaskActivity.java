@@ -11,6 +11,7 @@ import android.view.View;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.macbook.ear4music.databinding.ExecuteTaskActivityBinding;
 import com.example.macbook.ear4music.framework.ViewActivity;
+import com.example.macbook.ear4music.model.SubTask;
 import com.example.macbook.ear4music.service.MidiSupport;
 import com.example.macbook.ear4music.service.StatisticsStorage;
 import com.example.macbook.ear4music.service.Utils;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
+    public static final String EXTRA_SUB_TASK_ID = "com.example.macbook.ear4music.extra.SUB_TASK_ID";
 
     @Inject
     MidiSupport midiSupport;
@@ -62,7 +64,11 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         binding.pianoKeyboard.setPianoKeyboardListener(noteInfo -> keyboardPublishSubject.onNext(noteInfo));
 
         getViewModel().setStarted(false);
-        getViewModel().syncWithAppState();
+        long subTaskId = getIntent().getLongExtra(EXTRA_SUB_TASK_ID, -1L);
+        if (!getViewModel().syncWithSubTaskId(subTaskId)) {
+            finish();
+            return;
+        }
         setActivityTitle();
 
         binding.setViewModel(getViewModel());
@@ -227,10 +233,13 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     private void onNextTask(DialogInterface var1, int var2) {
-        if (getViewModel().getSubTask().getNextSubTask() == null) {
+        SubTask subTask = getViewModel().getSubTask();
+        if (subTask == null || subTask.getNextSubTaskId() == null) {
             return;
         }
-        getViewModel().setSubTask(getViewModel().getSubTask().getNextSubTask());
+        if (!getViewModel().syncWithSubTaskId(subTask.getNextSubTaskId())) {
+            return;
+        }
         setActivityTitle();
         showInstructionAndRunTask();
     }

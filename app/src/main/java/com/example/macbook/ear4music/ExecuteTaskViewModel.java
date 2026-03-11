@@ -4,8 +4,11 @@ import androidx.databinding.Bindable;
 
 import com.example.macbook.ear4music.framework.ViewModelObservable;
 import com.example.macbook.ear4music.model.SubTask;
+import com.example.macbook.ear4music.model.Task;
+import com.example.macbook.ear4music.model.room.SubTaskWithTask;
+import com.example.macbook.ear4music.repository.SubTaskRepository;
+import com.example.macbook.ear4music.repository.TaskRepository;
 import com.example.macbook.ear4music.service.AppState;
-import com.example.macbook.ear4music.service.DbService;
 import com.example.macbook.ear4music.service.MelodyNoteGenerator;
 import com.example.macbook.ear4music.service.NoteGenerator;
 import com.example.macbook.ear4music.service.RandomNoteGenerator;
@@ -31,33 +34,55 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
     private boolean isWithNoteHighlighting = false;
     private int notesInSequence = 0;
     private int sequencesInSubTask = 0;
-    private int correctPercent = 0;
     private boolean isFavourite;
     private Integer instructionId;
     private boolean showNoteNames = true;
     private boolean isStarted = false;
 
     private SubTask subTask;
+    private Task task;
 
-    private final DbService dbService;
+    private final TaskRepository taskRepository;
+    private final SubTaskRepository subTaskRepository;
     private final AppState appState;
     private final StatisticsStorage statisticsStorage;
 
     @Inject
-    ExecuteTaskViewModel(final DbService dbService,
+    ExecuteTaskViewModel(final TaskRepository taskRepository,
+                         final SubTaskRepository subTaskRepository,
                          final AppState appState,
                          final StatisticsStorage statisticsStorage) {
-        this.dbService = dbService;
+        this.taskRepository = taskRepository;
+        this.subTaskRepository = subTaskRepository;
         this.appState = appState;
         this.statisticsStorage = statisticsStorage;
     }
 
-    public void syncWithAppState() {
-        setSubTask(appState.getSubTask());
+    public boolean syncWithSubTaskId(long subTaskId) {
+        SubTask appStateSubTask = appState.getSubTask();
+        if (appStateSubTask != null && appStateSubTask.getId() != null
+                && (subTaskId <= 0L || appStateSubTask.getId() == subTaskId)) {
+            Task appStateTask = resolveTask(appStateSubTask, appState.getTask());
+            if (appStateTask != null) {
+                setSubTask(appStateSubTask, appStateTask);
+                return true;
+            }
+        }
+
+        if (subTaskId > 0L) {
+            SubTaskWithTask subTaskWithTask = subTaskRepository.findWithTaskById(subTaskId);
+            if (subTaskWithTask != null && subTaskWithTask.subTask != null && subTaskWithTask.task != null) {
+                setSubTask(subTaskWithTask.subTask, subTaskWithTask.task);
+                return true;
+            }
+        }
+
+        clearSubTask();
+        return false;
     }
 
-    public void updateAppState() {
-        appState.setTask(subTask.getTask());
+    private void updateAppState() {
+        appState.setTask(task);
         appState.setSubTask(subTask);
     }
 
@@ -89,7 +114,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         return taskId;
     }
 
-    public void setTaskId(long taskId) {
+    private void setTaskId(long taskId) {
         this.taskId = taskId;
     }
 
@@ -97,18 +122,12 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         return subTaskId;
     }
 
-    public void setSubTaskId(long subTaskId) {
-        this.subTaskId = subTaskId;
-        SubTask subTask = dbService.findSubTaskById(this.subTaskId);
-        setSubTask(subTask);
-    }
-
     @Bindable
     public int getSetOfNotesId() {
         return setOfNotesId;
     }
 
-    public void setSetOfNotesId(int setOfNotesId) {
+    private void setSetOfNotesId(int setOfNotesId) {
         this.setOfNotesId = setOfNotesId;
         notifyPropertyChanged(BR.setOfNotesId);
     }
@@ -117,7 +136,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         return setOfNotesHighlightingId;
     }
 
-    public void setSetOfNotesHighlightingId(int setOfNotesHighlightingId) {
+    private void setSetOfNotesHighlightingId(int setOfNotesHighlightingId) {
         this.setOfNotesHighlightingId = setOfNotesHighlightingId;
     }
 
@@ -127,17 +146,12 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
     }
 
     @Bindable
-    public void setNotesPerMinute(int notesPerMinute) {
+    private void setNotesPerMinute(int notesPerMinute) {
         this.notesPerMinute = notesPerMinute;
         notifyPropertyChanged(BR.notesPerMinute);
     }
 
-    @Bindable
-    public boolean isPlayWithScale() {
-        return isPlayWithScale;
-    }
-
-    public void setPlayWithScale(boolean playWithScale) {
+    private void setPlayWithScale(boolean playWithScale) {
         isPlayWithScale = playWithScale;
     }
 
@@ -147,7 +161,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
     }
 
     @Bindable
-    public void setNotesInSequence(int notesInSequence) {
+    private void setNotesInSequence(int notesInSequence) {
         this.notesInSequence = notesInSequence;
         notifyPropertyChanged(BR.notesInSequence);
     }
@@ -156,20 +170,20 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         return sequencesInSubTask;
     }
 
-    public void setSequencesInSubTask(int sequencesInSubTask) {
+    private void setSequencesInSubTask(int sequencesInSubTask) {
         this.sequencesInSubTask = sequencesInSubTask;
     }
 
-    public int getCorrectAnswerPercent() {
-        return correctPercent;
-    }
-
     public void setCorrectAnswerPercent(int correctAnswerPercent) {
-        this.correctPercent = correctAnswerPercent;
-        SubTask subTask = dbService.findSubTaskById(subTaskId);
+        SubTask subTask = subTaskRepository.findById(subTaskId);
+        if (subTask == null) {
+            return;
+        }
         subTask.setCorrectAnswerPercent(correctAnswerPercent);
-        dbService.updateSubTask(subTask);
-        dbService.updateTaskDonePercent(subTask.getTask());
+        subTaskRepository.update(subTask);
+        if (task != null) {
+            taskRepository.updateDonePercent(task);
+        }
     }
 
     @Bindable
@@ -181,16 +195,22 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
     public void setFavourite(boolean favourite) {
         isFavourite = favourite;
         notifyPropertyChanged(BR.showNoteNames);
+        if (subTask == null) {
+            return;
+        }
         subTask.setFavourite(favourite);
-        appState.getSubTask().setFavourite(favourite);
-        dbService.updateSubTask(subTask);
+        SubTask appStateSubTask = appState.getSubTask();
+        if (appStateSubTask != null) {
+            appStateSubTask.setFavourite(favourite);
+        }
+        subTaskRepository.update(subTask);
     }
 
     public Integer getInstructionId() {
         return instructionId;
     }
 
-    public void setInstructionId(Integer instructionId) {
+    private void setInstructionId(Integer instructionId) {
         this.instructionId = instructionId;
     }
 
@@ -209,7 +229,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         return isWithNoteHighlighting;
     }
 
-    public void setWithNoteHighlighting(boolean withNoteHighlighting) {
+    private void setWithNoteHighlighting(boolean withNoteHighlighting) {
         isWithNoteHighlighting = withNoteHighlighting;
     }
 
@@ -228,14 +248,30 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         return subTask;
     }
 
-    public void setSubTask(SubTask subTask) {
+    private Task resolveTask(SubTask subTask, Task candidateTask) {
+        if (subTask == null || subTask.getTaskId() <= 0L) {
+            return null;
+        }
+        if (candidateTask != null && candidateTask.getId() != null
+                && candidateTask.getId().longValue() == subTask.getTaskId()) {
+            return candidateTask;
+        }
+        return taskRepository.findById(subTask.getTaskId());
+    }
+
+    private void setSubTask(SubTask subTask, Task task) {
+        if (subTask == null || subTask.getId() == null || task == null || task.getId() == null) {
+            clearSubTask();
+            return;
+        }
         this.subTask = subTask;
+        this.task = task;
         this.subTaskId = subTask.getId();
         updateAppState();
 
-        setTaskId(subTask.getTask().getId());
-        setSetOfNotesId(subTask.getTask().getSetOfNotesId());
-        setSetOfNotesHighlightingId(subTask.getTask().getSetOfNotesHighlightingId());
+        setTaskId(task.getId());
+        setSetOfNotesId(task.getSetOfNotesId());
+        setSetOfNotesHighlightingId(task.getSetOfNotesHighlightingId());
 
         setNotesPerMinute(subTask.getNotesPerMinute());
         setPlayWithScale(subTask.isPlayWithScale());
@@ -244,6 +280,15 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
         setWithNoteHighlighting(subTask.isWithNoteHighlighting());
         setInstructionId(subTask.getInstructionId());
         setFavourite(subTask.isFavourite());
+    }
+
+    private void clearSubTask() {
+        this.subTask = null;
+        this.task = null;
+        this.taskId = 0L;
+        this.subTaskId = 0L;
+        appState.setTask(null);
+        appState.setSubTask(null);
     }
 
     public StatisticsStorage getStatisticsStorage() {

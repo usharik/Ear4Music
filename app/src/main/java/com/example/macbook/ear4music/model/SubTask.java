@@ -24,14 +24,7 @@ public class SubTask implements Serializable {
     @ColumnInfo(name = "taskId", index = true)
     private long taskId;
 
-    // Relation will be loaded by DbService/Room DAOs when needed
-    @Ignore
-    private Task task;
-
     private Long nextSubTaskId;
-
-    @Ignore
-    private SubTask nextSubTask;
 
     private int notesPerMinute;
 
@@ -50,6 +43,7 @@ public class SubTask implements Serializable {
     @ColumnInfo(name = "isFavourite")
     private boolean isFavourite;
 
+    @Ignore
     public SubTask(Long id, long taskId, Long nextSubTaskId, int notesPerMinute,
                    boolean playWithScale, boolean withNoteHighlighting, int notesInSequence,
                    int sequencesInSubTask, int correctAnswerPercent, Integer instructionId,
@@ -156,25 +150,5 @@ public class SubTask implements Serializable {
 
     public void setFavourite(boolean favourite) {
         isFavourite = favourite;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-        if (task != null && task.getId() != null) {
-            this.taskId = task.getId();
-        }
-    }
-
-    public SubTask getNextSubTask() {
-        return nextSubTask;
-    }
-
-    public void setNextSubTask(SubTask nextSubTask) {
-        this.nextSubTask = nextSubTask;
-        this.nextSubTaskId = nextSubTask == null ? null : nextSubTask.getId();
     }
 }

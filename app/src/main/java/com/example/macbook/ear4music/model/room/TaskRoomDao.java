@@ -3,6 +3,7 @@ package com.example.macbook.ear4music.model.room;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.macbook.ear4music.model.Task;
@@ -16,6 +17,10 @@ public interface TaskRoomDao {
 
     @Query("SELECT * FROM task WHERE id = :id LIMIT 1")
     Task findById(long id);
+
+    @Transaction
+    @Query("SELECT * FROM task WHERE id = :id LIMIT 1")
+    TaskWithSubTasks findWithSubTasksById(long id);
 
     @Insert
     long insert(Task task);

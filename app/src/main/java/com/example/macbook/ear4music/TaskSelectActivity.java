@@ -75,13 +75,18 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
     public void onTaskSelect(Task task) {
         Intent intent = new Intent(getApplicationContext(), SubTaskSelectActivity.class);
         getViewModel().setTask(task);
+        if (task.getId() != null) {
+            intent.putExtra(SubTaskSelectActivity.EXTRA_TASK_ID, task.getId());
+        }
         startActivity(intent);
     }
 
     public void onSubTaskSelect(SubTask subTask) {
         Intent intent = new Intent(getApplicationContext(), ExecuteTaskActivity.class);
-        getViewModel().setTask(subTask.getTask());
         getViewModel().setSubTask(subTask);
+        if (subTask.getId() != null) {
+            intent.putExtra(ExecuteTaskActivity.EXTRA_SUB_TASK_ID, subTask.getId());
+        }
         startActivity(intent);
     }
 }

@@ -4,9 +4,11 @@ import com.example.macbook.ear4music.adapter.SubTaskAdapter;
 import com.example.macbook.ear4music.framework.ViewModelObservable;
 import com.example.macbook.ear4music.model.SubTask;
 import com.example.macbook.ear4music.model.Task;
+import com.example.macbook.ear4music.repository.SubTaskRepository;
+import com.example.macbook.ear4music.repository.TaskRepository;
 import com.example.macbook.ear4music.service.AppState;
-import com.example.macbook.ear4music.service.DbService;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,24 +18,43 @@ import javax.inject.Inject;
  */
 
 public class SubTaskSelectViewModel extends ViewModelObservable {
-    private final DbService dbService;
+    private final TaskRepository taskRepository;
+    private final SubTaskRepository subTaskRepository;
     private final AppState appState;
     private Task task;
     private int subTaskListPosition;
 
     @Inject
-    public SubTaskSelectViewModel(final DbService dbService,
+    public SubTaskSelectViewModel(final TaskRepository taskRepository,
+                                  final SubTaskRepository subTaskRepository,
                                   final AppState appState) {
-        this.dbService = dbService;
+        this.taskRepository = taskRepository;
+        this.subTaskRepository = subTaskRepository;
         this.appState = appState;
         this.subTaskListPosition = 0;
     }
 
-    public void syncWithAppState() {
-        setTask(appState.getTask());
+    public boolean syncWithTaskId(long taskId) {
+        Task appStateTask = appState.getTask();
+        if (appStateTask != null && appStateTask.getId() != null
+                && (taskId <= 0L || appStateTask.getId() == taskId)) {
+            setTask(appStateTask);
+            return true;
+        }
+
+        if (taskId > 0L) {
+            Task restoredTask = taskRepository.findById(taskId);
+            if (restoredTask != null) {
+                setTask(restoredTask);
+                return true;
+            }
+        }
+
+        setTask(null);
+        return false;
     }
 
-    public void updateAppState() {
+    private void updateAppState() {
         appState.setTask(task);
     }
 
@@ -51,8 +72,11 @@ public class SubTaskSelectViewModel extends ViewModelObservable {
     }
 
     SubTaskAdapter getTaskAdapter() {
-        List<SubTask> subTaskList = dbService.findSubTasksByTaskId(task.getId());
-        return new SubTaskAdapter(subTaskList, dbService);
+        if (task == null || task.getId() == null) {
+            return new SubTaskAdapter(Collections.emptyList(), Collections.emptyList(), subTaskRepository);
+        }
+        List<SubTask> subTaskList = subTaskRepository.findByTaskId(task.getId());
+        return new SubTaskAdapter(subTaskList, Collections.singletonList(task), subTaskRepository);
     }
 
     public int getSubTaskListPosition() {

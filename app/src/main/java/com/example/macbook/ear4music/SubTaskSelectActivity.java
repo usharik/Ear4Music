@@ -15,6 +15,7 @@ import com.example.macbook.ear4music.model.SubTask;
 import io.reactivex.disposables.Disposable;
 
 public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> {
+    public static final String EXTRA_TASK_ID = "com.example.macbook.ear4music.extra.TASK_ID";
 
     private SubTaskSelectActivityBinding binding;
     private Disposable itemClickDisposable;
@@ -29,7 +30,11 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
         super.onResume();
         binding = DataBindingUtil.setContentView(this, R.layout.sub_task_select_activity);
 
-        getViewModel().syncWithAppState();
+        long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1L);
+        if (!getViewModel().syncWithTaskId(taskId)) {
+            finish();
+            return;
+        }
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         binding.subTaskList.setLayoutManager(mLayoutManager);
@@ -59,6 +64,9 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
     public void onSubTaskSelect(SubTask subTask) {
         Intent intent = new Intent(getApplicationContext(), ExecuteTaskActivity.class);
         getViewModel().setSubTask(subTask);
+        if (subTask.getId() != null) {
+            intent.putExtra(ExecuteTaskActivity.EXTRA_SUB_TASK_ID, subTask.getId());
+        }
         startActivity(intent);
     }
 

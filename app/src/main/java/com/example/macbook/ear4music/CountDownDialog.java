@@ -38,7 +38,11 @@ public class CountDownDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
         return dialog;
     }
 
@@ -59,7 +63,12 @@ public class CountDownDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Dialog dialog = getDialog();
+        if (dialog == null || dialog.getWindow() == null) {
+            return;
+        }
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
     @Override

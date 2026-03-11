@@ -1,13 +1,17 @@
 package com.example.macbook.ear4music;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import androidx.databinding.DataBindingUtil;
 import android.os.Build;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.macbook.ear4music.databinding.ExecuteTaskActivityBinding;
 import com.example.macbook.ear4music.framework.ViewActivity;
@@ -31,6 +35,18 @@ import javax.inject.Inject;
 
 public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     public static final String EXTRA_SUB_TASK_ID = "com.example.macbook.ear4music.extra.SUB_TASK_ID";
+
+    private static final class DialogActionSpec {
+        private final int labelResId;
+        private final boolean primary;
+        private final Runnable action;
+
+        private DialogActionSpec(int labelResId, boolean primary, Runnable action) {
+            this.labelResId = labelResId;
+            this.primary = primary;
+            this.action = action;
+        }
+    }
 
     @Inject
     MidiSupport midiSupport;
@@ -228,17 +244,15 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         } else {
             message = getResources().getString(R.string.task_accomplished, getCorrectAnswerPercent());
         }
-        new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.task_completed_header))
-                .setMessage(message)
-                .setPositiveButton(R.string.next_task, this::onNextTask)
-                .setNegativeButton(R.string.repeat, (v1, v2) -> runTask())
-                .setNeutralButton(R.string.stop, (v1, v2) -> onTaskStop())
-                .setCancelable(false)
-                .show();
+        showStyledDialog(
+                getString(R.string.task_completed_header),
+                message,
+                new DialogActionSpec(R.string.next_task, true, this::onNextTask),
+                new DialogActionSpec(R.string.repeat, false, this::runTask),
+                new DialogActionSpec(R.string.stop, false, this::onTaskStop));
     }
 
-    private void onNextTask(DialogInterface var1, int var2) {
+    private void onNextTask() {
         SubTask subTask = getViewModel().getSubTask();
         if (subTask == null || subTask.getNextSubTaskId() == null) {
             return;
@@ -263,12 +277,60 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             return;
         }
         String[] taskInstr = getResources().getStringArray(R.array.task_instruction);
-        new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.task_instruction_header))
-                .setMessage(String.format(taskInstr[getViewModel().getInstructionId()], getViewModel().getNotesPerMinute()))
-                .setPositiveButton(R.string.ok, (v1, v2) -> runTask())
-                .setCancelable(false)
-                .show();
+        showStyledDialog(
+                getString(R.string.task_instruction_header),
+                String.format(taskInstr[getViewModel().getInstructionId()], getViewModel().getNotesPerMinute()),
+                new DialogActionSpec(R.string.ok, true, this::runTask),
+                null,
+                null);
+    }
+
+    private void showStyledDialog(String title,
+                                  String message,
+                                  DialogActionSpec primaryAction,
+                                  DialogActionSpec secondaryAction,
+                                  DialogActionSpec tertiaryAction) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.execute_action_dialog, null, false);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(false);
+
+        TextView titleView = dialogView.findViewById(R.id.dialogTitle);
+        TextView messageView = dialogView.findViewById(R.id.dialogMessage);
+        titleView.setText(title);
+        messageView.setText(message);
+
+        bindDialogButton(dialogView.findViewById(R.id.primaryButton), primaryAction, dialog);
+        bindDialogButton(dialogView.findViewById(R.id.secondaryButton), secondaryAction, dialog);
+        bindDialogButton(dialogView.findViewById(R.id.tertiaryButton), tertiaryAction, dialog);
+
+        dialog.show();
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
+    }
+
+    private void bindDialogButton(Button button, DialogActionSpec actionSpec, Dialog dialog) {
+        if (actionSpec == null) {
+            button.setVisibility(View.GONE);
+            return;
+        }
+        button.setText(actionSpec.labelResId);
+        if (actionSpec.primary) {
+            button.setBackgroundResource(R.drawable.primary_button_background);
+            button.setTextColor(ContextCompat.getColor(this, R.color.textInverse));
+        } else {
+            button.setBackgroundResource(R.drawable.rect_background);
+            button.setTextColor(ContextCompat.getColor(this, R.color.textPrimary));
+        }
+        button.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (actionSpec.action != null) {
+                actionSpec.action.run();
+            }
+        });
     }
 
     private void storeTaskResults() {

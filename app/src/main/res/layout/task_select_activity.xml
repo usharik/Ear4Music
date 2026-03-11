@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/screen_background"
         android:orientation="vertical"
         tools:context="com.example.macbook.ear4music.TaskSelectActivity">
 
@@ -17,31 +18,45 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@drawable/app_bar_background"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextColor="@color/textInverse" />
 
         <LinearLayout
             android:id="@+id/tab_content_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/screen_section_spacing"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_weight="1"
+            android:paddingBottom="@dimen/screen_section_spacing"
             android:orientation="vertical">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/tab_layout_background"
+                android:elevation="0dp"
+                android:padding="4dp"
                 app:tabGravity="fill"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorColor="@color/colorAccent"
                 app:tabIndicatorFullWidth="false"
-                app:tabMode="fixed" />
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed"
+                app:tabRippleColor="@color/task_select_tab_ripple"
+                app:tabSelectedTextColor="@color/textInverse"
+                app:tabTextAppearance="@style/TextAppearance.Ear4Music.Tab"
+                app:tabTextColor="@color/task_select_tab_text" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="@dimen/screen_section_spacing"
                 android:layout_weight="1">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -49,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
+                    android:paddingBottom="@dimen/list_content_padding_bottom"
                     android:scrollbars="vertical" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -56,6 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
+                    android:paddingBottom="@dimen/list_content_padding_bottom"
                     android:scrollbars="vertical"
                     android:visibility="gone" />
             </FrameLayout>

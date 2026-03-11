@@ -3,7 +3,6 @@ package com.example.macbook.ear4music;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -42,7 +41,6 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         binding.taskList.setLayoutManager(mLayoutManager);
         binding.taskList.setItemAnimator(new DefaultItemAnimator());
-        binding.taskList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         binding.taskList.getLayoutManager().scrollToPosition(getViewModel().getTaskListPosition());
 
         TaskAdapter taskAdapter = getViewModel().getTaskAdapter();
@@ -52,7 +50,6 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         binding.favouriteTaskList.setLayoutManager(mLayoutManager);
         binding.favouriteTaskList.setItemAnimator(new DefaultItemAnimator());
-        binding.favouriteTaskList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         binding.favouriteTaskList.getLayoutManager().scrollToPosition(getViewModel().getFavouriteTaskListPosition());
 
         SubTaskAdapter subTaskAdapter = getViewModel().getFavouriteSubTaskAdapter();

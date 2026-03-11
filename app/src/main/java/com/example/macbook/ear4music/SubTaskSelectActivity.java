@@ -3,7 +3,6 @@ package com.example.macbook.ear4music;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +42,6 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         binding.subTaskList.setLayoutManager(mLayoutManager);
         binding.subTaskList.setItemAnimator(new DefaultItemAnimator());
-        binding.subTaskList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         binding.subTaskList.getLayoutManager().scrollToPosition(getViewModel().getSubTaskListPosition());
 
         binding.setViewModel(getViewModel());

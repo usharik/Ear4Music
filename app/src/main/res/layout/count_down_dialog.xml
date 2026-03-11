@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:padding="5dp">
+    android:background="@drawable/surface_card"
+    android:minWidth="180dp"
+    android:minHeight="180dp"
+    android:padding="@dimen/countdown_padding">
 
     <TextView
         android:id="@+id/tvCountDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="100sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="96sp"
+        android:textStyle="bold"
         tools:text="3" />
 
 </FrameLayout>

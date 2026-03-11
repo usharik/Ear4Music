@@ -47,51 +47,51 @@ public enum NotesEnum {
     }
 
     public static Note[] getScale4Note(NotesEnum note) {
-        switch (note) {
-            case C: return new Note[] {
-                    new Note(C,0.25),
-                    new Note(C,0.25),
-                    new Note(C,0.5),
+        return switch (note) {
+            case C -> new Note[]{
+                    new Note(C, 0.25),
+                    new Note(C, 0.25),
+                    new Note(C, 0.5),
             };
-            case D: return new Note[] {
+            case D -> new Note[]{
                     new Note(D, 0.5),
                     new Note(C, 0.5)
             };
-            case E: return new Note[] {
+            case E -> new Note[]{
                     new Note(E, 0.25 + 0.125),
                     new Note(D, 0.125),
                     new Note(C, 0.25)
             };
-            case F: return new Note[] {
+            case F -> new Note[]{
                     new Note(F, 0.25),
                     new Note(E, 0.125),
                     new Note(D, 0.125),
                     new Note(C, 0.25)
             };
-            case G: return new Note[] {
+            case G -> new Note[]{
                     new Note(G, 0.25),
                     new Note(A, 0.125),
                     new Note(B, 0.125),
                     new Note(C2, 0.25)
             };
-            case A: return new Note[] {
+            case A -> new Note[]{
                     new Note(A, 0.25 + 0.125),
                     new Note(B, 0.125),
                     new Note(C2, 0.25)
             };
-            case B: return new Note[] {
+            case B -> new Note[]{
                     new Note(B, 0.5),
                     new Note(C2, 0.5)
             };
-            case C2: return new Note[] {
+            case C2 -> new Note[]{
                     new Note(C2, 0.25),
                     new Note(C2, 0.25),
                     new Note(C2, 0.5)
             };
-            default: return new Note[] {
+            default -> new Note[]{
                     new Note(note, 1)
             };
-        }
+        };
     }
 
     public static List<NotesEnum> getWhite() {

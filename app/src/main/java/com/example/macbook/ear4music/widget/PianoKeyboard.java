@@ -3,12 +3,13 @@ package com.example.macbook.ear4music.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.core.content.ContextCompat;
 
 import com.example.macbook.ear4music.NoteInfo;
 import com.example.macbook.ear4music.NotesEnum;
@@ -47,6 +48,7 @@ public class PianoKeyboard extends View {
         TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.PianoKeyboard, 0, 0);
         showNoteNames = arr.getBoolean(R.styleable.PianoKeyboard_showNoteNames, true);
         arr.recycle();
+        textPaint.setFakeBoldText(true);
 
     }
 
@@ -64,12 +66,13 @@ public class PianoKeyboard extends View {
         whiteKeys.get(7).right += restSpace;
 
         int blackKeySize = Math.round(whiteKeySize*0.6f);
-        for (int blackNum : new int[] {0, 1, 3, 4, 5, 7}) {
+        blackKeys.clear();
+        for (int blackNum : new int[] {0, 1, 3, 4, 5}) {
             Rect key = whiteKeys.get(blackNum);
             blackKeys.add(new Rect(
                     key.right - blackKeySize/2,
                     0,
-                    key.right + (blackNum != 7 ? blackKeySize/2 : 0),
+                    key.right + blackKeySize/2,
                     height/2));
         }
 
@@ -85,7 +88,7 @@ public class PianoKeyboard extends View {
         textPaint.setTextSize(height*0.1f);
         Rect textRect = new Rect();
         textPaint.getTextBounds("C", 0, 1, textRect);
-        noteNameWidth = textRect.height();
+        noteNameWidth = textRect.width();
         super.onSizeChanged(width, height, oldw, oldh);
     }
 
@@ -96,35 +99,45 @@ public class PianoKeyboard extends View {
         List<NotesEnum> whiteNotes = NotesEnum.getWhite();
         for (Rect r : this.whiteKeys) {
             NotesEnum note = whiteNotes.get(i++);
-            paint.setColor(getKeyColor(r, note, Color.WHITE));
+            paint.setColor(getKeyColor(r, note, getColor(R.color.keyboardWhite)));
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(r, paint);
-            paint.setColor(Color.BLACK);
+            paint.setColor(getColor(R.color.keyboardStroke));
             paint.setStyle(Paint.Style.STROKE);
             canvas.drawRect(r, paint);
-            textPaint.setColor(Color.BLACK);
+            textPaint.setColor(getColor(R.color.keyboardLabel));
             if (showNoteNames) {
                 canvas.drawText(note.name(), r.centerX() - noteNameWidth / 2f, r.centerY() * 5.0f / 3.0f, textPaint);
             }
         }
+        i = 0;
+        List<NotesEnum> blackNotes = NotesEnum.getBlack();
         for (Rect r : blackKeys) {
-            paint.setColor(getKeyColor(r, null, Color.BLACK));
+            NotesEnum note = blackNotes.get(i++);
+            paint.setColor(getKeyColor(r, note, getColor(R.color.keyboardBlack)));
             paint.setStyle(Paint.Style.FILL);
+            canvas.drawRect(r, paint);
+            paint.setColor(getColor(R.color.keyboardStroke));
+            paint.setStyle(Paint.Style.STROKE);
             canvas.drawRect(r, paint);
         }
     }
 
     private int getKeyColor(Rect r, NotesEnum note, int defaultColor) {
         if (currentNoteInfo != null && note != null && currentNoteInfo.isHighlighted && currentNoteInfo.note == note) {
-            return Color.GREEN;
+            return getColor(R.color.keyboardHighlight);
         }
         if (!r.equals(pressedNoteRect)) {
             return defaultColor;
         }
         if (currentNoteInfo == null) {
-            return Color.GRAY;
+            return getColor(R.color.lightGray);
         }
-        return currentNoteInfo.note == pressedNote ? Color.GREEN : Color.RED;
+        return currentNoteInfo.note == pressedNote ? getColor(R.color.green) : getColor(R.color.red);
+    }
+
+    private int getColor(int colorResId) {
+        return ContextCompat.getColor(getContext(), colorResId);
     }
 
 //    @Override

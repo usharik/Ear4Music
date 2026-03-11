@@ -13,64 +13,72 @@
         android:layout_height="wrap_content"
         android:background="@drawable/list_item_rect"
         android:clickable="true"
+        android:elevation="2dp"
         android:focusable="true"
+        android:minHeight="96dp"
         android:orientation="vertical"
         android:layout_margin="@dimen/row_margin"
-        android:paddingBottom="@dimen/row_padding_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/row_padding_vertical"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/row_padding_vertical"
         app:percentValue="@{viewModel.correctAnswerPercent}">
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_toStartOf="@id/imageButton"
+            android:paddingEnd="12dp"
             android:text="@{viewModel.subTaskDescription}"
-            tools:text="Just notes"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingEnd="10dp" />
+            android:textAppearance="@style/TextAppearance.Ear4Music.CardTitle"
+            tools:text="Just notes" />
 
         <TextView
             android:id="@+id/notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/name"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/name"
+            android:layout_marginTop="6dp"
+            android:layout_toStartOf="@id/imageButton"
             android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"
-            tools:text="C E G C2"
-            android:textSize="16sp" />
+            android:textAppearance="@style/TextAppearance.Ear4Music.Body"
+            tools:text="C E G C2" />
 
         <TextView
             android:id="@+id/temp"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/name"
+            android:layout_below="@id/notes"
             android:layout_alignParentStart="true"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:layout_marginTop="12dp"
             android:text="@string/temp"
+            android:textAppearance="@style/TextAppearance.Ear4Music.MetaLabel"
             tools:text="Temp" />
 
         <TextView
             android:id="@+id/setOfNotesId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/name"
+            android:layout_alignBaseline="@id/temp"
             android:layout_toEndOf="@id/temp"
-            android:textSize="16sp"
+            android:layout_marginStart="8dp"
             android:text="@{viewModel.notesPerMinute}"
+            android:textAppearance="@style/TextAppearance.Ear4Music.MetaValue"
             tools:text="35" />
 
         <com.example.macbook.ear4music.widget.ToggleImageButton
             android:id="@+id/imageButton"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_alignParentEnd="true"
-            android:background="#00ffffff"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/icon_button_background"
+            android:contentDescription="@string/favourite"
+            android:padding="8dp"
+            android:scaleType="centerInside"
             app:checked="@={viewModel.favourite}"
             app:srcCompat="@drawable/star" />
 

@@ -1,12 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="red">#FF0000</color>
-    <color name="green">#00FF00</color>
-    <color name="darkGreen">#005C00</color>
-    <color name="gray">#444444</color>
-    <color name="lightGray">#666</color>
-    <color name="lightGray_1">#AAA</color>
+    <color name="colorPrimary">#243B7A</color>
+    <color name="colorPrimaryDark">#172651</color>
+    <color name="colorAccent">#F2B84B</color>
+
+    <color name="red">#D94C5B</color>
+    <color name="green">#3FB87F</color>
+    <color name="darkGreen">#24895A</color>
+    <color name="gray">#1F2A44</color>
+    <color name="lightGray">#C8D0E4</color>
+    <color name="lightGray_1">#E8ECF7</color>
+
+    <color name="screenBackground">#F4F6FB</color>
+    <color name="screenBackgroundDark">#E9EEFA</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surfaceAlt">#F8FAFF</color>
+    <color name="surfacePressed">#EEF2FF</color>
+    <color name="outline">#D7DDED</color>
+    <color name="textPrimary">#1B2748</color>
+    <color name="textSecondary">#667391</color>
+    <color name="textInverse">#FFFFFFFF</color>
+    <color name="progressTrack">#DCE4F5</color>
+    <color name="progressFill">#3FB87F</color>
+    <color name="progressFillSoft">#A9E4C4</color>
+    <color name="favoriteTint">#F2B84B</color>
+    <color name="favoriteTintOff">#9AA6C3</color>
+    <color name="keyboardWhite">#FCFDFF</color>
+    <color name="keyboardBlack">#24324D</color>
+    <color name="keyboardStroke">#98A6C8</color>
+    <color name="keyboardLabel">#33415F</color>
+    <color name="keyboardHighlight">#DDF7E8</color>
 </resources>

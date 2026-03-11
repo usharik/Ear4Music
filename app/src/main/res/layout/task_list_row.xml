@@ -12,13 +12,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/list_item_rect"
         android:clickable="true"
+        android:elevation="2dp"
         android:focusable="true"
+        android:minHeight="88dp"
         android:orientation="vertical"
         android:layout_margin="@dimen/row_margin"
-        android:paddingBottom="@dimen/row_padding_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/row_padding_vertical"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/row_padding_vertical"
         app:percentValue="@{viewModel.donePercent}">
 
         <TextView
@@ -28,22 +30,16 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:text="@{@stringArray/task_name[viewModel.nameId]}"
-            android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/TextAppearance.Ear4Music.CardTitle" />
 
         <TextView
             android:id="@+id/setOfNotesId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
-            android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"/>
-
-        <TextView
-            android:id="@+id/notesPerMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text=""/>
+            android:layout_marginTop="6dp"
+            android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"
+            android:textAppearance="@style/TextAppearance.Ear4Music.Body" />
 
     </com.example.macbook.ear4music.widget.ProgressRelativeLayout>
 </layout>

@@ -12,7 +12,7 @@ import com.example.macbook.ear4music.databinding.SubTaskSelectActivityBinding;
 import com.example.macbook.ear4music.framework.ViewActivity;
 import com.example.macbook.ear4music.model.SubTask;
 
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> {
     public static final String EXTRA_TASK_ID = "com.example.macbook.ear4music.extra.TASK_ID";

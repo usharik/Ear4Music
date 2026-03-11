@@ -3,21 +3,20 @@ package com.example.macbook.ear4music.service;
 import android.util.Log;
 import com.example.macbook.ear4music.NotesEnum;
 import org.billthefarmer.mididriver.MidiDriver;
-import io.reactivex.functions.Action;
 
 /**
  * Created by macbook on 02.07.17.
  */
 public class MidiSupport implements MidiDriver.OnMidiStartListener {
     private final MidiDriver midiDriver;
-    private Action afterMidiStarted;
+    private Runnable afterMidiStarted;
 
     public MidiSupport() {
         this.midiDriver = MidiDriver.getInstance();
         this.midiDriver.setOnMidiStartListener(this);
     }
 
-    public synchronized void start(Action afterMidiStarted) {
+    public synchronized void start(Runnable afterMidiStarted) {
         this.afterMidiStarted = afterMidiStarted;
         midiDriver.start();
         int[] config = midiDriver.config();
@@ -41,7 +40,10 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
 
         // Send the MIDI event to the synthesizer.
         midiDriver.write(event);
-        pause(longitude);
+        if (!pause(longitude)) {
+            stopNote(note.getPitch());
+            return;
+        }
         stopNote(note.getPitch());
     }
 
@@ -60,27 +62,34 @@ public class MidiSupport implements MidiDriver.OnMidiStartListener {
         double rest = 1.0;
         int scaleLng = longitude/2;
         for (NotesEnum.Note nt : NotesEnum.getScale4Note(note)) {
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
             rest-=nt.longitude;
             playNote(nt.note, (int)(scaleLng * nt.longitude));
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
             Log.d(getClass().getName(),"Note " + nt.note + " lng " + (int)(scaleLng * nt.longitude));
         }
         pause((int)(scaleLng * (rest + 1)));
     }
 
-    private void pause(int longitude) {
+    private boolean pause(int longitude) {
         try {
             Thread.sleep(longitude);
+            return true;
         } catch (InterruptedException ex) {
-            Log.d(getClass().getName(), Log.getStackTraceString(ex));
+            Thread.currentThread().interrupt();
+            Log.d(getClass().getName(), "Midi playback interrupted");
+            return false;
         }
     }
 
     @Override
     public void onMidiStart() {
-        try {
+        if (afterMidiStarted != null) {
             afterMidiStarted.run();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

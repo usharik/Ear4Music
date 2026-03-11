@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.widget.TabHost;
+import android.view.View;
 
 import com.example.macbook.ear4music.adapter.SubTaskAdapter;
 import com.example.macbook.ear4music.adapter.TaskAdapter;
@@ -14,6 +14,7 @@ import com.example.macbook.ear4music.databinding.TaskSelectActivityBinding;
 import com.example.macbook.ear4music.framework.ViewActivity;
 import com.example.macbook.ear4music.model.SubTask;
 import com.example.macbook.ear4music.model.Task;
+import com.google.android.material.tabs.TabLayout;
 
 public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
 
@@ -28,19 +29,15 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
     protected void onResume() {
         super.onResume();
         binding = DataBindingUtil.setContentView(this, R.layout.task_select_activity);
-
-        binding.tabHost.setup();
-        TabHost.TabSpec tabSpec = binding.tabHost.newTabSpec("tag1");
-        tabSpec.setIndicator(getResources().getString(R.string.all_tasks));
-        tabSpec.setContent(binding.tab1.getId());
-        binding.tabHost.addTab(tabSpec);
-
-        tabSpec = binding.tabHost.newTabSpec("tag2");
-        tabSpec.setIndicator(getResources().getString(R.string.favourite_tasks));
-        tabSpec.setContent(binding.tab2.getId());
-        binding.tabHost.addTab(tabSpec);
-
+        setSupportActionBar(binding.toolbar);
         binding.setViewModel(getViewModel());
+
+        applySystemBarInsets(binding.toolbar, true, true, true, false);
+        applySystemBarInsets(binding.tabLayout, true, false, true, false);
+        applySystemBarInsets(binding.taskList, true, false, true, true);
+        applySystemBarInsets(binding.favouriteTaskList, true, false, true, true);
+
+        setupTabs();
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         binding.taskList.setLayoutManager(mLayoutManager);
@@ -63,6 +60,40 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
 
         setTitle(getResources().getString(R.string.select_notes));
+    }
+
+    private void setupTabs() {
+        binding.tabLayout.removeAllTabs();
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(R.string.all_tasks));
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(R.string.favourite_tasks));
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int selectedTab = tab.getPosition();
+                getViewModel().setCurrentTab(selectedTab);
+                showSelectedTab(selectedTab);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        int selectedTab = Math.max(0, Math.min(getViewModel().getCurrentTab(), binding.tabLayout.getTabCount() - 1));
+        TabLayout.Tab tab = binding.tabLayout.getTabAt(selectedTab);
+        if (tab != null) {
+            tab.select();
+        }
+        showSelectedTab(selectedTab);
+    }
+
+    private void showSelectedTab(int selectedTab) {
+        binding.taskList.setVisibility(selectedTab == 0 ? View.VISIBLE : View.GONE);
+        binding.favouriteTaskList.setVisibility(selectedTab == 1 ? View.VISIBLE : View.GONE);
     }
 
     @Override

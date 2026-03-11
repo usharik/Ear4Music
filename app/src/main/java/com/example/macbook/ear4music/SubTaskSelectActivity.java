@@ -29,6 +29,10 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
     protected void onResume() {
         super.onResume();
         binding = DataBindingUtil.setContentView(this, R.layout.sub_task_select_activity);
+        setSupportActionBar(binding.toolbar);
+
+        applySystemBarInsets(binding.toolbar, true, true, true, false);
+        applySystemBarInsets(binding.contentContainer, true, false, true, true);
 
         long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1L);
         if (!getViewModel().syncWithTaskId(taskId)) {
@@ -48,7 +52,9 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
         itemClickDisposable = subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
 
         setTitle(getResources().getString(R.string.select_sub_task));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -72,7 +78,7 @@ public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> 
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        getOnBackPressedDispatcher().onBackPressed();
         return true;
     }
 }

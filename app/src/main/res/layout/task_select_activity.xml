@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="viewModel" type="com.example.macbook.ear4music.TaskSelectViewModel" />
     </data>
 
-    <TabHost
-        android:id="@+id/tab_host"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:currentTab="@={viewModel.currentTab}"
+        android:orientation="vertical"
         tools:context="com.example.macbook.ear4music.TaskSelectActivity">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <LinearLayout
+            android:id="@+id/tab_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-            <TabWidget
-                android:id="@android:id/tabs"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                app:tabIndicatorFullWidth="false"
+                app:tabMode="fixed" />
 
             <FrameLayout
-                android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-                <RelativeLayout
-                    android:id="@+id/tab1"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/task_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/task_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:scrollbars="vertical" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/tab2"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/favourite_task_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/favourite_task_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:scrollbars="vertical" />
-                </RelativeLayout>
-
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    android:visibility="gone" />
             </FrameLayout>
         </LinearLayout>
-    </TabHost>
+    </LinearLayout>
 
 </layout>

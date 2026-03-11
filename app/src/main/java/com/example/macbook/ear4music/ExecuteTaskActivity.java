@@ -60,6 +60,10 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         }).subscribe();
 
         binding = DataBindingUtil.setContentView(this, R.layout.execute_task_activity);
+        setSupportActionBar(binding.toolbar);
+
+        applySystemBarInsets(binding.toolbar, true, true, true, false);
+        applySystemBarInsets(binding.contentContainer, true, false, true, true);
 
         binding.pianoKeyboard.setPianoKeyboardListener(noteInfo -> keyboardPublishSubject.onNext(noteInfo));
 
@@ -72,7 +76,9 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         setActivityTitle();
 
         binding.setViewModel(getViewModel());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         binding.answerResult.setText(getNoteCount());
         Log.i(getClass().getName(), "Resume");
     }

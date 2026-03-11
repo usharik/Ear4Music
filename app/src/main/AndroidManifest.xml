@@ -10,16 +10,23 @@
         android:supportsRtl="true"
         android:testOnly="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".TaskSelectActivity" android:exported="true">
+        <activity
+            android:name=".TaskSelectActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ExecuteTaskActivity" />
+        <activity
+            android:name=".ExecuteTaskActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TaskResultActivity" />
-        <activity android:name=".SubTaskSelectActivity" />
+        <activity
+            android:name=".SubTaskSelectActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

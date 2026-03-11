@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = 'com.example.macbook.ear4music'
+    namespace = 'ru.usharik.ear4music'
     compileSdk = 36
 
     buildFeatures {
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = 'com.example.macbook.ear4music'
+        applicationId = 'ru.usharik.ear4music'
         minSdk = 23
         targetSdk = 36
         versionCode = 1

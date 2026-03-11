@@ -4,10 +4,10 @@
 
     <data>
         <import type="android.content.Intent" />
-        <variable name="viewModel" type="com.example.macbook.ear4music.TaskListRowViewModel" />
+        <variable name="viewModel" type="ru.usharik.ear4music.TaskListRowViewModel" />
     </data>
 
-    <com.example.macbook.ear4music.widget.ProgressRelativeLayout
+    <ru.usharik.ear4music.widget.ProgressRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/list_item_rect"
@@ -41,5 +41,5 @@
             android:text="@{@stringArray/task_list[viewModel.setOfNotesId]}"
             android:textAppearance="@style/TextAppearance.Ear4Music.Body" />
 
-    </com.example.macbook.ear4music.widget.ProgressRelativeLayout>
+    </ru.usharik.ear4music.widget.ProgressRelativeLayout>
 </layout>

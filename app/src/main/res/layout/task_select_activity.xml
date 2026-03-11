@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="viewModel" type="com.example.macbook.ear4music.TaskSelectViewModel" />
+        <variable name="viewModel" type="ru.usharik.ear4music.TaskSelectViewModel" />
     </data>
 
     <LinearLayout
@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/screen_background"
         android:orientation="vertical"
-        tools:context="com.example.macbook.ear4music.TaskSelectActivity">
+        tools:context="ru.usharik.ear4music.TaskSelectActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

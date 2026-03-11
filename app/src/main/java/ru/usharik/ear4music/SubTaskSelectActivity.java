@@ -1,0 +1,82 @@
+package ru.usharik.ear4music;
+
+import android.content.Intent;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import ru.usharik.ear4music.adapter.SubTaskAdapter;
+import ru.usharik.ear4music.databinding.SubTaskSelectActivityBinding;
+import ru.usharik.ear4music.framework.ViewActivity;
+import ru.usharik.ear4music.model.SubTask;
+
+import io.reactivex.rxjava3.disposables.Disposable;
+
+public class SubTaskSelectActivity extends ViewActivity<SubTaskSelectViewModel> {
+    public static final String EXTRA_TASK_ID = "ru.usharik.ear4music.extra.TASK_ID";
+
+    private SubTaskSelectActivityBinding binding;
+    private Disposable itemClickDisposable;
+
+    @Override
+    protected Class<SubTaskSelectViewModel> getViewModelClass() {
+        return SubTaskSelectViewModel.class;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding = DataBindingUtil.setContentView(this, R.layout.sub_task_select_activity);
+        setSupportActionBar(binding.toolbar);
+
+        applySystemBarInsets(binding.toolbar, true, true, true, false);
+        applySystemBarInsets(binding.contentContainer, true, false, true, true);
+
+        long taskId = getIntent().getLongExtra(EXTRA_TASK_ID, -1L);
+        if (!getViewModel().syncWithTaskId(taskId)) {
+            finish();
+            return;
+        }
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        binding.subTaskList.setLayoutManager(mLayoutManager);
+        binding.subTaskList.setItemAnimator(new DefaultItemAnimator());
+        binding.subTaskList.getLayoutManager().scrollToPosition(getViewModel().getSubTaskListPosition());
+
+        binding.setViewModel(getViewModel());
+        SubTaskAdapter subTaskAdapter = getViewModel().getTaskAdapter();
+        binding.subTaskList.setAdapter(subTaskAdapter);
+        itemClickDisposable = subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
+
+        setTitle(getResources().getString(R.string.select_sub_task));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        getViewModel().setSubTaskListPosition(Utilities.getScrollPosition(binding.subTaskList));
+        if (itemClickDisposable != null) {
+            itemClickDisposable.dispose();
+        }
+    }
+
+    public void onSubTaskSelect(SubTask subTask) {
+        Intent intent = new Intent(getApplicationContext(), ExecuteTaskActivity.class);
+        getViewModel().setSubTask(subTask);
+        if (subTask.getId() != null) {
+            intent.putExtra(ExecuteTaskActivity.EXTRA_SUB_TASK_ID, subTask.getId());
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getOnBackPressedDispatcher().onBackPressed();
+        return true;
+    }
+}

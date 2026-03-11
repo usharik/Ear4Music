@@ -5,10 +5,10 @@
 
     <data>
         <import type="android.content.Intent" />
-        <variable name="viewModel" type="com.example.macbook.ear4music.SubTaskListRowViewModel" />
+        <variable name="viewModel" type="ru.usharik.ear4music.SubTaskListRowViewModel" />
     </data>
 
-    <com.example.macbook.ear4music.widget.ProgressRelativeLayout
+    <ru.usharik.ear4music.widget.ProgressRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/list_item_rect"
@@ -69,7 +69,7 @@
             android:textAppearance="@style/TextAppearance.Ear4Music.MetaValue"
             tools:text="35" />
 
-        <com.example.macbook.ear4music.widget.ToggleImageButton
+        <ru.usharik.ear4music.widget.ToggleImageButton
             android:id="@+id/imageButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -82,5 +82,5 @@
             app:checked="@={viewModel.favourite}"
             app:srcCompat="@drawable/star" />
 
-    </com.example.macbook.ear4music.widget.ProgressRelativeLayout>
+    </ru.usharik.ear4music.widget.ProgressRelativeLayout>
 </layout>

@@ -58,13 +58,13 @@ jobs:
         run: |
           echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       
-      - name: Build Release APK
+      - name: Build Release Bundle
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          ./gradlew :app:assembleRelease \
+          ./gradlew :app:bundleRelease \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/release-keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
@@ -84,21 +84,21 @@ jobs:
             echo "notes=Bug fixes and improvements" >> $GITHUB_OUTPUT
           fi
 
-      - name: Upload APK to Google Play
+      - name: Upload AAB to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: ru.usharik.ear4music
-          releaseFiles: app/build/outputs/apk/release/app-release.apk
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: ${{ steps.track.outputs.track }}
           status: completed
           inAppUpdatePriority: 2
 
-      - name: Upload APK artifact
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: app/build/outputs/apk/release/app-release.apk
+          name: release-aab
+          path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
       - name: Create GitHub Release
@@ -106,14 +106,14 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
           body: |
             ## Release ${{ github.ref_name }}
 
             ${{ steps.track.outputs.notes }}
 
             ### Downloads
-            - **APK**: Direct installation file for Android devices
+            - **AAB**: Android App Bundle for distribution via Google Play
 
             ### Build Info
             - Build: ${{ github.run_number }}

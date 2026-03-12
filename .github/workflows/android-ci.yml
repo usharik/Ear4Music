@@ -37,10 +37,8 @@ jobs:
         run: |
           sdkmanager --install "platform-tools" "platforms;android-33" "build-tools;36.0.0" "system-images;android-33;google_apis;x86_64" "emulator"
 
-      - name: Grant execute permissions
-        run: | 
-          chmod +x gradlew
-          chmod +x .github/scripts/run-android-tests.sh
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
 
       - name: Assemble debug APKs
         run: ./gradlew --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
@@ -87,8 +85,10 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x gradlew
+      - name: Grant execute permissions
+        run: |
+          chmod +x gradlew
+          chmod +x .github/scripts/run-android-tests.sh
 
       - name: Run connected Android tests
         uses: reactivecircus/android-emulator-runner@v2

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 
 
@@ -53,8 +54,9 @@ public class CountDownDialog extends DialogFragment {
         final TextView tvCountDown = view.findViewById(R.id.tvCountDown);
 
         Observable.intervalRange(1, 4, 0, 1, TimeUnit.SECONDS)
-                .doOnNext((cnt) -> getActivity().runOnUiThread(() -> tvCountDown.setText(cnt < 4 ? Long.toString(4-cnt) : "")))
-                .doOnComplete(() -> getActivity().runOnUiThread(this::dismiss))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext((cnt) -> tvCountDown.setText(cnt < 4 ? Long.toString(4-cnt) : ""))
+                .doOnComplete(this::dismiss)
                 .subscribe();
 
         return view;

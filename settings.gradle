@@ -11,7 +11,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri('https://jitpack.io') }
+        ivy {
+            name 'mididriver-github-releases'
+            url 'https://github.com/billthefarmer/mididriver/releases/download/'
+            patternLayout {
+                artifact '/v[revision]/MidiDriver-[revision].[ext]'
+            }
+            metadataSources { artifact() }
+        }
     }
 }
 

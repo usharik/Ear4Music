@@ -76,7 +76,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.10.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.10.0'
 
-    implementation 'com.github.billthefarmer:mididriver:v1.29'
+    implementation 'com.github.billthefarmer:mididriver:1.29@aar'
     implementation 'com.google.android.gms:play-services-ads:25.0.0'
 
     implementation 'androidx.room:room-runtime:2.8.4'

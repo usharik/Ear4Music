@@ -64,8 +64,8 @@ android {
 }
 
 dependencies {
-    implementation enforcedPlatform('org.jetbrains.kotlinx:kotlinx-serialization-bom:1.8.1')
-    androidTestImplementation enforcedPlatform('org.jetbrains.kotlinx:kotlinx-serialization-bom:1.8.1')
+    implementation enforcedPlatform('org.jetbrains.kotlinx:kotlinx-serialization-bom:1.10.0')
+    androidTestImplementation enforcedPlatform('org.jetbrains.kotlinx:kotlinx-serialization-bom:1.10.0')
 
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'

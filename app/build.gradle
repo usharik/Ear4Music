@@ -64,8 +64,6 @@ android {
 }
 
 dependencies {
-    // Align kotlinx.serialization modules used transitively by Lifecycle and Room
-    // to avoid runtime ABI mismatches in migration/instrumentation tests.
     implementation enforcedPlatform('org.jetbrains.kotlinx:kotlinx-serialization-bom:1.8.1')
     androidTestImplementation enforcedPlatform('org.jetbrains.kotlinx:kotlinx-serialization-bom:1.8.1')
 
@@ -78,7 +76,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.10.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.10.0'
 
-    implementation 'com.github.billthefarmer:mididriver:v1.25'
+    implementation 'com.github.billthefarmer:mididriver:v1.29'
     implementation 'com.google.android.gms:play-services-ads:25.0.0'
 
     implementation 'androidx.room:room-runtime:2.8.4'
@@ -96,7 +94,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // Instrumentation tests continue to use AndroidJUnit4 / JUnit 4.
     androidTestImplementation 'androidx.test:core:1.7.0'
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
     androidTestImplementation 'androidx.test:runner:1.7.0'

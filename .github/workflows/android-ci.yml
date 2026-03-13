@@ -47,14 +47,14 @@ jobs:
         run: ./gradlew --no-daemon :app:testDebugUnitTest
 
       - name: Upload debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
 
       - name: Upload JVM test reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: jvm-test-reports
           path: |
@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload connected test reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: connected-test-reports
           path: |

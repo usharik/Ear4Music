@@ -87,7 +87,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         setSupportActionBar(binding.toolbar);
 
         applySystemBarInsets(binding.toolbar, true, true, true, false);
-        applySystemBarInsets(binding.contentContainer, true, false, true, true);
+        applySystemBarInsets(binding.contentContainer, true, false, true, false);
+        applySystemBarInsetsAsMargin(binding.bannerContainer, false, false, false, true);
 
         binding.pianoKeyboard.setPianoKeyboardListener(noteInfo -> keyboardPublishSubject.onNext(noteInfo));
 

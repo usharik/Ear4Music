@@ -251,14 +251,14 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="Start" />
-
-                <FrameLayout
-                    android:id="@+id/bannerContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/bannerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/banner_ad_height" />
+
     </LinearLayout>
 </layout>

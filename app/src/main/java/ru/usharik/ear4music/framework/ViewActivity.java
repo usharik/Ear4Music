@@ -2,6 +2,7 @@ package ru.usharik.ear4music.framework;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
@@ -56,6 +57,26 @@ public abstract class ViewActivity<T extends ViewModel> extends AppCompatActivit
                     applyTop ? initialTop + systemBars.top : initialTop,
                     applyRight ? initialRight + systemBars.right : initialRight,
                     applyBottom ? initialBottom + systemBars.bottom : initialBottom);
+            return windowInsets;
+        });
+        ViewCompat.requestApplyInsets(view);
+    }
+
+    protected void applySystemBarInsetsAsMargin(View view,
+                                                 boolean applyLeft,
+                                                 boolean applyTop,
+                                                 boolean applyRight,
+                                                 boolean applyBottom) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (targetView, windowInsets) -> {
+            Insets systemBars = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            if (targetView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams mlp) {
+                if (applyLeft) mlp.leftMargin = systemBars.left;
+                if (applyTop) mlp.topMargin = systemBars.top;
+                if (applyRight) mlp.rightMargin = systemBars.right;
+                if (applyBottom) mlp.bottomMargin = systemBars.bottom;
+                targetView.setLayoutParams(mlp);
+            }
             return windowInsets;
         });
         ViewCompat.requestApplyInsets(view);

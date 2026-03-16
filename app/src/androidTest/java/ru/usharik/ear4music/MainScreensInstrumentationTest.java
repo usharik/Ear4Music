@@ -134,6 +134,7 @@ public class MainScreensInstrumentationTest {
             onView(withId(R.id.sub_task_list)).check(matches(isDisplayed()));
             onView(withId(R.id.sub_task_list)).perform(clickRecyclerViewItem(0));
 
+            onView(withId(R.id.details_card)).check(matches(isDisplayed()));
             onView(withId(R.id.imageButton)).perform(click());
 
             clickNavigateUp();

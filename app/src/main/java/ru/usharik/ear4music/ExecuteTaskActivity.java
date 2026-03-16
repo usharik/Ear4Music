@@ -62,6 +62,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private InterstitialAd interstitialAd;
     private final Random random = new Random();
     private boolean startedAfterAd = false;
+    private boolean isShowingInterstitial = false;
 
     @Override
     protected Class<ExecuteTaskViewModel> getViewModelClass() {
@@ -90,7 +91,10 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
         binding.pianoKeyboard.setPianoKeyboardListener(noteInfo -> keyboardPublishSubject.onNext(noteInfo));
 
-        getViewModel().setStarted(false);
+        if (!isShowingInterstitial) {
+            getViewModel().setStarted(false);
+        }
+        isShowingInterstitial = false;
         long subTaskId = getIntent().getLongExtra(EXTRA_SUB_TASK_ID, -1L);
         if (!getViewModel().syncWithSubTaskId(subTaskId)) {
             finish();
@@ -155,6 +159,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     private void showInterstitialAdAndStartTask() {
+        isShowingInterstitial = true;
         interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdDismissedFullScreenContent() {
@@ -166,6 +171,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError error) {
+                isShowingInterstitial = false;
                 interstitialAd = null;
                 startTask();
             }

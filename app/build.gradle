@@ -24,7 +24,6 @@ android {
         ]
         buildConfigField 'String', 'ADMOB_TASK_SELECT_BANNER_AD_UNIT_ID', '"ca-app-pub-3940256099942544/9214589741"'
         buildConfigField 'String', 'ADMOB_EXECUTE_BANNER_AD_UNIT_ID', '"ca-app-pub-3940256099942544/9214589741"'
-        buildConfigField 'String', 'ADMOB_AFTER_TASK_UNIT_ID', '"ca-app-pub-3940256099942544/9214589741"'
         buildConfigField 'String', 'ADMOB_AFTER_START_INTERSTITIAL_AD_UNIT_ID', '"ca-app-pub-3940256099942544/1033173712"'
 
         javaCompileOptions {
@@ -39,7 +38,6 @@ android {
             manifestPlaceholders.ADMOB_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
             buildConfigField 'String', 'ADMOB_TASK_SELECT_BANNER_AD_UNIT_ID', '"ca-app-pub-3940256099942544/9214589741"'
             buildConfigField 'String', 'ADMOB_EXECUTE_BANNER_AD_UNIT_ID', '"ca-app-pub-3940256099942544/9214589741"'
-            buildConfigField 'String', 'ADMOB_AFTER_TASK_UNIT_ID', '"ca-app-pub-3940256099942544/9214589741"'
             buildConfigField 'String', 'ADMOB_AFTER_START_INTERSTITIAL_AD_UNIT_ID', '"ca-app-pub-3940256099942544/1033173712"'
         }
 
@@ -49,8 +47,7 @@ android {
             manifestPlaceholders.ADMOB_APP_ID = 'ca-app-pub-6420074467468909~4520110450'
             buildConfigField 'String', 'ADMOB_TASK_SELECT_BANNER_AD_UNIT_ID', '"ca-app-pub-6420074467468909/8438305591"'
             buildConfigField 'String', 'ADMOB_EXECUTE_BANNER_AD_UNIT_ID', '"ca-app-pub-6420074467468909/7000133240"'
-            buildConfigField 'String', 'ADMOB_AFTER_TASK_UNIT_ID', '"ca-app-pub-6420074467468909/8218813742"'
-            buildConfigField 'String', 'ADMOB_AFTER_START_INTERSTITIAL_AD_UNIT_ID', '"ca-app-pub-6420074467468909/0000000000"' // TODO: replace with real interstitial ad unit ID from AdMob console
+            buildConfigField 'String', 'ADMOB_AFTER_START_INTERSTITIAL_AD_UNIT_ID', '"ca-app-pub-6420074467468909/8218813742"'
         }
     }
 

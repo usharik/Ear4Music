@@ -12,9 +12,16 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import ru.usharik.ear4music.databinding.ExecuteTaskActivityBinding;
 import ru.usharik.ear4music.framework.BannerAdLoader;
 import ru.usharik.ear4music.framework.ViewActivity;
@@ -52,6 +59,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private Subject<Boolean> taskStatePublishSubject;
     private CompositeDisposable compositeDisposable;
     private AdView bannerAdView;
+    private InterstitialAd interstitialAd;
+    private final Random random = new Random();
 
     @Override
     protected Class<ExecuteTaskViewModel> getViewModelClass() {
@@ -90,6 +99,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
         binding.setViewModel(getViewModel());
         loadBanner(binding.bannerContainer);
+        loadInterstitialAd();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -124,6 +134,48 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                 bannerAdView));
     }
 
+    private void loadInterstitialAd() {
+        String adUnitId = BuildConfig.ADMOB_AFTER_START_INTERSTITIAL_AD_UNIT_ID;
+        if (adUnitId == null || adUnitId.trim().isEmpty()) {
+            return;
+        }
+        InterstitialAd.load(this, adUnitId, new AdRequest.Builder().build(),
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd ad) {
+                        interstitialAd = ad;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                        interstitialAd = null;
+                    }
+                });
+    }
+
+    private void showInterstitialAdAndStartTask() {
+        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                interstitialAd = null;
+                loadInterstitialAd();
+                startTask();
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError error) {
+                interstitialAd = null;
+                startTask();
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                interstitialAd = null;
+            }
+        });
+        interstitialAd.show(this);
+    }
+
     private List<NotesEnum> getMelodyFromString(String str) {
         List<NotesEnum> melody = new ArrayList<>();
         for (String note : str.split(" ")) {
@@ -147,7 +199,12 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         if (getViewModel().isStarted()) {
             stopTask();
         } else {
-            startTask();
+            int randomValue = random.nextInt(101);
+            if (randomValue <= 40 && interstitialAd != null) {
+                showInterstitialAdAndStartTask();
+            } else {
+                startTask();
+            }
         }
     }
 

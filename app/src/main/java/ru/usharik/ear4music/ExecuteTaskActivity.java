@@ -61,6 +61,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private AdView bannerAdView;
     private InterstitialAd interstitialAd;
     private final Random random = new Random();
+    private boolean startedAfterAd = false;
 
     @Override
     protected Class<ExecuteTaskViewModel> getViewModelClass() {
@@ -159,6 +160,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             public void onAdDismissedFullScreenContent() {
                 interstitialAd = null;
                 loadInterstitialAd();
+                startedAfterAd = true;
                 startTask();
             }
 
@@ -217,7 +219,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     private void runTask() {
-        if (getViewModel().getSubTask().getNotesPerMinute() >= 40) {
+        if (startedAfterAd || getViewModel().getSubTask().getNotesPerMinute() >= 40) {
+            startedAfterAd = false;
             countDownDialog(this::runTaskIntern);
         } else {
             runTaskIntern();

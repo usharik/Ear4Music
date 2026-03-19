@@ -24,18 +24,6 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleTextColor="@color/textInverse" />
 
-        <TextView
-            android:id="@+id/version_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:textColor="@color/textSecondary"
-            android:textSize="12sp"
-            android:gravity="center" />
-
         <LinearLayout
             android:id="@+id/tab_content_container"
             android:layout_width="match_parent"
@@ -88,6 +76,18 @@
                     android:scrollbars="vertical"
                     android:visibility="gone" />
             </FrameLayout>
+
+            <TextView
+                    android:id="@+id/version_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="12sp"
+                    android:gravity="center" />
 
             <FrameLayout
                 android:id="@+id/bannerContainer"

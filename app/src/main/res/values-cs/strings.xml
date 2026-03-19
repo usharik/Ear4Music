@@ -62,4 +62,9 @@
     <string name="temp">Tempo</string>
     <string name="all_tasks">Všechny úkoly</string>
     <string name="favourite_tasks">Oblíbené úkoly</string>
+    <string name="version_banner">Verze %1$s  Sestaveno %2$s</string>
+    <string name="statistics_report_title">Statistika úkolu</string>
+    <string name="statistics_report_summary">Správné odpovědi %1$d%%.\nTakto jste si vedli u jednotlivých not:</string>
+    <string name="statistics_report_summary_with_time">Správné odpovědi %1$d%%.\nPrůměrný čas odpovědi %2$d ms.\nTakto jste si vedli u jednotlivých not:</string>
+    <string name="note_stat_format">✓ %1$d  ✗ %2$d  − %3$d</string>
 </resources>

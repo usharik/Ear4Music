@@ -62,4 +62,5 @@
     <string name="temp">Temp</string>
     <string name="all_tasks">All tasks</string>
     <string name="favourite_tasks">Favourite tasks</string>
+    <string name="version_banner">Version %1$s  Built %2$s</string>
 </resources>

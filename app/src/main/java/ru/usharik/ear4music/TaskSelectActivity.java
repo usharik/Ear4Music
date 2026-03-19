@@ -18,6 +18,10 @@ import ru.usharik.ear4music.model.SubTask;
 import ru.usharik.ear4music.model.Task;
 import com.google.android.material.tabs.TabLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
 
     private TaskSelectActivityBinding binding;
@@ -62,7 +66,15 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
         subTaskAdapter.getItemClickObservable().subscribe(this::onSubTaskSelect);
 
         setTitle(getResources().getString(R.string.select_notes));
+        setVersionBanner();
         loadBanner(binding.bannerContainer);
+    }
+
+    private void setVersionBanner() {
+        String buildDate = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                .format(new Date(BuildConfig.TIMESTAMP));
+        binding.versionBanner.setText(
+                getString(R.string.version_banner, BuildConfig.VERSION_NAME, buildDate));
     }
 
     private void loadBanner(FrameLayout container) {

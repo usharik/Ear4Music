@@ -250,8 +250,10 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             Disposable noteEmitterDisposable = notesEmitterObservable
                     .subscribeOn(Schedulers.io())
                     .doOnNext((notes) -> {
-                        binding.pianoKeyboard.setCurrentNoteInfo(notes[0]);
-                        runOnUiThread(this::invalidatePianoKeyboard);
+                        runOnUiThread(() -> {
+                            binding.pianoKeyboard.setCurrentNoteInfo(notes[0]);
+                            invalidatePianoKeyboard();
+                        });
                         if (notes[0].isPlayWithScale) {
                             midiSupport.playNoteWithScale(notes[0].note, notes[0].longitude);
                         } else {
@@ -271,7 +273,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             Disposable noteEmitterDisposable = notesEmitterObservable
                     .subscribeOn(Schedulers.io())
                     .flatMap((notes) -> {
-                        binding.pianoKeyboard.setCurrentNoteInfo(null);
+                        runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(null));
                         for (NoteInfo nt : notes) {
                             midiSupport.playNote(nt.note, nt.longitude);
                         }
@@ -279,7 +281,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     })
                     .flatMap(Observable::fromArray)
                     .doOnNext((noteInfo) -> {
-                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(noteInfo));
                         NoteInfo pressed = keyboardPublishSubject
                                 .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS, Observable.just(noteInfo))
                                 .blockingFirst();

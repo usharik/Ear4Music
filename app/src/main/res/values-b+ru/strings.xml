@@ -62,4 +62,9 @@
     <string name="temp">Темп</string>
     <string name="all_tasks">Все задания</string>
     <string name="favourite_tasks">Избранные задания</string>
+    <string name="version_banner">Версия %1$s  Сборка %2$s</string>
+    <string name="statistics_report_title">Статистика задания</string>
+    <string name="statistics_report_summary">Правильных ответов %1$d%%.\nВот как вы справились с каждой нотой:</string>
+    <string name="statistics_report_summary_with_time">Правильных ответов %1$d%%.\nСреднее время ответа %2$d мс.\nВот как вы справились с каждой нотой:</string>
+    <string name="note_stat_format">✓ %1$d  ✗ %2$d  − %3$d</string>
 </resources>

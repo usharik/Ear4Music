@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/surface_card"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Ear4Music.CardTitle" />
+
+    <TextView
+        android:id="@+id/dialogSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:lineSpacingExtra="4dp"
+        android:textAppearance="@style/TextAppearance.Ear4Music.DialogBody" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/statisticsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:maxHeight="300dp"
+        android:nestedScrollingEnabled="true" />
+
+    <Button
+        android:id="@+id/okButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/primary_button_background"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
+</LinearLayout>
+

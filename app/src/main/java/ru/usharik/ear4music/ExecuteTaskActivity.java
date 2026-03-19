@@ -40,6 +40,7 @@ import io.reactivex.rxjava3.subjects.Subject;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -313,6 +314,68 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
     private void onTaskComplete() {
         storeTaskResults();
+        showStatisticsReportDialog();
+    }
+
+    private void showStatisticsReportDialog() {
+        boolean showTime = getViewModel().getSubTask().getNotesInSequence() == 1;
+        HashMap<NotesEnum, StatisticsStorage.Result> statistics =
+                getViewModel().getStatisticsStorage().calcFinalResult();
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(null);
+        StatisticsReportDialog.newInstance(
+                getCorrectAnswerPercent(),
+                getAvgAnswerTime(),
+                showTime,
+                statistics,
+                this::showTaskCompletionDialog
+        ).show(ft, "statistics_report");
+    }
+
+    private void showTaskCompletionDialog() {
+        // Show interstitial ad before the completion dialog
+        showInterstitialAdAndContinue(this::showCompletionDialogAfterAd);
+    }
+
+    private void showInterstitialAdAndContinue(Runnable continueAction) {
+        int randomValue = random.nextInt(101);
+        if (randomValue <= 40 && interstitialAd != null) {
+            isShowingInterstitial = true;
+            interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    interstitialAd = null;
+                    loadInterstitialAd();
+                    isShowingInterstitial = false;
+                    if (continueAction != null) {
+                        continueAction.run();
+                    }
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError error) {
+                    isShowingInterstitial = false;
+                    interstitialAd = null;
+                    if (continueAction != null) {
+                        continueAction.run();
+                    }
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    interstitialAd = null;
+                }
+            });
+            interstitialAd.show(this);
+        } else {
+            if (continueAction != null) {
+                continueAction.run();
+            }
+        }
+    }
+
+    private void showCompletionDialogAfterAd() {
         String message;
         if (getViewModel().getSubTask().getNotesInSequence() == 1) {
             message = getResources().getString(R.string.task_accomplished_with_time, getCorrectAnswerPercent(), getAvgAnswerTime());

@@ -205,6 +205,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     public void onStartClick(View view) {
+        Utilities.vibrate(this);
         binding.buttonStart.setEnabled(false);
         if (getViewModel().isStarted()) {
             stopTask();

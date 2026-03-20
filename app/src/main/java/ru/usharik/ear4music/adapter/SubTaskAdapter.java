@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import ru.usharik.ear4music.Utilities;
 import ru.usharik.ear4music.SubTaskListRowViewModel;
 import ru.usharik.ear4music.repository.SubTaskRepository;
 import ru.usharik.ear4music.service.Utils;
@@ -85,7 +86,10 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.MyViewHo
         Task task = tasksById.get(subTask.getTaskId());
         SubTaskListRowViewModel viewModel = new SubTaskListRowViewModel(subTask, Utils.getSubTaskDescription(res, subTask), task, subTaskRepository);
         holder.bind(viewModel);
-        holder.itemView.setOnClickListener((v) -> onClickSubject.onNext(subTask));
+        holder.itemView.setOnClickListener((v) -> {
+            Utilities.vibrate(v.getContext());
+            onClickSubject.onNext(subTask);
+        });
     }
 
     @Override

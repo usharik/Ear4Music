@@ -2,6 +2,16 @@ plugins {
     id 'com.android.application'
 }
 
+def getGitHash() {
+    try {
+        def process = "git rev-parse HEAD".execute([], rootProject.projectDir)
+        def hash = process.text.trim()
+        return hash.length() >= 5 ? hash.take(5) : 'unknown'
+    } catch (Exception e) {
+        return 'unknown'
+    }
+}
+
 android {
     namespace = 'ru.usharik.ear4music'
     compileSdk = 36
@@ -19,6 +29,7 @@ android {
         versionName = '2.1'
         testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
         buildConfigField 'long', 'TIMESTAMP', System.currentTimeMillis() + 'L'
+        buildConfigField 'String', 'COMMIT_HASH', '"' + getGitHash() + '"'
         manifestPlaceholders = [
                 ADMOB_APP_ID: 'ca-app-pub-3940256099942544~3347511713'
         ]

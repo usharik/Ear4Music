@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import ru.usharik.ear4music.Utilities;
 import ru.usharik.ear4music.TaskListRowViewModel;
 import ru.usharik.ear4music.databinding.TaskListRowBinding;
 import ru.usharik.ear4music.model.Task;
@@ -48,7 +49,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
         final Task task = taskList.get(position);
         TaskListRowViewModel viewModel = new TaskListRowViewModel(task);
         holder.bind(viewModel);
-        holder.itemView.setOnClickListener((v) -> onClickSubject.onNext(task));
+        holder.itemView.setOnClickListener((v) -> {
+            Utilities.vibrate(v.getContext());
+            onClickSubject.onNext(task);
+        });
     }
 
     @Override

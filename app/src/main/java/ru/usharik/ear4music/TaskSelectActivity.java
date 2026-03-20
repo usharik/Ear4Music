@@ -73,8 +73,9 @@ public class TaskSelectActivity extends ViewActivity<TaskSelectViewModel> {
     private void setVersionBanner() {
         String buildDate = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                 .format(new Date(BuildConfig.TIMESTAMP));
+        String versionWithHash = BuildConfig.VERSION_NAME + "." + BuildConfig.COMMIT_HASH;
         binding.versionBanner.setText(
-                getString(R.string.version_banner, BuildConfig.VERSION_NAME, buildDate));
+                getString(R.string.version_banner, versionWithHash, buildDate));
     }
 
     private void loadBanner(FrameLayout container) {

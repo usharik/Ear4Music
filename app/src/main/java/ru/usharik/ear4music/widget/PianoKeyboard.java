@@ -12,7 +12,6 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
-import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
 import ru.usharik.ear4music.R;
 import ru.usharik.ear4music.listner.PianoKeyboardListener;
@@ -31,9 +30,17 @@ public class PianoKeyboard extends View {
     private final List<Rect> whiteKeys;
     private final List<Rect> blackKeys;
     private final HashMap<NotesEnum, Rect> notes2rect;
+    /** Tracks which key is currently being physically held down; used to emit {@link KeyPress} on ACTION_UP. */
     private NotesEnum pressedNote;
-    private NoteInfo currentNoteInfo;
-    private Rect pressedNoteRect;
+    /** Expected note for prompt highlighting; {@code null} when no task is active.
+     *  A {@code null} value also disables keyboard input (touch events are ignored). */
+    private NotesEnum expectedNote;
+    /** Whether the expected-note highlight colour should be drawn. */
+    private boolean expectedHighlightEnabled;
+    /** The note for which answer feedback (green/red) should be shown; {@code null} = no feedback. */
+    private NotesEnum feedbackNote;
+    /** {@code true} = correct (green), {@code false} = wrong (red), {@code null} = no feedback. */
+    private Boolean feedbackIsCorrect;
     private PianoKeyboardListener pianoKeyboardListener;
     private int noteNameWidth;
     private boolean showNoteNames;
@@ -100,7 +107,7 @@ public class PianoKeyboard extends View {
         List<NotesEnum> whiteNotes = NotesEnum.getWhite();
         for (Rect r : this.whiteKeys) {
             NotesEnum note = whiteNotes.get(i++);
-            paint.setColor(getKeyColor(r, note, getColor(R.color.keyboardWhite)));
+            paint.setColor(getKeyColor(note, getColor(R.color.keyboardWhite)));
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(r, paint);
             paint.setColor(getColor(R.color.keyboardStroke));
@@ -115,7 +122,7 @@ public class PianoKeyboard extends View {
         List<NotesEnum> blackNotes = NotesEnum.getBlack();
         for (Rect r : blackKeys) {
             NotesEnum note = blackNotes.get(i++);
-            paint.setColor(getKeyColor(r, note, getColor(R.color.keyboardBlack)));
+            paint.setColor(getKeyColor(note, getColor(R.color.keyboardBlack)));
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(r, paint);
             paint.setColor(getColor(R.color.keyboardStroke));
@@ -124,17 +131,17 @@ public class PianoKeyboard extends View {
         }
     }
 
-    private int getKeyColor(Rect r, NotesEnum note, int defaultColor) {
-        if (currentNoteInfo != null && note != null && currentNoteInfo.isHighlighted && currentNoteInfo.note == note) {
+    private int getKeyColor(NotesEnum note, int defaultColor) {
+        // Priority 1: answer feedback colour (green = correct, red = wrong).
+        if (feedbackIsCorrect != null && note != null && note == feedbackNote) {
+            return feedbackIsCorrect ? getColor(R.color.green) : getColor(R.color.red);
+        }
+        // Priority 2: expected-note highlight.
+        if (expectedHighlightEnabled && note != null && note == expectedNote) {
             return getColor(R.color.keyboardHighlight);
         }
-        if (!r.equals(pressedNoteRect)) {
-            return defaultColor;
-        }
-        if (currentNoteInfo == null) {
-            return getColor(R.color.lightGray);
-        }
-        return currentNoteInfo.note == pressedNote ? getColor(R.color.green) : getColor(R.color.red);
+        // Priority 3: default key colour.
+        return defaultColor;
     }
 
     private int getColor(int colorResId) {
@@ -145,42 +152,87 @@ public class PianoKeyboard extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (currentNoteInfo == null) {
+                if (expectedNote == null) {
                     return true;
                 }
                 int x=(int) event.getX();
                 int y=(int) event.getY();
                 pressedNote = null;
-                pressedNoteRect = null;
                 for (NotesEnum note : notes2rect.keySet()) {
                     Rect rect = notes2rect.get(note);
                     if (rect.contains(x, y)) {
                         pressedNote = note;
-                        if (currentNoteInfo.pressedNote != currentNoteInfo.note) {
-                            currentNoteInfo.pressedNote=note;
-                        }
-                        pressedNoteRect = rect;
-                        currentNoteInfo.pressedNote=pressedNote;
                         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                         break;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (currentNoteInfo != null) {
-                    pianoKeyboardListener.onNotePressed(currentNoteInfo);
+                if (expectedNote != null) {
+                    pianoKeyboardListener.onKeyPressed(new KeyPress(pressedNote, System.currentTimeMillis()));
                 }
                 pressedNote = null;
-                pressedNoteRect = null;
                 break;
         }
         this.invalidate();
         return true;
     }
 
-    public void setCurrentNoteInfo(NoteInfo currentNoteInfo) {
-        this.currentNoteInfo=currentNoteInfo;
+    // ---------------------------------------------------------------------------
+    // Public API — expected note (prompt highlighting)
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Sets the note that should be highlighted as the expected answer.
+     *
+     * @param note            the expected note, or {@code null} to disable the keyboard.
+     * @param highlightEnabled whether to draw the expected-note highlight colour.
+     */
+    public void setExpectedNote(NotesEnum note, boolean highlightEnabled) {
+        this.expectedNote = note;
+        this.expectedHighlightEnabled = highlightEnabled;
+        invalidate();
     }
+
+    /** Removes the expected-note state and disables the keyboard for new presses.
+     *  Touch events are silently ignored while {@code expectedNote} is {@code null}. */
+    public void clearExpectedNote() {
+        this.expectedNote = null;
+        this.expectedHighlightEnabled = false;
+        invalidate();
+    }
+
+    // ---------------------------------------------------------------------------
+    // Public API — answer feedback (green / red)
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Shows green (correct) or red (wrong) feedback on the given note.
+     * Call this to display persistent feedback independent of physical touch state.
+     *
+     * @param note      the key to colour.
+     * @param isCorrect {@code true} for green, {@code false} for red.
+     */
+    public void showAnswerFeedback(NotesEnum note, boolean isCorrect) {
+        this.feedbackNote = note;
+        this.feedbackIsCorrect = isCorrect;
+        invalidate();
+    }
+
+    /** Clears any green/red answer-feedback state. */
+    public void clearAnswerFeedback() {
+        this.feedbackNote = null;
+        this.feedbackIsCorrect = null;
+        invalidate();
+    }
+
+    // ---------------------------------------------------------------------------
+    // Deprecated compatibility bridge
+    // ---------------------------------------------------------------------------
+
+    // setCurrentNoteInfo(NoteInfo) has been removed — use setExpectedNote() /
+    // clearExpectedNote() for prompt state and showAnswerFeedback() /
+    // clearAnswerFeedback() for green/red feedback.
 
     public void setPianoKeyboardListener(PianoKeyboardListener pianoKeyboardListener) {
         this.pianoKeyboardListener = pianoKeyboardListener;

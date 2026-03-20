@@ -32,14 +32,12 @@ class SingleNoteFlowRunnerTest {
 
     private RecordingMidiPlayer midi;
     private RecordingNoteEventListener ui;
-    private StatisticsStorage stats;
     private TestScheduler testScheduler;
 
     @BeforeEach
     void setUp() {
         midi = new RecordingMidiPlayer();
         ui = new RecordingNoteEventListener();
-        stats = new StatisticsStorage();
         testScheduler = new TestScheduler();
     }
 
@@ -53,7 +51,6 @@ class SingleNoteFlowRunnerTest {
                 midi,
                 ui::onNoteActive,
                 ui::onProgressUpdated,
-                stats,
                 testScheduler,
                 testScheduler);
     }
@@ -94,14 +91,6 @@ class SingleNoteFlowRunnerTest {
         runner().buildFlow(source(), () -> {}, () -> {});
         testScheduler.triggerActions();
         assertEquals(MELODY.size(), ui.progress.size());
-    }
-
-    @Test
-    @DisplayName("Single-note: statistics records every note")
-    void statisticsRecordsAllNotes() {
-        runner().buildFlow(source(), () -> {}, () -> {});
-        testScheduler.triggerActions();
-        assertEquals(MELODY.size(), stats.getOverallCount());
     }
 
     @Test

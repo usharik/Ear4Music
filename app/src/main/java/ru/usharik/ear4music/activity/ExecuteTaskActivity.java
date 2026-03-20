@@ -38,7 +38,9 @@ import ru.usharik.ear4music.service.MidiSupport;
 import ru.usharik.ear4music.service.StatisticsStorage;
 import ru.usharik.ear4music.service.SequenceFlowRunner;
 import ru.usharik.ear4music.service.SingleNoteFlowRunner;
+import ru.usharik.ear4music.service.JudgedAnswer;
 import ru.usharik.ear4music.service.Utils;
+import ru.usharik.ear4music.widget.KeyPress;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -64,8 +66,11 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     MidiSupport midiSupport;
 
     private ExecuteTaskActivityBinding binding;
-    private Subject<NoteInfo> keyboardPublishSubject;
+    private Subject<KeyPress> keyboardPublishSubject;
     private Subject<Boolean> taskStatePublishSubject;
+    private NoteInfo currentActiveNoteInfo;
+    /** Epoch-ms timestamp recorded when the current prompt became active for user input. */
+    private long currentActivationTimeMs;
     private CompositeDisposable compositeDisposable;
     private AdView bannerAdView;
     private InterstitialAd interstitialAd;
@@ -99,7 +104,12 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         applySystemBarInsets(binding.contentContainer, true, false, true, false);
         applySystemBarInsetsAsMargin(binding.bannerContainer, false, false, false, true);
 
-        binding.pianoKeyboard.setPianoKeyboardListener(noteInfo -> keyboardPublishSubject.onNext(noteInfo));
+        binding.pianoKeyboard.setPianoKeyboardListener(keyPress -> {
+            // keyboardPublishSubject is only initialized when a task is running.
+            if (keyboardPublishSubject != null) {
+                keyboardPublishSubject.onNext(keyPress);
+            }
+        });
 
         if (!isShowingInterstitial) {
             getViewModel().setStarted(false);
@@ -262,34 +272,65 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     midiPlayer,
                     // onNoteActive
                     noteInfo -> runOnUiThread(() -> {
-                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        currentActiveNoteInfo = noteInfo;
+                        currentActivationTimeMs = System.currentTimeMillis();
+                        binding.pianoKeyboard.setExpectedNote(noteInfo.note, noteInfo.isHighlighted);
+                        binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         invalidatePianoKeyboard();
                     }),
-                    // onProgressUpdated
-                    noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo)),
-                    statStore,
+                    // onProgressUpdated — missed fallback (computeIfAbsent ensures this is a
+                    // no-op if the keyboard subscription already submitted an answer for this note)
+                    noteInfo -> runOnUiThread(() -> {
+                        statStore.submitAnswer(JudgedAnswer.missed(noteInfo, currentActivationTimeMs));
+                        updateProgressViews(noteInfo);
+                    }),
                     Schedulers.io(),
                     AndroidSchedulers.mainThread());
             compositeDisposable.add(
                     singleNoteRunner.buildFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
-            compositeDisposable.add(keyboardPublishSubject.subscribe(statStore::submitAnswer));
+            // Adapter: join the raw KeyPress with the current prompt NoteInfo to form a judged answer.
+            // This subscription runs on the UI thread (touch events call onKeyPressed on the UI thread).
+            compositeDisposable.add(keyboardPublishSubject.subscribe(keyPress -> {
+                NoteInfo active = currentActiveNoteInfo;
+                if (active != null) {
+                    JudgedAnswer judgedAnswer = JudgedAnswer.from(active, keyPress, currentActivationTimeMs);
+                    statStore.submitAnswer(judgedAnswer);
+                    // Orchestration is the single owner of feedback: show green/red after the answer.
+                    if (!judgedAnswer.isMissed()) {
+                        binding.pianoKeyboard.showAnswerFeedback(
+                                judgedAnswer.pressedNote, judgedAnswer.isCorrect());
+                    }
+                }
+                // If active is null the task has just been stopped; silently ignore the stale press.
+            }));
         } else {
             SequenceFlowRunner sequenceRunner = new SequenceFlowRunner(
                     midiPlayer,
                     // onSequenceGroupStarted
                     () -> runOnUiThread(() -> {
                         // Sequence mode: group started (playing notes)
-                        binding.pianoKeyboard.setCurrentNoteInfo(null);
+                        currentActiveNoteInfo = null;
+                        binding.pianoKeyboard.clearExpectedNote();
+                        binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText("");
                         binding.tvTaskPlayedIndicator.setText("SEQ_PLAYING");
                     }),
                     // onSequenceNoteActive
                     noteInfo -> runOnUiThread(() -> {
                         // Sequence mode: notes played, now waiting for answer
-                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        currentActiveNoteInfo = noteInfo;
+                        binding.pianoKeyboard.setExpectedNote(noteInfo.note, noteInfo.isHighlighted);
+                        binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         binding.tvTaskPlayedIndicator.setText("SEQ_PLAYED");
+                    }),
+                    // onAnswerEvaluated — show green/red key feedback after each answer
+                    judgedAnswer -> runOnUiThread(() -> {
+                        if (!judgedAnswer.isMissed()) {
+                            binding.pianoKeyboard.showAnswerFeedback(
+                                    judgedAnswer.pressedNote, judgedAnswer.isCorrect());
+                        }
                     }),
                     // onProgressUpdated
                     noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo)),
@@ -411,7 +452,9 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
     private void onTaskStop() {
         midiSupport.stop();
-        binding.pianoKeyboard.setCurrentNoteInfo(null);
+        currentActiveNoteInfo = null;
+        binding.pianoKeyboard.clearExpectedNote();
+        binding.pianoKeyboard.clearAnswerFeedback();
         binding.tvExpectedNote.setText("");
         invalidatePianoKeyboard();
         taskStatePublishSubject.onNext(false);

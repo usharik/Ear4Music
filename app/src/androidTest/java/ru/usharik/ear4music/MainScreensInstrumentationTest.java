@@ -3,6 +3,7 @@ package ru.usharik.ear4music;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
@@ -10,17 +11,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -170,20 +168,19 @@ public class MainScreensInstrumentationTest {
                 // Press the piano key at the correct position on screen
                 onView(withId(R.id.piano_keyboard))
                         .perform(clickPianoKeyForExpectedNote());
-                Log.i(getClass().getName(), note + ". Pressed key for note " + expectedNoteBefore[0]);
 
                 // Wait for task to progress to next note
                 waitForExpectedNoteToChange(scenario, expectedNoteBefore[0], 5000);
             }
 
+            SystemClock.sleep(2000);
+
             // Диалог статистики появился — задание завершено
-            waitForEvent(() -> {
-                onView(withId(R.id.statisticsRecyclerView)).check(matches(isDisplayed()));
-                onView(withId(R.id.statisticsRecyclerView)).check(hasMinimumItemCount(1));
-                onView(withId(R.id.dialogTitle))
-                        .check(matches(allOf(isDisplayed(), withText(R.string.statistics_report_title))));
-                onView(withId(R.id.okButton)).check(matches(isDisplayed()));
-            }, 4000);
+            onView(withId(R.id.statisticsRecyclerView)).check(matches(isDisplayed()));
+            onView(withId(R.id.statisticsRecyclerView)).check(hasMinimumItemCount(1));
+            onView(withId(R.id.dialogTitle))
+                    .check(matches(allOf(isDisplayed(), withText(R.string.statistics_report_title))));
+            onView(withId(R.id.okButton)).check(matches(isDisplayed()));
 
             // Verify statistics directly from StatisticsStorage service
             scenario.onActivity(activity -> {
@@ -351,7 +348,6 @@ public class MainScreensInstrumentationTest {
                 check.run();
                 return;
             } catch (AssertionError e) {
-                Log.d("waitForEvent", "Failed to match, retrying in 50ms. " + e.getLocalizedMessage());
                 SystemClock.sleep(50);
             }
         }

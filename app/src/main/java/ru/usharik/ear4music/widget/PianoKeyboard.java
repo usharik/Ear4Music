@@ -156,11 +156,7 @@ public class PianoKeyboard extends View {
                     Rect rect = notes2rect.get(note);
                     if (rect.contains(x, y)) {
                         pressedNote = note;
-                        if (currentNoteInfo.pressedNote != currentNoteInfo.note) {
-                            currentNoteInfo.pressedNote=note;
-                        }
                         pressedNoteRect = rect;
-                        currentNoteInfo.pressedNote=pressedNote;
                         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                         break;
                     }
@@ -168,7 +164,7 @@ public class PianoKeyboard extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (currentNoteInfo != null) {
-                    pianoKeyboardListener.onNotePressed(currentNoteInfo);
+                    pianoKeyboardListener.onKeyPressed(new KeyPress(pressedNote, System.currentTimeMillis()));
                 }
                 pressedNote = null;
                 pressedNoteRect = null;

@@ -223,10 +223,8 @@ public class MainScreensInstrumentationTest {
             // Now the task is running. For 2-note sequence with 17 repetitions:
             // Each sequence: play 2 notes, then wait for user to press 2 notes
             for (int sequence = 0; sequence < 17; sequence++) {
-                // Wait for sequence to start playing (status = "PLAYING")
                 waitForStatusIndicator("SEQ_PLAYING", 5000);
 
-                // Wait for sequence to finish playing and be ready for input (status = "PLAYED")
                 waitForStatusIndicator("SEQ_PLAYED", 5000);
 
                 // Press first note by clicking on the piano keyboard

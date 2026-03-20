@@ -39,6 +39,7 @@ import ru.usharik.ear4music.service.StatisticsStorage;
 import ru.usharik.ear4music.service.SequenceFlowRunner;
 import ru.usharik.ear4music.service.SingleNoteFlowRunner;
 import ru.usharik.ear4music.service.Utils;
+import ru.usharik.ear4music.widget.KeyPress;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -64,7 +65,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     MidiSupport midiSupport;
 
     private ExecuteTaskActivityBinding binding;
-    private Subject<NoteInfo> keyboardPublishSubject;
+    private Subject<KeyPress> keyboardPublishSubject;
     private Subject<Boolean> taskStatePublishSubject;
     private NoteInfo currentActiveNoteInfo;
     private CompositeDisposable compositeDisposable;
@@ -101,9 +102,9 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         applySystemBarInsetsAsMargin(binding.bannerContainer, false, false, false, true);
 
         binding.pianoKeyboard.setPianoKeyboardListener(keyPress -> {
-            if (currentActiveNoteInfo != null) {
-                currentActiveNoteInfo.pressedNote = keyPress.pressedNote();
-                keyboardPublishSubject.onNext(currentActiveNoteInfo);
+            // keyboardPublishSubject is only initialized when a task is running.
+            if (keyboardPublishSubject != null) {
+                keyboardPublishSubject.onNext(keyPress);
             }
         });
 
@@ -280,7 +281,14 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     AndroidSchedulers.mainThread());
             compositeDisposable.add(
                     singleNoteRunner.buildFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
-            compositeDisposable.add(keyboardPublishSubject.subscribe(statStore::submitAnswer));
+            // Adapter: join the raw KeyPress with the current prompt NoteInfo to form a judged answer.
+            compositeDisposable.add(keyboardPublishSubject.subscribe(keyPress -> {
+                NoteInfo active = currentActiveNoteInfo;
+                if (active != null) {
+                    statStore.submitAnswer(active.num, active.note, keyPress.pressedNote(), active.time);
+                }
+                // If active is null the task has just been stopped; silently ignore the stale press.
+            }));
         } else {
             SequenceFlowRunner sequenceRunner = new SequenceFlowRunner(
                     midiPlayer,

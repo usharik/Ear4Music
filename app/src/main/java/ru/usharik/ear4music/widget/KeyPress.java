@@ -19,6 +19,14 @@ public final class KeyPress {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Creates a {@code KeyPress} representing a missed answer (no key was pressed within the
+     * allowed time). The {@link #pressedNote()} will be {@code null}.
+     */
+    public static KeyPress missed() {
+        return new KeyPress(null, System.currentTimeMillis());
+    }
+
     public NotesEnum pressedNote() {
         return pressedNote;
     }

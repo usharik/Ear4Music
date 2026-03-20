@@ -1,6 +1,7 @@
 package ru.usharik.ear4music.service;
 
 import ru.usharik.ear4music.NoteInfo;
+import ru.usharik.ear4music.widget.KeyPress;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -16,7 +17,7 @@ public class SequenceFlowRunner {
     private final Consumer<NoteInfo> onSequenceNoteActive;
     private final Consumer<NoteInfo> onProgressUpdated;
     private final StatisticsStorage statisticsStorage;
-    private final Observable<NoteInfo> keyboardObservable;
+    private final Observable<KeyPress> keyboardObservable;
     private final Scheduler subscribeOnScheduler;
     private final Scheduler observeOnScheduler;
 
@@ -25,7 +26,7 @@ public class SequenceFlowRunner {
                               Consumer<NoteInfo> onSequenceNoteActive,
                               Consumer<NoteInfo> onProgressUpdated,
                               StatisticsStorage statisticsStorage,
-                              Observable<NoteInfo> keyboardObservable,
+                              Observable<KeyPress> keyboardObservable,
                               Scheduler subscribeOnScheduler,
                               Scheduler observeOnScheduler) {
         this.midiPlayer = midiPlayer;
@@ -53,13 +54,16 @@ public class SequenceFlowRunner {
                 .flatMap(Observable::fromArray)
                 .doOnNext(noteInfo -> {
                     onSequenceNoteActive.accept(noteInfo);
-                    NoteInfo pressed = keyboardObservable
+                    // Wait for the user's key press, or treat as missed after timeout.
+                    KeyPress keyPress = keyboardObservable
                             .timeout(noteInfo.longitude,
                                     TimeUnit.MILLISECONDS,
-                                    Observable.just(noteInfo))
+                                    Observable.just(KeyPress.missed()))
                             .blockingFirst();
-                    statisticsStorage.submitAnswer(pressed);
-                    onProgressUpdated.accept(pressed);
+                    // Join prompt (noteInfo) with the user's raw input (keyPress) to form an answer.
+                    statisticsStorage.submitAnswer(
+                            noteInfo.num, noteInfo.note, keyPress.pressedNote(), noteInfo.time);
+                    onProgressUpdated.accept(noteInfo);
                 })
                 .observeOn(observeOnScheduler)
                 .doOnComplete(onComplete::run)

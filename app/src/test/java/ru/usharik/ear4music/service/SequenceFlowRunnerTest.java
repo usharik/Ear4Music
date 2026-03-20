@@ -16,6 +16,7 @@ import io.reactivex.rxjava3.schedulers.TestScheduler;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
+import ru.usharik.ear4music.widget.KeyPress;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +34,7 @@ class SequenceFlowRunnerTest {
     private RecordingMidiPlayer midi;
     private RecordingNoteEventListener ui;
     private StatisticsStorage stats;
-    private PublishSubject<NoteInfo> keyboard;
+    private PublishSubject<KeyPress> keyboard;
     private TestScheduler testScheduler;
 
     @BeforeEach
@@ -134,7 +135,7 @@ class SequenceFlowRunnerTest {
         }).start();
 
         Thread.sleep(50);
-        keyboard.onNext(new NoteInfo(0, NotesEnum.C, NotesEnum.C, false, false, 0));
+        keyboard.onNext(new KeyPress(NotesEnum.C, System.currentTimeMillis()));
         assertTrue(flowCompleted.await(1, TimeUnit.SECONDS), "Flow should complete");
 
         assertEquals(1, stats.getCorrectCount());
@@ -155,7 +156,7 @@ class SequenceFlowRunnerTest {
         }).start();
 
         Thread.sleep(50);
-        keyboard.onNext(new NoteInfo(0, NotesEnum.C, NotesEnum.D, false, false, 0));
+        keyboard.onNext(new KeyPress(NotesEnum.D, System.currentTimeMillis()));
         assertTrue(flowCompleted.await(1, TimeUnit.SECONDS), "Flow should complete");
 
         assertEquals(0, stats.getCorrectCount());

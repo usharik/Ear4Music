@@ -4,7 +4,6 @@ import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,17 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by macbook on 03.07.17.
  */
 public class StatisticsStorage implements Serializable {
-    private static class Answer implements Serializable {
-        NotesEnum actualNote;
-        NotesEnum answeredNote;
-        long delay;
 
-        Answer(NotesEnum actualNote, NotesEnum answeredNote, long delay) {
-            this.actualNote = actualNote;
-            this.answeredNote = answeredNote;
-            this.delay = delay;
-        }
-
+    private record Answer(
+            NotesEnum actualNote,
+            NotesEnum answeredNote,
+            long delay) {
         boolean isCorrect() {
             return actualNote == answeredNote;
         }
@@ -41,7 +34,6 @@ public class StatisticsStorage implements Serializable {
     }
 
     private ConcurrentHashMap<Long, Answer> answers;
-    private ArrayList<NoteInfo> noteInfos;
     private int correctCount = 0;
     private int wrongCount = 0;
     private int missedCount= 0;
@@ -52,16 +44,9 @@ public class StatisticsStorage implements Serializable {
 
     public void reset() {
         answers = new ConcurrentHashMap<>();
-        noteInfos = new ArrayList<>();
         correctCount = 0;
         wrongCount = 0;
         missedCount= 0;
-    }
-
-    public void calculate() {
-        for (NoteInfo noteInfo : noteInfos) {
-            submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote, noteInfo.time);
-        }
     }
 
     public void submitAnswer(NoteInfo noteInfo) {
@@ -69,35 +54,29 @@ public class StatisticsStorage implements Serializable {
     }
 
     public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote, Date noteTime) {
-        if (!answers.containsKey(noteNumber) && actualNote != null) {
+        if (actualNote == null) {
+            return;
+        }
+        answers.computeIfAbsent(noteNumber, k -> {
             Date answerTime = Calendar.getInstance().getTime();
             Answer answer = new Answer(actualNote, answeredNote, answerTime.getTime() - noteTime.getTime());
-            answers.put(noteNumber, answer);
             if (answer.isCorrect()) {
                 correctCount++;
+            } else if (answer.isMissed()) {
+                missedCount++;
             } else {
-                if (answer.isMissed()) {
-                    missedCount++;
-                } else {
-                    wrongCount++;
-                }
+                wrongCount++;
             }
-        }
+            return answer;
+        });
     }
 
     public long getAvgAnswerTime() {
-        long cnt=0;
-        long sum=0;
-        for (Answer answer : answers.values()) {
-            if (!answer.isMissed()) {
-                sum+=answer.delay;
-                cnt++;
-            }
-        }
-        if (cnt == 0) {
-            return 0;
-        }
-        return sum/cnt;
+        return Math.round(answers.values().stream()
+                .filter(answer -> !answer.isMissed())
+                .mapToLong(answer -> answer.delay)
+                .summaryStatistics()
+                .getAverage());
     }
 
     public HashMap<NotesEnum, Result> calcFinalResult() {

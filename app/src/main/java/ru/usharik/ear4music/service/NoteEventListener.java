@@ -4,19 +4,7 @@ import ru.usharik.ear4music.NoteInfo;
 
 import java.util.function.Consumer;
 
-/**
- * UI-side callbacks invoked by {@link TaskFlowRunner} as notes are processed.
- *
- * <p>All methods may be called from a background thread; implementations are responsible
- * for dispatching to the UI thread where needed.</p>
- */
 public interface NoteEventListener {
-
-    /**
-     * Single-note mode: a note has been played and is now awaiting a keyboard response.
-     * Implementations typically highlight the note on the piano keyboard.
-     */
-    void onNoteActive(NoteInfo noteInfo);
 
     /**
      * Sequence mode: a new note group is about to start playing.
@@ -42,10 +30,6 @@ public interface NoteEventListener {
             Consumer<NoteInfo> onProgressUpdated
     ) {
         return new NoteEventListener() {
-            @Override
-            public void onNoteActive(NoteInfo noteInfo) {
-                onNoteActive.accept(noteInfo);
-            }
 
             @Override
             public void onSequenceGroupStarted() {

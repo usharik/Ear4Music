@@ -35,9 +35,9 @@ import ru.usharik.ear4music.framework.ViewActivity;
 import ru.usharik.ear4music.model.SubTask;
 import ru.usharik.ear4music.service.MidiPlayer;
 import ru.usharik.ear4music.service.MidiSupport;
-import ru.usharik.ear4music.service.NoteEventListener;
 import ru.usharik.ear4music.service.StatisticsStorage;
-import ru.usharik.ear4music.service.TaskFlowRunner;
+import ru.usharik.ear4music.service.SequenceFlowRunner;
+import ru.usharik.ear4music.service.SingleNoteFlowRunner;
 import ru.usharik.ear4music.service.Utils;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -252,44 +252,53 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         statStore.reset();
         binding.progressBar.setProgress(0);
 
-        TaskFlowRunner runner = new TaskFlowRunner(
-                MidiPlayer.create(
-                        (note, longitude) -> midiSupport.playNote(note, longitude),
-                        (note, longitude) -> midiSupport.playNoteWithScale(note, longitude)
-                ),
-                NoteEventListener.create(
-                        noteInfo -> runOnUiThread(() -> {
-                            // Single-note mode: note is active, waiting for answer
-                            binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
-                            binding.tvExpectedNote.setText(noteInfo.note.name());
-                            invalidatePianoKeyboard();
-                        }),
-                        () -> runOnUiThread(() -> {
-                            // Sequence mode: group started (playing notes)
-                            binding.pianoKeyboard.setCurrentNoteInfo(null);
-                            binding.tvExpectedNote.setText("");
-                            binding.tvTaskPlayedIndicator.setText("SEQ_PLAYING");
-                        }),
-                        noteInfo -> runOnUiThread(() -> {
-                            // Sequence mode: notes played, now waiting for answer
-                            binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
-                            binding.tvExpectedNote.setText(noteInfo.note.name());
-                            binding.tvTaskPlayedIndicator.setText("SEQ_PLAYED");
-                        }),
-                        noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo))
-                ),
-                statStore,
-                keyboardPublishSubject,
-                Schedulers.io(),
-                AndroidSchedulers.mainThread());
+        MidiPlayer midiPlayer = MidiPlayer.create(
+                (note, longitude) -> midiSupport.playNote(note, longitude),
+                (note, longitude) -> midiSupport.playNoteWithScale(note, longitude)
+        );
 
         if (notesInSequence == 1) {
+            SingleNoteFlowRunner singleNoteRunner = new SingleNoteFlowRunner(
+                    midiPlayer,
+                    // onNoteActive
+                    noteInfo -> runOnUiThread(() -> {
+                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        binding.tvExpectedNote.setText(noteInfo.note.name());
+                        invalidatePianoKeyboard();
+                    }),
+                    // onProgressUpdated
+                    noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo)),
+                    statStore,
+                    Schedulers.io(),
+                    AndroidSchedulers.mainThread());
             compositeDisposable.add(
-                    runner.buildSingleNoteFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
+                    singleNoteRunner.buildFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
             compositeDisposable.add(keyboardPublishSubject.subscribe(statStore::submitAnswer));
         } else {
+            SequenceFlowRunner sequenceRunner = new SequenceFlowRunner(
+                    midiPlayer,
+                    // onSequenceGroupStarted
+                    () -> runOnUiThread(() -> {
+                        // Sequence mode: group started (playing notes)
+                        binding.pianoKeyboard.setCurrentNoteInfo(null);
+                        binding.tvExpectedNote.setText("");
+                        binding.tvTaskPlayedIndicator.setText("SEQ_PLAYING");
+                    }),
+                    // onSequenceNoteActive
+                    noteInfo -> runOnUiThread(() -> {
+                        // Sequence mode: notes played, now waiting for answer
+                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        binding.tvExpectedNote.setText(noteInfo.note.name());
+                        binding.tvTaskPlayedIndicator.setText("SEQ_PLAYED");
+                    }),
+                    // onProgressUpdated
+                    noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo)),
+                    statStore,
+                    keyboardPublishSubject,
+                    Schedulers.io(),
+                    AndroidSchedulers.mainThread());
             compositeDisposable.add(
-                    runner.buildSequenceFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
+                    sequenceRunner.buildFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
         }
     }
 
@@ -471,7 +480,6 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     }
 
     private void storeTaskResults() {
-        getViewModel().getStatisticsStorage().calculate();
         binding.getViewModel().setCorrectAnswerPercent(getCorrectAnswerPercent());
     }
 

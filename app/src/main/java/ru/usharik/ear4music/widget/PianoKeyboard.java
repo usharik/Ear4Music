@@ -30,7 +30,7 @@ public class PianoKeyboard extends View {
     private final List<Rect> whiteKeys;
     private final List<Rect> blackKeys;
     private final HashMap<NotesEnum, Rect> notes2rect;
-    /** The note the user is currently physically holding down (cleared on ACTION_UP). */
+    /** Tracks which key is currently being physically held down; used to emit {@link KeyPress} on ACTION_UP. */
     private NotesEnum pressedNote;
     /** Expected note for prompt highlighting; {@code null} when no task is active.
      *  A {@code null} value also disables keyboard input (touch events are ignored). */
@@ -158,14 +158,10 @@ public class PianoKeyboard extends View {
                 int x=(int) event.getX();
                 int y=(int) event.getY();
                 pressedNote = null;
-                feedbackNote = null;
-                feedbackIsCorrect = null;
                 for (NotesEnum note : notes2rect.keySet()) {
                     Rect rect = notes2rect.get(note);
                     if (rect.contains(x, y)) {
                         pressedNote = note;
-                        feedbackNote = note;
-                        feedbackIsCorrect = (note == expectedNote);
                         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                         break;
                     }
@@ -176,8 +172,6 @@ public class PianoKeyboard extends View {
                     pianoKeyboardListener.onKeyPressed(new KeyPress(pressedNote, System.currentTimeMillis()));
                 }
                 pressedNote = null;
-                feedbackNote = null;
-                feedbackIsCorrect = null;
                 break;
         }
         this.invalidate();

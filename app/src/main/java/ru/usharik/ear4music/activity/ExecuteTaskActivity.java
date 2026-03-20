@@ -290,10 +290,17 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             compositeDisposable.add(
                     singleNoteRunner.buildFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
             // Adapter: join the raw KeyPress with the current prompt NoteInfo to form a judged answer.
+            // This subscription runs on the UI thread (touch events call onKeyPressed on the UI thread).
             compositeDisposable.add(keyboardPublishSubject.subscribe(keyPress -> {
                 NoteInfo active = currentActiveNoteInfo;
                 if (active != null) {
-                    statStore.submitAnswer(JudgedAnswer.from(active, keyPress, currentActivationTimeMs));
+                    JudgedAnswer judgedAnswer = JudgedAnswer.from(active, keyPress, currentActivationTimeMs);
+                    statStore.submitAnswer(judgedAnswer);
+                    // Orchestration is the single owner of feedback: show green/red after the answer.
+                    if (!judgedAnswer.isMissed()) {
+                        binding.pianoKeyboard.showAnswerFeedback(
+                                judgedAnswer.pressedNote, judgedAnswer.isCorrect());
+                    }
                 }
                 // If active is null the task has just been stopped; silently ignore the stale press.
             }));

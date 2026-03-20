@@ -1,6 +1,5 @@
 package ru.usharik.ear4music.service;
 
-import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
 
 import java.io.Serializable;
@@ -46,15 +45,6 @@ public class StatisticsStorage implements Serializable {
         correctCount = 0;
         wrongCount = 0;
         missedCount= 0;
-    }
-
-    /**
-     * @deprecated Retained for backward compatibility. Prefer {@link #submitAnswer(JudgedAnswer)}.
-     */
-    @Deprecated
-    public void submitAnswer(NoteInfo noteInfo) {
-        recordAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote,
-                noteInfo.time.getTime());
     }
 
     public void submitAnswer(JudgedAnswer answer) {

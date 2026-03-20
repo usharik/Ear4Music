@@ -2,6 +2,7 @@ package ru.usharik.ear4music;
 
 import android.app.Application;
 
+import android.util.Log;
 import com.google.android.gms.ads.MobileAds;
 
 import ru.usharik.ear4music.di.DaggerAppComponent;
@@ -24,8 +25,13 @@ public class App extends Application implements HasAndroidInjector {
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerAppComponent.builder().create(this).inject(this);
-        new Thread(() -> MobileAds.initialize(this, initializationStatus -> {})).start();
+        DaggerAppComponent.builder()
+                .create(this)
+                .inject(this);
+        MobileAds.initialize(
+                this,
+                initializationStatus -> Log.i(getClass().getName(), "AdMob ready")
+        );
     }
 
     @Override

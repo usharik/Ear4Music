@@ -2,6 +2,7 @@ package ru.usharik.ear4music;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
@@ -9,14 +10,17 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -41,6 +45,7 @@ import ru.usharik.ear4music.activity.ExecuteTaskActivity;
 import ru.usharik.ear4music.activity.SubTaskSelectActivity;
 import ru.usharik.ear4music.activity.TaskSelectActivity;
 import ru.usharik.ear4music.model.room.AppDatabase;
+import ru.usharik.ear4music.service.StatisticsStorage;
 
 @RunWith(AndroidJUnit4.class)
 public class MainScreensInstrumentationTest {
@@ -133,15 +138,6 @@ public class MainScreensInstrumentationTest {
         }
     }
 
-    /**
-     * Instrumentation-тест: задание «Все ноты без интонаций» (sub-task 10).
-     *
-     * <p>Sub-task 10: seed(15 bpm, playWithScale=false, withNoteHighlighting=false,
-     * notesInSequence=1, sequencesInSubTask=8). Single-note mode with 8 notes total.
-     * CountDownDialog отсутствует (15 bpm &lt; 40).
-     *
-     * <p>Test now actively presses piano keys based on status indicators.
-     */
     @Test
     public void allNotesNoIntonation_fullRun_showsStatisticsDialog() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ExecuteTaskActivity.class);
@@ -174,19 +170,20 @@ public class MainScreensInstrumentationTest {
                 // Press the piano key at the correct position on screen
                 onView(withId(R.id.piano_keyboard))
                         .perform(clickPianoKeyForExpectedNote());
+                Log.i(getClass().getName(), note + ". Pressed key for note " + expectedNoteBefore[0]);
 
                 // Wait for task to progress to next note
                 waitForExpectedNoteToChange(scenario, expectedNoteBefore[0], 5000);
             }
 
-            SystemClock.sleep(2000);
-
             // Диалог статистики появился — задание завершено
-            onView(withId(R.id.statisticsRecyclerView)).check(matches(isDisplayed()));
-            onView(withId(R.id.statisticsRecyclerView)).check(hasMinimumItemCount(1));
-            onView(withId(R.id.dialogTitle))
-                    .check(matches(allOf(isDisplayed(), withText(R.string.statistics_report_title))));
-            onView(withId(R.id.okButton)).check(matches(isDisplayed()));
+            waitForEvent(() -> {
+                onView(withId(R.id.statisticsRecyclerView)).check(matches(isDisplayed()));
+                onView(withId(R.id.statisticsRecyclerView)).check(hasMinimumItemCount(1));
+                onView(withId(R.id.dialogTitle))
+                        .check(matches(allOf(isDisplayed(), withText(R.string.statistics_report_title))));
+                onView(withId(R.id.okButton)).check(matches(isDisplayed()));
+            }, 4000);
 
             // Verify statistics directly from StatisticsStorage service
             scenario.onActivity(activity -> {
@@ -201,19 +198,7 @@ public class MainScreensInstrumentationTest {
         }
     }
 
-    /**
-     * Instrumentation-тест: задание «Последовательность из двух нот» (sub-task 20).
-     *
-     * <p>Sub-task 20: seed(65 bpm, playWithScale=false, withNoteHighlighting=false,
-     * notesInSequence=2, sequencesInSubTask=17). Длительность: 17 × 2 нот × 923 мс ≈ 31 с.
-     * CountDownDialog появляется (65 bpm ≥ 40) и авто-закрывается через 3 с.
-     *
-     * <p>Проверяем полный жизненный цикл: кнопка Start → диалог инструкции →
-     * обратный отсчёт (авто) → диалог статистики с результатами.
-     * Примечание: после нажатия Start инструкция появляется мгновенно (MIDI-драйвер
-     * уже инициализирован после первого теста), поэтому проверка кнопки Stop
-     * между нажатием Start и появлением инструкции невозможна.
-     */
+
     @Test
     public void twoNoteSequence_fullRun_showsStatisticsDialog() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ExecuteTaskActivity.class);
@@ -231,7 +216,8 @@ public class MainScreensInstrumentationTest {
             onView(withText(R.string.ok)).perform(click());
 
             // Wait for countdown (3 seconds)
-            SystemClock.sleep(3500);
+            waitForEvent(() -> onView(withId(R.id.tvCountDown)).check(matches(withText("3"))), 4000);
+            waitForEvent(() -> onView(withId(R.id.tvCountDown)).check(doesNotExist()), 4000);
 
             // Now the task is running. For 2-note sequence with 17 repetitions:
             // Each sequence: play 2 notes, then wait for user to press 2 notes
@@ -262,9 +248,7 @@ public class MainScreensInstrumentationTest {
 
             // Verify statistics directly from StatisticsStorage service
             scenario.onActivity(activity -> {
-                ru.usharik.ear4music.activity.ExecuteTaskViewModel viewModel =
-                    (ru.usharik.ear4music.activity.ExecuteTaskViewModel) activity.getViewModel();
-                ru.usharik.ear4music.service.StatisticsStorage stats = viewModel.getStatisticsStorage();
+                StatisticsStorage stats = activity.getViewModel().getStatisticsStorage();
 
                 assertEquals("Total answers should be 34", 34, stats.getOverallCount());
                 assertTrue("Should have at least 50% correct answers", stats.getCorrectPercent() >= 50);
@@ -334,11 +318,16 @@ public class MainScreensInstrumentationTest {
     }
 
     /**
-     * Wait for the tvExpectedNote to change from the given value.
-     * Used to detect when task has progressed to the next note.
+     * Wait for the tvTaskPlayedIndicator to show the expected status.
+     * Polls the view until it matches or timeout occurs.
      */
+    private static void waitForStatusIndicator(String expectedStatus, long timeoutMs) {
+        waitForEvent(() -> onView(withId(R.id.tvTaskPlayedIndicator))
+                    .check(matches(withText(expectedStatus))), timeoutMs);
+    }
+
     private static void waitForExpectedNoteToChange(ActivityScenario<ExecuteTaskActivity> scenario,
-                                                     String previousNote, long timeoutMs) {
+                                                    String previousNote, long timeoutMs) {
         long startTime = SystemClock.uptimeMillis();
         while (SystemClock.uptimeMillis() - startTime < timeoutMs) {
             final boolean[] changed = {false};
@@ -355,23 +344,18 @@ public class MainScreensInstrumentationTest {
         }
     }
 
-    /**
-     * Wait for the tvTaskPlayedIndicator to show the expected status.
-     * Polls the view until it matches or timeout occurs.
-     */
-    private static void waitForStatusIndicator(String expectedStatus, long timeoutMs) {
+    private static void waitForEvent(Runnable check, long timeoutMs) {
         long startTime = SystemClock.uptimeMillis();
         while (SystemClock.uptimeMillis() - startTime < timeoutMs) {
             try {
-                onView(withId(R.id.tvTaskPlayedIndicator))
-                        .check(matches(withText(expectedStatus)));
+                check.run();
                 return;
             } catch (AssertionError e) {
+                Log.d("waitForEvent", "Failed to match, retrying in 50ms. " + e.getLocalizedMessage());
                 SystemClock.sleep(50);
             }
         }
-        onView(withId(R.id.tvTaskPlayedIndicator))
-                .check(matches(withText(expectedStatus)));
+        check.run();
     }
 
     private static ViewAssertion hasMinimumItemCount(int minimumCount) {

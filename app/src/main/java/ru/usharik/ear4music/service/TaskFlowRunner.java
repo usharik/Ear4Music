@@ -19,8 +19,8 @@ import io.reactivex.rxjava3.disposables.Disposable;
  *
  * <h2>Flow 2 — sequence mode ({@code notesInSequence > 1})</h2>
  * <pre>
- *   source → subscribeOn → flatMap(play group) → flatMap(expand) →
- *   doOnNext(wait keyboard / timeout) → observeOn → doOnComplete/Dispose
+ *   source → subscribeOn → concatMap(play group → concatMap(await keyboard / timeout)) →
+ *   observeOn → doOnComplete/Dispose
  * </pre>
  *
  * <p>No Android dependencies: schedulers and all side-effect callbacks are injected,
@@ -34,19 +34,22 @@ public class TaskFlowRunner {
     private final Observable<NoteInfo> keyboardObservable;
     private final Scheduler subscribeOnScheduler;
     private final Scheduler observeOnScheduler;
+    private final Scheduler timeoutScheduler;
 
     public TaskFlowRunner(MidiPlayer midiPlayer,
                           NoteEventListener noteEventListener,
                           StatisticsStorage statisticsStorage,
                           Observable<NoteInfo> keyboardObservable,
                           Scheduler subscribeOnScheduler,
-                          Scheduler observeOnScheduler) {
+                          Scheduler observeOnScheduler,
+                          Scheduler timeoutScheduler) {
         this.midiPlayer = midiPlayer;
         this.noteEventListener = noteEventListener;
         this.statisticsStorage = statisticsStorage;
         this.keyboardObservable = keyboardObservable;
         this.subscribeOnScheduler = subscribeOnScheduler;
         this.observeOnScheduler = observeOnScheduler;
+        this.timeoutScheduler = timeoutScheduler;
     }
 
     /**
@@ -84,6 +87,11 @@ public class TaskFlowRunner {
     /**
      * Builds the sequence-mode subscription chain and returns the {@link Disposable}.
      *
+     * <p>The chain is fully reactive: each note waits for a keyboard press or timeout
+     * via {@code concatMap}, so no thread is ever blocked. The {@code timeoutScheduler}
+     * controls the virtual clock used by the {@code timeout} operator, making this
+     * chain trivially testable with {@link io.reactivex.rxjava3.schedulers.TestScheduler}.</p>
+     *
      * @param source     upstream Observable from {@link NoteSequenceEmitter}
      * @param onComplete called on the {@code observeOnScheduler} when all notes finish
      * @param onStop     called on the {@code observeOnScheduler} when the chain is disposed
@@ -93,22 +101,23 @@ public class TaskFlowRunner {
                                         Runnable onStop) {
         return source
                 .subscribeOn(subscribeOnScheduler)
-                .flatMap(notes -> {
+                .concatMap(notes -> {
                     noteEventListener.onSequenceGroupStarted();
                     for (NoteInfo nt : notes) {
                         midiPlayer.playNote(nt.note, nt.longitude);
                     }
-                    return Observable.just(notes);
-                })
-                .flatMap(Observable::fromArray)
-                .doOnNext(noteInfo -> {
-                    noteEventListener.onSequenceNoteActive(noteInfo);
-                    NoteInfo pressed = keyboardObservable
-                            .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS,
-                                    Observable.just(noteInfo))
-                            .blockingFirst();
-                    statisticsStorage.submitAnswer(pressed);
-                    noteEventListener.onProgressUpdated(pressed);
+                    return Observable.fromArray(notes)
+                            .concatMap(noteInfo -> {
+                                noteEventListener.onSequenceNoteActive(noteInfo);
+                                return keyboardObservable
+                                        .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS,
+                                                timeoutScheduler, Observable.just(noteInfo))
+                                        .take(1)
+                                        .doOnNext(pressed -> {
+                                            statisticsStorage.submitAnswer(pressed);
+                                            noteEventListener.onProgressUpdated(pressed);
+                                        });
+                            });
                 })
                 .observeOn(observeOnScheduler)
                 .doOnComplete(onComplete::run)

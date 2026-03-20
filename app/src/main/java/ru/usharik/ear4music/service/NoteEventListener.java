@@ -2,6 +2,8 @@ package ru.usharik.ear4music.service;
 
 import ru.usharik.ear4music.NoteInfo;
 
+import java.util.function.Consumer;
+
 /**
  * UI-side callbacks invoked by {@link TaskFlowRunner} as notes are processed.
  *
@@ -32,5 +34,34 @@ public interface NoteEventListener {
      * (may be the original note when the user missed or answered incorrectly in time).
      */
     void onProgressUpdated(NoteInfo noteInfo);
+
+    static NoteEventListener create(
+            Consumer<NoteInfo> onNoteActive,
+            Runnable onSequenceGroupStarted,
+            Consumer<NoteInfo> onSequenceNoteActive,
+            Consumer<NoteInfo> onProgressUpdated
+    ) {
+        return new NoteEventListener() {
+            @Override
+            public void onNoteActive(NoteInfo noteInfo) {
+                onNoteActive.accept(noteInfo);
+            }
+
+            @Override
+            public void onSequenceGroupStarted() {
+                onSequenceGroupStarted.run();
+            }
+
+            @Override
+            public void onSequenceNoteActive(NoteInfo noteInfo) {
+                onSequenceNoteActive.accept(noteInfo);
+            }
+
+            @Override
+            public void onProgressUpdated(NoteInfo noteInfo) {
+                onProgressUpdated.accept(noteInfo);
+            }
+        };
+    }
 }
 

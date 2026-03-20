@@ -2,6 +2,8 @@ package ru.usharik.ear4music.service;
 
 import ru.usharik.ear4music.NotesEnum;
 
+import java.util.function.BiConsumer;
+
 /**
  * Abstraction over MIDI note playback.
  *
@@ -10,10 +12,30 @@ import ru.usharik.ear4music.NotesEnum;
  */
 public interface MidiPlayer {
 
-    /** Play a single note for {@code longitude} milliseconds. */
+    /**
+     * Play a single note for {@code longitude} milliseconds.
+     */
     void playNote(NotesEnum note, int longitude);
 
-    /** Play a note preceded by its scale arpeggiation for {@code longitude} milliseconds. */
+    /**
+     * Play a note preceded by its scale arpeggiation for {@code longitude} milliseconds.
+     */
     void playNoteWithScale(NotesEnum note, int longitude);
-}
 
+    static MidiPlayer create(
+            BiConsumer<NotesEnum, Integer> playNote,
+            BiConsumer<NotesEnum, Integer> playNoteWithScale
+    ) {
+        return new MidiPlayer() {
+            @Override
+            public void playNote(NotesEnum note, int longitude) {
+                playNote.accept(note, longitude);
+            }
+
+            @Override
+            public void playNoteWithScale(NotesEnum note, int longitude) {
+                playNoteWithScale.accept(note, longitude);
+            }
+        };
+    }
+}

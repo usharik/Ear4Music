@@ -252,50 +252,25 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         statStore.reset();
         binding.progressBar.setProgress(0);
 
-        MidiPlayer midiPlayer = new MidiPlayer() {
-            @Override
-            public void playNote(NotesEnum note, int longitude) {
-                midiSupport.playNote(note, longitude);
-            }
-
-            @Override
-            public void playNoteWithScale(NotesEnum note, int longitude) {
-                midiSupport.playNoteWithScale(note, longitude);
-            }
-        };
-
-        NoteEventListener noteEventListener = new NoteEventListener() {
-            @Override
-            public void onNoteActive(NoteInfo noteInfo) {
-                runOnUiThread(() -> {
-                    binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
-                    invalidatePianoKeyboard();
-                });
-            }
-
-            @Override
-            public void onSequenceGroupStarted() {
-                runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(null));
-            }
-
-            @Override
-            public void onSequenceNoteActive(NoteInfo noteInfo) {
-                runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(noteInfo));
-            }
-
-            @Override
-            public void onProgressUpdated(NoteInfo noteInfo) {
-                runOnUiThread(() -> updateProgressViews(noteInfo));
-            }
-        };
-
         TaskFlowRunner runner = new TaskFlowRunner(
-                midiPlayer,
-                noteEventListener,
+                MidiPlayer.create(
+                        (note, longitude) -> midiSupport.playNote(note, longitude),
+                        (note, longitude) -> midiSupport.playNoteWithScale(note, longitude)
+                ),
+                NoteEventListener.create(
+                        noteInfo -> runOnUiThread(() -> {
+                            binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                            invalidatePianoKeyboard();
+                        }),
+                        () -> runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(null)),
+                        noteInfo -> runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(noteInfo)),
+                        noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo))
+                ),
                 statStore,
                 keyboardPublishSubject,
                 Schedulers.io(),
-                AndroidSchedulers.mainThread());
+                AndroidSchedulers.mainThread(),
+                Schedulers.computation());
 
         if (notesInSequence == 1) {
             compositeDisposable.add(

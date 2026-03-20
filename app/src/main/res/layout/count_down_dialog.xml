@@ -12,10 +12,10 @@
         android:id="@+id/tvCountDown"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:textColor="@color/colorAccent"
         android:textSize="96sp"
         android:textStyle="bold"
-        tools:text="3" />
+        tools:text="3"/>
 
 </FrameLayout>

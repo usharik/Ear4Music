@@ -34,22 +34,19 @@ public class TaskFlowRunner {
     private final Observable<NoteInfo> keyboardObservable;
     private final Scheduler subscribeOnScheduler;
     private final Scheduler observeOnScheduler;
-    private final Scheduler timeoutScheduler;
 
     public TaskFlowRunner(MidiPlayer midiPlayer,
                           NoteEventListener noteEventListener,
                           StatisticsStorage statisticsStorage,
                           Observable<NoteInfo> keyboardObservable,
                           Scheduler subscribeOnScheduler,
-                          Scheduler observeOnScheduler,
-                          Scheduler timeoutScheduler) {
+                          Scheduler observeOnScheduler) {
         this.midiPlayer = midiPlayer;
         this.noteEventListener = noteEventListener;
         this.statisticsStorage = statisticsStorage;
         this.keyboardObservable = keyboardObservable;
         this.subscribeOnScheduler = subscribeOnScheduler;
         this.observeOnScheduler = observeOnScheduler;
-        this.timeoutScheduler = timeoutScheduler;
     }
 
     /**
@@ -101,23 +98,22 @@ public class TaskFlowRunner {
                                         Runnable onStop) {
         return source
                 .subscribeOn(subscribeOnScheduler)
-                .concatMap(notes -> {
+                .flatMap(notes -> {
                     noteEventListener.onSequenceGroupStarted();
                     for (NoteInfo nt : notes) {
                         midiPlayer.playNote(nt.note, nt.longitude);
                     }
-                    return Observable.fromArray(notes)
-                            .concatMap(noteInfo -> {
-                                noteEventListener.onSequenceNoteActive(noteInfo);
-                                return keyboardObservable
-                                        .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS,
-                                                timeoutScheduler, Observable.just(noteInfo))
-                                        .take(1)
-                                        .doOnNext(pressed -> {
-                                            statisticsStorage.submitAnswer(pressed);
-                                            noteEventListener.onProgressUpdated(pressed);
-                                        });
-                            });
+                    return Observable.just(notes);
+                })
+                .flatMap(Observable::fromArray)
+                .doOnNext(noteInfo -> {
+                    noteEventListener.onSequenceNoteActive(noteInfo);
+                    NoteInfo pressed = keyboardObservable
+                            .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS,
+                                    Observable.just(noteInfo))
+                            .blockingFirst();
+                    statisticsStorage.submitAnswer(pressed);
+                    noteEventListener.onProgressUpdated(pressed);
                 })
                 .observeOn(observeOnScheduler)
                 .doOnComplete(onComplete::run)

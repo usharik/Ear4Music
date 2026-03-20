@@ -233,6 +233,13 @@
                     android:layout_height="wrap_content"
                     android:visibility="invisible"
                     tools:text="C" />
+
+                <TextView
+                    android:id="@+id/tvTaskPlayedIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    tools:text="PLAYED|WAITING" />
             </FrameLayout>
 
             <LinearLayout

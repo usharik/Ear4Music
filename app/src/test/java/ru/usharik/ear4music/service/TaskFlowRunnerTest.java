@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -66,7 +67,7 @@ class TaskFlowRunnerTest {
 
     private TaskFlowRunner singleNoteRunner() {
         return new TaskFlowRunner(midi, ui, stats, keyboard,
-                testScheduler, testScheduler, testScheduler);
+                testScheduler, testScheduler);
     }
 
     @Test
@@ -132,7 +133,7 @@ class TaskFlowRunnerTest {
         Observable<NoteInfo[]> infinite = Observable.interval(1, TimeUnit.MILLISECONDS, testScheduler)
                 .map(n -> new NoteInfo[]{new NoteInfo(n, NotesEnum.C, null, false, false, 1)});
         Disposable d = new TaskFlowRunner(midi, ui, stats, keyboard,
-                testScheduler, testScheduler, testScheduler)
+                testScheduler, testScheduler)
                 .buildSingleNoteFlow(infinite, () -> {}, stopCalls::incrementAndGet);
         testScheduler.triggerActions();                          // start subscription
         testScheduler.advanceTimeBy(10, TimeUnit.MILLISECONDS); // emit a few items
@@ -160,7 +161,7 @@ class TaskFlowRunnerTest {
 
     private TaskFlowRunner sequenceRunner() {
         return new TaskFlowRunner(midi, ui, stats, keyboard,
-                testScheduler, testScheduler, testScheduler);
+                testScheduler, testScheduler);
     }
 
     /**
@@ -223,38 +224,58 @@ class TaskFlowRunnerTest {
 
     @Test
     @DisplayName("Sequence: keyboard press with correct note is counted as correct")
-    void sequence_correctKeyboardPress_countedAsCorrect() {
+    void sequence_correctKeyboardPress_countedAsCorrect() throws InterruptedException {
         // Source emits a single 1-note group (melody mode, 120 bpm → 500 ms longitude)
         List<NotesEnum> melody = List.of(NotesEnum.C);
         Observable<NoteInfo[]> source =
                 new NoteSequenceEmitter(120, 1, 1, false, true).createObservable(melody);
 
-        sequenceRunner().buildSequenceFlow(source, () -> {}, () -> {});
-        testScheduler.triggerActions(); // subscription starts; inner timeout observable waiting
+        CountDownLatch flowCompleted = new CountDownLatch(1);
 
-        // Simulate keyboard press before the timeout fires
+        // Start the flow in a separate thread since blockingFirst() will block
+        new Thread(() -> {
+            sequenceRunner().buildSequenceFlow(source, flowCompleted::countDown, () -> {});
+            testScheduler.triggerActions();
+        }).start();
+
+        // Give flow time to start and reach blockingFirst()
+        Thread.sleep(50);
+
+        // Simulate keyboard press
         NoteInfo correctPress = new NoteInfo(0, NotesEnum.C, NotesEnum.C, false, false, 0);
-        keyboard.onNext(correctPress); // inner take(1) fires, stats updated, onComplete scheduled
+        keyboard.onNext(correctPress);
 
-        testScheduler.triggerActions(); // flush the observeOn-queued onComplete
+        // Wait for flow to complete
+        assertTrue(flowCompleted.await(1, TimeUnit.SECONDS), "Flow should complete");
+
         assertEquals(1, stats.getCorrectCount());
         assertEquals(0, stats.getMissedCount());
     }
 
     @Test
     @DisplayName("Sequence: keyboard press with wrong note is counted as incorrect")
-    void sequence_wrongKeyboardPress_countedAsIncorrect() {
+    void sequence_wrongKeyboardPress_countedAsIncorrect() throws InterruptedException {
         List<NotesEnum> melody = List.of(NotesEnum.C);
         Observable<NoteInfo[]> source =
                 new NoteSequenceEmitter(120, 1, 1, false, true).createObservable(melody);
 
-        sequenceRunner().buildSequenceFlow(source, () -> {}, () -> {});
-        testScheduler.triggerActions();
+        CountDownLatch flowCompleted = new CountDownLatch(1);
 
+        // Start the flow in a separate thread since blockingFirst() will block
+        new Thread(() -> {
+            sequenceRunner().buildSequenceFlow(source, flowCompleted::countDown, () -> {});
+            testScheduler.triggerActions();
+        }).start();
+
+        // Give flow time to start and reach blockingFirst()
+        Thread.sleep(50);
+
+        // Simulate keyboard press with wrong note
         NoteInfo wrongPress = new NoteInfo(0, NotesEnum.C, NotesEnum.D, false, false, 0);
         keyboard.onNext(wrongPress);
 
-        testScheduler.triggerActions();
+        // Wait for flow to complete
+        assertTrue(flowCompleted.await(1, TimeUnit.SECONDS), "Flow should complete");
 
         assertEquals(0, stats.getCorrectCount());
         assertEquals(0, stats.getMissedCount());

@@ -236,4 +236,12 @@ public class PianoKeyboard extends View {
         this.showNoteNames = showNoteNames;
         invalidate();
     }
+
+    public NoteInfo getCurrentNoteInfo() {
+        return currentNoteInfo;
+    }
+
+    public PianoKeyboardListener getPianoKeyboardListener() {
+        return pianoKeyboardListener;
+    }
 }

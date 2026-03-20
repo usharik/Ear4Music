@@ -259,25 +259,29 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                 ),
                 NoteEventListener.create(
                         noteInfo -> runOnUiThread(() -> {
+                            // Single-note mode: note is active, waiting for answer
                             binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
                             binding.tvExpectedNote.setText(noteInfo.note.name());
                             invalidatePianoKeyboard();
                         }),
                         () -> runOnUiThread(() -> {
+                            // Sequence mode: group started (playing notes)
                             binding.pianoKeyboard.setCurrentNoteInfo(null);
                             binding.tvExpectedNote.setText("");
+                            binding.tvTaskPlayedIndicator.setText("SEQ_PLAYING");
                         }),
                         noteInfo -> runOnUiThread(() -> {
+                            // Sequence mode: notes played, now waiting for answer
                             binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
                             binding.tvExpectedNote.setText(noteInfo.note.name());
+                            binding.tvTaskPlayedIndicator.setText("SEQ_PLAYED");
                         }),
                         noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo))
                 ),
                 statStore,
                 keyboardPublishSubject,
                 Schedulers.io(),
-                AndroidSchedulers.mainThread(),
-                Schedulers.computation());
+                AndroidSchedulers.mainThread());
 
         if (notesInSequence == 1) {
             compositeDisposable.add(

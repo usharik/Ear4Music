@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.activity;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,6 +22,13 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import ru.usharik.ear4music.BuildConfig;
+import ru.usharik.ear4music.dialog.CountDownDialog;
+import ru.usharik.ear4music.NoteInfo;
+import ru.usharik.ear4music.NotesEnum;
+import ru.usharik.ear4music.R;
+import ru.usharik.ear4music.dialog.StatisticsReportDialog;
+import ru.usharik.ear4music.Utilities;
 import ru.usharik.ear4music.databinding.ExecuteTaskActivityBinding;
 import ru.usharik.ear4music.framework.BannerAdLoader;
 import ru.usharik.ear4music.framework.ViewActivity;

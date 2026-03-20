@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.dialog;
 
 import android.app.Dialog;
 import androidx.fragment.app.DialogFragment;
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import ru.usharik.ear4music.R;
 
 
 /**

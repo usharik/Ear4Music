@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;

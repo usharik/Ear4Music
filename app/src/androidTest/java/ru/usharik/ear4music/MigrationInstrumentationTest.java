@@ -10,6 +10,8 @@ import android.content.Context;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import ru.usharik.ear4music.activity.ExecuteTaskViewModel;
+import ru.usharik.ear4music.activity.SubTaskSelectViewModel;
 import ru.usharik.ear4music.model.SubTask;
 import ru.usharik.ear4music.model.Task;
 import ru.usharik.ear4music.model.room.AppDatabase;

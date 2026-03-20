@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import ru.usharik.ear4music.NotesEnum;
+import ru.usharik.ear4music.R;
 import ru.usharik.ear4music.adapter.StatisticsReportAdapter;
 import ru.usharik.ear4music.service.StatisticsStorage;
 

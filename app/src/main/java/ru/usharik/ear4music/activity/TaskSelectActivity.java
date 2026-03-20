@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.activity;
 
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.ads.AdView;
+import ru.usharik.ear4music.BuildConfig;
+import ru.usharik.ear4music.R;
+import ru.usharik.ear4music.Utilities;
 import ru.usharik.ear4music.adapter.SubTaskAdapter;
 import ru.usharik.ear4music.adapter.TaskAdapter;
 import ru.usharik.ear4music.databinding.TaskSelectActivityBinding;

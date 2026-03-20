@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="viewModel" type="ru.usharik.ear4music.SubTaskSelectViewModel" />
+        <variable name="viewModel" type="ru.usharik.ear4music.activity.SubTaskSelectViewModel" />
     </data>
 
     <LinearLayout
@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/screen_background"
         android:orientation="vertical"
-        tools:context="ru.usharik.ear4music.SubTaskSelectActivity">
+        tools:context="ru.usharik.ear4music.activity.SubTaskSelectActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

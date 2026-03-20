@@ -5,7 +5,7 @@
 
     <data>
         <import type="android.content.Intent" />
-        <variable name="viewModel" type="ru.usharik.ear4music.SubTaskListRowViewModel" />
+        <variable name="viewModel" type="ru.usharik.ear4music.activity.SubTaskListRowViewModel" />
     </data>
 
     <ru.usharik.ear4music.widget.ProgressRelativeLayout

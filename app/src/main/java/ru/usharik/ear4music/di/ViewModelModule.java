@@ -3,9 +3,9 @@ package ru.usharik.ear4music.di;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import ru.usharik.ear4music.ExecuteTaskViewModel;
-import ru.usharik.ear4music.SubTaskSelectViewModel;
-import ru.usharik.ear4music.TaskSelectViewModel;
+import ru.usharik.ear4music.activity.ExecuteTaskViewModel;
+import ru.usharik.ear4music.activity.SubTaskSelectViewModel;
+import ru.usharik.ear4music.activity.TaskSelectViewModel;
 
 import dagger.Binds;
 import dagger.Module;

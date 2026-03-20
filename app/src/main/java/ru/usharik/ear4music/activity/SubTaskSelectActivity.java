@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.activity;
 
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.usharik.ear4music.R;
+import ru.usharik.ear4music.Utilities;
 import ru.usharik.ear4music.adapter.SubTaskAdapter;
 import ru.usharik.ear4music.databinding.SubTaskSelectActivityBinding;
 import ru.usharik.ear4music.framework.ViewActivity;

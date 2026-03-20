@@ -32,6 +32,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import ru.usharik.ear4music.activity.ExecuteTaskActivity;
+import ru.usharik.ear4music.activity.SubTaskSelectActivity;
+import ru.usharik.ear4music.activity.TaskSelectActivity;
 import ru.usharik.ear4music.model.room.AppDatabase;
 
 @RunWith(AndroidJUnit4.class)

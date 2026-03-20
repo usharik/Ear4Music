@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="ru.usharik.ear4music.ExecuteTaskViewModel" />
+            type="ru.usharik.ear4music.activity.ExecuteTaskViewModel" />
     </data>
 
     <LinearLayout

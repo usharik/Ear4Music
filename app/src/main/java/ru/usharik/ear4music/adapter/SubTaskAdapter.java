@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import ru.usharik.ear4music.Utilities;
-import ru.usharik.ear4music.SubTaskListRowViewModel;
+import ru.usharik.ear4music.activity.SubTaskListRowViewModel;
 import ru.usharik.ear4music.repository.SubTaskRepository;
 import ru.usharik.ear4music.service.Utils;
 import ru.usharik.ear4music.databinding.SubTaskListRowBinding;

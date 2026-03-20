@@ -1,4 +1,4 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.activity;
 
 import ru.usharik.ear4music.framework.ViewModelObservable;
 import ru.usharik.ear4music.model.Task;

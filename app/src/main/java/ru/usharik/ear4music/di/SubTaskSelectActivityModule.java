@@ -1,6 +1,6 @@
 package ru.usharik.ear4music.di;
 
-import ru.usharik.ear4music.SubTaskSelectActivity;
+import ru.usharik.ear4music.activity.SubTaskSelectActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

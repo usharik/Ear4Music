@@ -20,7 +20,7 @@
             android:value="${ADMOB_APP_ID}" />
 
         <activity
-            android:name=".TaskSelectActivity"
+            android:name=".activity.TaskSelectActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,11 +30,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ExecuteTaskActivity"
+            android:name=".activity.ExecuteTaskActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TaskResultActivity" />
+        <activity android:name=".activity.TaskResultActivity" />
         <activity
-            android:name=".SubTaskSelectActivity"
+            android:name=".activity.SubTaskSelectActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

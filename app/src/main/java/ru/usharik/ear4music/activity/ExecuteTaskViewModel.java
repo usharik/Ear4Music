@@ -1,7 +1,10 @@
-package ru.usharik.ear4music;
+package ru.usharik.ear4music.activity;
 
 import androidx.databinding.Bindable;
 
+import ru.usharik.ear4music.BR;
+import ru.usharik.ear4music.NoteInfo;
+import ru.usharik.ear4music.NotesEnum;
 import ru.usharik.ear4music.framework.ViewModelObservable;
 import ru.usharik.ear4music.model.SubTask;
 import ru.usharik.ear4music.model.Task;

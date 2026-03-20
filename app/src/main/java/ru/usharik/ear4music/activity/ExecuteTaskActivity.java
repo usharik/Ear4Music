@@ -33,20 +33,21 @@ import ru.usharik.ear4music.databinding.ExecuteTaskActivityBinding;
 import ru.usharik.ear4music.framework.BannerAdLoader;
 import ru.usharik.ear4music.framework.ViewActivity;
 import ru.usharik.ear4music.model.SubTask;
+import ru.usharik.ear4music.service.MidiPlayer;
 import ru.usharik.ear4music.service.MidiSupport;
+import ru.usharik.ear4music.service.NoteEventListener;
 import ru.usharik.ear4music.service.StatisticsStorage;
+import ru.usharik.ear4music.service.TaskFlowRunner;
 import ru.usharik.ear4music.service.Utils;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -250,54 +251,59 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
         final StatisticsStorage statStore = getViewModel().getStatisticsStorage();
         statStore.reset();
         binding.progressBar.setProgress(0);
-        if (notesInSequence == 1) {
-            Disposable noteEmitterDisposable = notesEmitterObservable
-                    .subscribeOn(Schedulers.io())
-                    .doOnNext((notes) -> {
-                        runOnUiThread(() -> {
-                            binding.pianoKeyboard.setCurrentNoteInfo(notes[0]);
-                            invalidatePianoKeyboard();
-                        });
-                        if (notes[0].isPlayWithScale) {
-                            midiSupport.playNoteWithScale(notes[0].note, notes[0].longitude);
-                        } else {
-                            midiSupport.playNote(notes[0].note, notes[0].longitude);
-                        }
-                        statStore.submitAnswer(notes[0]);
-                        runOnUiThread(() -> updateProgressViews(notes[0]));
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(this::onTaskComplete)
-                    .doOnDispose(this::onTaskStop)
-                    .subscribe();
 
-            compositeDisposable.add(noteEmitterDisposable);
+        MidiPlayer midiPlayer = new MidiPlayer() {
+            @Override
+            public void playNote(NotesEnum note, int longitude) {
+                midiSupport.playNote(note, longitude);
+            }
+
+            @Override
+            public void playNoteWithScale(NotesEnum note, int longitude) {
+                midiSupport.playNoteWithScale(note, longitude);
+            }
+        };
+
+        NoteEventListener noteEventListener = new NoteEventListener() {
+            @Override
+            public void onNoteActive(NoteInfo noteInfo) {
+                runOnUiThread(() -> {
+                    binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                    invalidatePianoKeyboard();
+                });
+            }
+
+            @Override
+            public void onSequenceGroupStarted() {
+                runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(null));
+            }
+
+            @Override
+            public void onSequenceNoteActive(NoteInfo noteInfo) {
+                runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(noteInfo));
+            }
+
+            @Override
+            public void onProgressUpdated(NoteInfo noteInfo) {
+                runOnUiThread(() -> updateProgressViews(noteInfo));
+            }
+        };
+
+        TaskFlowRunner runner = new TaskFlowRunner(
+                midiPlayer,
+                noteEventListener,
+                statStore,
+                keyboardPublishSubject,
+                Schedulers.io(),
+                AndroidSchedulers.mainThread());
+
+        if (notesInSequence == 1) {
+            compositeDisposable.add(
+                    runner.buildSingleNoteFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
             compositeDisposable.add(keyboardPublishSubject.subscribe(statStore::submitAnswer));
         } else {
-            Disposable noteEmitterDisposable = notesEmitterObservable
-                    .subscribeOn(Schedulers.io())
-                    .flatMap((notes) -> {
-                        runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(null));
-                        for (NoteInfo nt : notes) {
-                            midiSupport.playNote(nt.note, nt.longitude);
-                        }
-                        return Observable.just(notes);
-                    })
-                    .flatMap(Observable::fromArray)
-                    .doOnNext((noteInfo) -> {
-                        runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(noteInfo));
-                        NoteInfo pressed = keyboardPublishSubject
-                                .timeout(noteInfo.longitude, TimeUnit.MILLISECONDS, Observable.just(noteInfo))
-                                .blockingFirst();
-                        statStore.submitAnswer(pressed);
-                        runOnUiThread(() -> updateProgressViews(pressed));
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(this::onTaskComplete)
-                    .doOnDispose(this::onTaskStop)
-                    .subscribe();
-
-            compositeDisposable.add(noteEmitterDisposable);
+            compositeDisposable.add(
+                    runner.buildSequenceFlow(notesEmitterObservable, this::onTaskComplete, this::onTaskStop));
         }
     }
 

@@ -120,6 +120,3 @@ dependencies {
     }
     androidTestImplementation 'androidx.room:room-testing:2.8.4'
 }
-
-// google.com, pub-6420074467468909, DIRECT, f08c47fec0942fa0
-// google.com, pub-6420074467468909, DIRECT, f08c47fec0942fa0

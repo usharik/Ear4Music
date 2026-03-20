@@ -164,8 +164,6 @@ public class MainScreensInstrumentationTest {
 
             // Single-note mode: 8 notes total - press each key and wait for task to progress
             for (int note = 0; note < 8; note++) {
-                SystemClock.sleep(500);
-
                 // Get expected note before pressing
                 final String[] expectedNoteBefore = {""};
                 scenario.onActivity(activity -> {

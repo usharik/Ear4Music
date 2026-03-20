@@ -4,7 +4,6 @@ import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,21 +48,38 @@ public class StatisticsStorage implements Serializable {
         missedCount= 0;
     }
 
+    /**
+     * @deprecated Retained for backward compatibility. Prefer {@link #submitAnswer(JudgedAnswer)}.
+     */
+    @Deprecated
     public void submitAnswer(NoteInfo noteInfo) {
-        submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote, noteInfo.time);
+        recordAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote,
+                noteInfo.time.getTime());
     }
 
     public void submitAnswer(JudgedAnswer answer) {
-        submitAnswer(answer.noteNumber, answer.expectedNote, answer.pressedNote, answer.noteTime);
+        recordAnswer(answer.noteNumber, answer.expectedNote, answer.pressedNote,
+                answer.activationTimeMs);
     }
 
-    public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote, Date noteTime) {
+    /**
+     * Legacy overload. Converts the {@link Date} to epoch-ms and delegates to the internal
+     * {@code recordAnswer} method. Retained for backward compatibility with tests and
+     * any call sites not yet migrated to {@link #submitAnswer(JudgedAnswer)}.
+     */
+    public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote,
+                             Date noteTime) {
+        recordAnswer(noteNumber, actualNote, answeredNote, noteTime.getTime());
+    }
+
+    private void recordAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote,
+                              long activationTimeMs) {
         if (actualNote == null) {
             return;
         }
         answers.computeIfAbsent(noteNumber, k -> {
-            Date answerTime = Calendar.getInstance().getTime();
-            Answer answer = new Answer(actualNote, answeredNote, answerTime.getTime() - noteTime.getTime());
+            long delay = System.currentTimeMillis() - activationTimeMs;
+            Answer answer = new Answer(actualNote, answeredNote, delay);
             if (answer.isCorrect()) {
                 correctCount++;
             } else if (answer.isMissed()) {

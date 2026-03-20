@@ -63,6 +63,7 @@ class SequenceFlowRunnerTest {
                 midi,
                 ui::onSequenceGroupStarted,
                 ui::onSequenceNoteActive,
+                ja -> {},           // onAnswerEvaluated — no-op in unit tests
                 ui::onProgressUpdated,
                 stats,
                 keyboard,

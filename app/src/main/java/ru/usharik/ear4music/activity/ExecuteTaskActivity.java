@@ -69,6 +69,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private Subject<KeyPress> keyboardPublishSubject;
     private Subject<Boolean> taskStatePublishSubject;
     private NoteInfo currentActiveNoteInfo;
+    /** Epoch-ms timestamp recorded when the current prompt became active for user input. */
+    private long currentActivationTimeMs;
     private CompositeDisposable compositeDisposable;
     private AdView bannerAdView;
     private InterstitialAd interstitialAd;
@@ -271,6 +273,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     // onNoteActive
                     noteInfo -> runOnUiThread(() -> {
                         currentActiveNoteInfo = noteInfo;
+                        currentActivationTimeMs = System.currentTimeMillis();
                         binding.pianoKeyboard.setExpectedNote(noteInfo.note, noteInfo.isHighlighted);
                         binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText(noteInfo.note.name());
@@ -279,7 +282,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     // onProgressUpdated — missed fallback (computeIfAbsent ensures this is a
                     // no-op if the keyboard subscription already submitted an answer for this note)
                     noteInfo -> runOnUiThread(() -> {
-                        statStore.submitAnswer(JudgedAnswer.missed(noteInfo));
+                        statStore.submitAnswer(JudgedAnswer.missed(noteInfo, currentActivationTimeMs));
                         updateProgressViews(noteInfo);
                     }),
                     Schedulers.io(),
@@ -290,7 +293,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             compositeDisposable.add(keyboardPublishSubject.subscribe(keyPress -> {
                 NoteInfo active = currentActiveNoteInfo;
                 if (active != null) {
-                    statStore.submitAnswer(JudgedAnswer.from(active, keyPress));
+                    statStore.submitAnswer(JudgedAnswer.from(active, keyPress, currentActivationTimeMs));
                 }
                 // If active is null the task has just been stopped; silently ignore the stale press.
             }));
@@ -314,6 +317,13 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                         binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         binding.tvTaskPlayedIndicator.setText("SEQ_PLAYED");
+                    }),
+                    // onAnswerEvaluated — show green/red key feedback after each answer
+                    judgedAnswer -> runOnUiThread(() -> {
+                        if (!judgedAnswer.isMissed()) {
+                            binding.pianoKeyboard.showAnswerFeedback(
+                                    judgedAnswer.pressedNote, judgedAnswer.isCorrect());
+                        }
                     }),
                     // onProgressUpdated
                     noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo)),

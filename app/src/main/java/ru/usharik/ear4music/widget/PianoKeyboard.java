@@ -12,7 +12,6 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
-import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
 import ru.usharik.ear4music.R;
 import ru.usharik.ear4music.listner.PianoKeyboardListener;
@@ -237,20 +236,9 @@ public class PianoKeyboard extends View {
     // Deprecated compatibility bridge
     // ---------------------------------------------------------------------------
 
-    /**
-     * @deprecated Use {@link #setExpectedNote(NotesEnum, boolean)} / {@link #clearExpectedNote()}
-     *             to set the prompt, and {@link #showAnswerFeedback(NotesEnum, boolean)} /
-     *             {@link #clearAnswerFeedback()} for green/red feedback.
-     */
-    @Deprecated
-    public void setCurrentNoteInfo(NoteInfo noteInfo) {
-        if (noteInfo == null) {
-            clearExpectedNote();
-        } else {
-            setExpectedNote(noteInfo.note, noteInfo.isHighlighted);
-        }
-        clearAnswerFeedback();
-    }
+    // setCurrentNoteInfo(NoteInfo) has been removed — use setExpectedNote() /
+    // clearExpectedNote() for prompt state and showAnswerFeedback() /
+    // clearAnswerFeedback() for green/red feedback.
 
     public void setPianoKeyboardListener(PianoKeyboardListener pianoKeyboardListener) {
         this.pianoKeyboardListener = pianoKeyboardListener;

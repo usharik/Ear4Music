@@ -15,6 +15,7 @@ public class SequenceFlowRunner {
     private final MidiPlayer midiPlayer;
     private final Runnable onSequenceGroupStarted;
     private final Consumer<NoteInfo> onSequenceNoteActive;
+    private final Consumer<JudgedAnswer> onAnswerEvaluated;
     private final Consumer<NoteInfo> onProgressUpdated;
     private final StatisticsStorage statisticsStorage;
     private final Observable<KeyPress> keyboardObservable;
@@ -24,6 +25,7 @@ public class SequenceFlowRunner {
     public SequenceFlowRunner(MidiPlayer midiPlayer,
                               Runnable onSequenceGroupStarted,
                               Consumer<NoteInfo> onSequenceNoteActive,
+                              Consumer<JudgedAnswer> onAnswerEvaluated,
                               Consumer<NoteInfo> onProgressUpdated,
                               StatisticsStorage statisticsStorage,
                               Observable<KeyPress> keyboardObservable,
@@ -32,6 +34,7 @@ public class SequenceFlowRunner {
         this.midiPlayer = midiPlayer;
         this.onSequenceGroupStarted = onSequenceGroupStarted;
         this.onSequenceNoteActive = onSequenceNoteActive;
+        this.onAnswerEvaluated = onAnswerEvaluated;
         this.onProgressUpdated = onProgressUpdated;
         this.statisticsStorage = statisticsStorage;
         this.keyboardObservable = keyboardObservable;
@@ -54,15 +57,19 @@ public class SequenceFlowRunner {
                 .flatMap(Observable::fromArray)
                 .doOnNext(noteInfo -> {
                     onSequenceNoteActive.accept(noteInfo);
+                    // Record activation time: the answer window opens at this point.
+                    // All notes in the group have already been played by the preceding flatMap.
+                    long activationTimeMs = System.currentTimeMillis();
                     // Wait for the user's key press, or treat as missed after timeout.
                     KeyPress keyPress = keyboardObservable
                             .timeout(noteInfo.longitude,
                                     TimeUnit.MILLISECONDS,
                                     Observable.just(KeyPress.missed()))
                             .blockingFirst();
-                    // Join prompt (noteInfo) with the user's raw input (keyPress) to form an answer.
-                    statisticsStorage.submitAnswer(
-                            noteInfo.num, noteInfo.note, keyPress.pressedNote(), noteInfo.time);
+                    // Combine prompt + raw input → evaluated answer domain object.
+                    JudgedAnswer judgedAnswer = JudgedAnswer.from(noteInfo, keyPress, activationTimeMs);
+                    statisticsStorage.submitAnswer(judgedAnswer);
+                    onAnswerEvaluated.accept(judgedAnswer);
                     onProgressUpdated.accept(noteInfo);
                 })
                 .observeOn(observeOnScheduler)

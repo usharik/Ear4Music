@@ -4,8 +4,6 @@ import ru.usharik.ear4music.NoteInfo;
 import ru.usharik.ear4music.NotesEnum;
 import ru.usharik.ear4music.widget.KeyPress;
 
-import java.util.Date;
-
 /**
  * Immutable domain object representing the evaluated result of one user answer.
  *
@@ -14,10 +12,10 @@ import java.util.Date;
  * statistics entry without coupling callers to the internal {@link StatisticsStorage}
  * parameter list.</p>
  *
- * <p>Factory methods:
+ * <p>Preferred factory methods (explicit activation time):
  * <ul>
- *   <li>{@link #from(NoteInfo, KeyPress)} — normal answer (key pressed by the user)</li>
- *   <li>{@link #missed(NoteInfo)}         — missed answer (no key pressed in time)</li>
+ *   <li>{@link #from(NoteInfo, KeyPress, long)} — normal answer</li>
+ *   <li>{@link #missed(NoteInfo, long)}          — missed answer (no key pressed in time)</li>
  * </ul>
  * </p>
  */
@@ -32,33 +30,65 @@ public final class JudgedAnswer {
     /** The note actually pressed by the user, or {@code null} if no key was pressed. */
     public final NotesEnum pressedNote;
 
-    /** The time at which the prompt was first presented (used to compute reaction delay). */
-    public final Date noteTime;
+    /**
+     * The epoch-millisecond timestamp at which the prompt became active for user input.
+     * Used to compute reaction delay (= answer time − activationTimeMs).
+     */
+    public final long activationTimeMs;
 
-    public JudgedAnswer(long noteNumber, NotesEnum expectedNote, NotesEnum pressedNote, Date noteTime) {
+    public JudgedAnswer(long noteNumber, NotesEnum expectedNote, NotesEnum pressedNote,
+                        long activationTimeMs) {
         this.noteNumber = noteNumber;
         this.expectedNote = expectedNote;
         this.pressedNote = pressedNote;
-        this.noteTime = noteTime;
+        this.activationTimeMs = activationTimeMs;
     }
 
     /**
-     * Creates a {@code JudgedAnswer} from a prompt and a user key-press.
+     * Creates a {@code JudgedAnswer} from a prompt, a user key-press, and the millisecond
+     * timestamp at which the prompt was activated for input.
      *
-     * @param prompt   the active prompt note at the time of the key press
-     * @param keyPress the raw key-press event from the piano keyboard
+     * @param prompt          the active prompt note
+     * @param keyPress        the raw key-press event from the piano keyboard
+     * @param activationTimeMs epoch-ms when the prompt became active for user input
      */
+    public static JudgedAnswer from(NoteInfo prompt, KeyPress keyPress, long activationTimeMs) {
+        return new JudgedAnswer(prompt.num, prompt.note, keyPress.pressedNote(), activationTimeMs);
+    }
+
+    /**
+     * Creates a {@code JudgedAnswer} from a prompt and a user key-press, using the
+     * {@link NoteInfo#time} construction timestamp as a proxy for activation time.
+     *
+     * @deprecated prefer {@link #from(NoteInfo, KeyPress, long)} to pass the actual
+     *             prompt-activation timestamp for accurate reaction-delay measurement.
+     */
+    @Deprecated
     public static JudgedAnswer from(NoteInfo prompt, KeyPress keyPress) {
-        return new JudgedAnswer(prompt.num, prompt.note, keyPress.pressedNote(), prompt.time);
+        return from(prompt, keyPress, prompt.time.getTime());
     }
 
     /**
-     * Creates a {@code JudgedAnswer} representing a missed answer (no key was pressed).
+     * Creates a {@code JudgedAnswer} representing a missed answer (no key was pressed),
+     * using the given prompt-activation timestamp.
      *
-     * @param prompt the prompt note that was not answered in time
+     * @param prompt          the prompt note that was not answered in time
+     * @param activationTimeMs epoch-ms when the prompt became active for user input
      */
+    public static JudgedAnswer missed(NoteInfo prompt, long activationTimeMs) {
+        return new JudgedAnswer(prompt.num, prompt.note, null, activationTimeMs);
+    }
+
+    /**
+     * Creates a {@code JudgedAnswer} representing a missed answer, using the
+     * {@link NoteInfo#time} construction timestamp as a proxy for activation time.
+     *
+     * @deprecated prefer {@link #missed(NoteInfo, long)} to pass the actual
+     *             prompt-activation timestamp for accurate reaction-delay measurement.
+     */
+    @Deprecated
     public static JudgedAnswer missed(NoteInfo prompt) {
-        return new JudgedAnswer(prompt.num, prompt.note, null, prompt.time);
+        return missed(prompt, prompt.time.getTime());
     }
 
     /** Returns {@code true} if the user pressed the correct note. */

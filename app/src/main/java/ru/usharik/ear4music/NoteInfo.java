@@ -10,6 +10,11 @@ import java.util.Date;
 public class NoteInfo {
     public long num;
     public NotesEnum note;
+    /**
+     * @deprecated PianoKeyboard no longer writes this field; prefer {@link ru.usharik.ear4music.service.JudgedAnswer}
+     *             for all answer-state needs.
+     */
+    @Deprecated
     public NotesEnum pressedNote;
     public boolean isPlayWithScale;
     public boolean isHighlighted;

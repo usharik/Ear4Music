@@ -275,9 +275,12 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         invalidatePianoKeyboard();
                     }),
-                    // onProgressUpdated
-                    noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo)),
-                    statStore,
+                    // onProgressUpdated — also records a "missed" fallback (computeIfAbsent
+                    // ensures this is a no-op if the keyboard subscription already submitted an answer)
+                    noteInfo -> runOnUiThread(() -> {
+                        statStore.submitAnswer(noteInfo);
+                        updateProgressViews(noteInfo);
+                    }),
                     Schedulers.io(),
                     AndroidSchedulers.mainThread());
             compositeDisposable.add(

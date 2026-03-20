@@ -38,6 +38,7 @@ import ru.usharik.ear4music.service.MidiSupport;
 import ru.usharik.ear4music.service.StatisticsStorage;
 import ru.usharik.ear4music.service.SequenceFlowRunner;
 import ru.usharik.ear4music.service.SingleNoteFlowRunner;
+import ru.usharik.ear4music.service.JudgedAnswer;
 import ru.usharik.ear4music.service.Utils;
 import ru.usharik.ear4music.widget.KeyPress;
 
@@ -275,10 +276,10 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         invalidatePianoKeyboard();
                     }),
-                    // onProgressUpdated — also records a "missed" fallback (computeIfAbsent
-                    // ensures this is a no-op if the keyboard subscription already submitted an answer)
+                    // onProgressUpdated — missed fallback (computeIfAbsent ensures this is a
+                    // no-op if the keyboard subscription already submitted an answer for this note)
                     noteInfo -> runOnUiThread(() -> {
-                        statStore.submitAnswer(noteInfo);
+                        statStore.submitAnswer(JudgedAnswer.missed(noteInfo));
                         updateProgressViews(noteInfo);
                     }),
                     Schedulers.io(),
@@ -289,7 +290,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
             compositeDisposable.add(keyboardPublishSubject.subscribe(keyPress -> {
                 NoteInfo active = currentActiveNoteInfo;
                 if (active != null) {
-                    statStore.submitAnswer(active.num, active.note, keyPress.pressedNote(), active.time);
+                    statStore.submitAnswer(JudgedAnswer.from(active, keyPress));
                 }
                 // If active is null the task has just been stopped; silently ignore the stale press.
             }));

@@ -53,6 +53,10 @@ public class StatisticsStorage implements Serializable {
         submitAnswer(noteInfo.num, noteInfo.note, noteInfo.pressedNote, noteInfo.time);
     }
 
+    public void submitAnswer(JudgedAnswer answer) {
+        submitAnswer(answer.noteNumber, answer.expectedNote, answer.pressedNote, answer.noteTime);
+    }
+
     public void submitAnswer(long noteNumber, NotesEnum actualNote, NotesEnum answeredNote, Date noteTime) {
         if (actualNote == null) {
             return;

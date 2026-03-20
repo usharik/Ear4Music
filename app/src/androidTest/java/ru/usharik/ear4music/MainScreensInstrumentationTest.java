@@ -2,6 +2,7 @@ package ru.usharik.ear4music;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
@@ -210,7 +211,8 @@ public class MainScreensInstrumentationTest {
             onView(withText(R.string.ok)).perform(click());
 
             // Wait for countdown (3 seconds)
-            SystemClock.sleep(3500);
+            waitForEvent(() -> onView(withId(R.id.tvCountDown)).check(matches(withText("3"))), 4000);
+            waitForEvent(() -> onView(withId(R.id.tvCountDown)).check(doesNotExist()), 4000);
 
             // Now the task is running. For 2-note sequence with 17 repetitions:
             // Each sequence: play 2 notes, then wait for user to press 2 notes
@@ -339,18 +341,21 @@ public class MainScreensInstrumentationTest {
      * Polls the view until it matches or timeout occurs.
      */
     private static void waitForStatusIndicator(String expectedStatus, long timeoutMs) {
+        waitForEvent(() -> onView(withId(R.id.tvTaskPlayedIndicator))
+                    .check(matches(withText(expectedStatus))), timeoutMs);
+    }
+
+    private static void waitForEvent(Runnable check, long timeoutMs) {
         long startTime = SystemClock.uptimeMillis();
         while (SystemClock.uptimeMillis() - startTime < timeoutMs) {
             try {
-                onView(withId(R.id.tvTaskPlayedIndicator))
-                        .check(matches(withText(expectedStatus)));
+                check.run();
                 return;
             } catch (AssertionError e) {
                 SystemClock.sleep(50);
             }
         }
-        onView(withId(R.id.tvTaskPlayedIndicator))
-                .check(matches(withText(expectedStatus)));
+        check.run();
     }
 
     private static ViewAssertion hasMinimumItemCount(int minimumCount) {

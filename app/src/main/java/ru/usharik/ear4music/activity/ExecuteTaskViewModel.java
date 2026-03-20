@@ -49,7 +49,7 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
     private final StatisticsStorage statisticsStorage;
 
     @Inject
-    ExecuteTaskViewModel(final TaskRepository taskRepository,
+    public ExecuteTaskViewModel(final TaskRepository taskRepository,
                          final SubTaskRepository subTaskRepository,
                          final AppState appState,
                          final StatisticsStorage statisticsStorage) {

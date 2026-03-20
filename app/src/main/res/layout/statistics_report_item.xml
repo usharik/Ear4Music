@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.Ear4Music.DialogBody"
-        android:textColor="@android:color/holo_green_dark" />
+        android:textColor="@color/green" />
 
     <TextView
         android:id="@+id/wrongCount"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.Ear4Music.DialogBody"
-        android:textColor="@android:color/holo_red_dark" />
+        android:textColor="@color/red" />
 
     <TextView
         android:id="@+id/missedCount"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.Ear4Music.DialogBody"
-        android:textColor="@android:color/darker_gray" />
+        android:textColor="@color/textSecondary" />
 
 </LinearLayout>
 

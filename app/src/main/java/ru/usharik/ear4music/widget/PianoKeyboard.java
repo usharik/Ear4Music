@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -202,6 +203,7 @@ public class PianoKeyboard extends View {
                         }
                         pressedNoteRect = rect;
                         currentNoteInfo.pressedNote=pressedNote;
+                        performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                         break;
                     }
                 }

@@ -226,6 +226,13 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/piano_surface"
                     app:showNoteNames="@{viewModel.showNoteNames}" />
+
+                <TextView
+                    android:id="@+id/tvExpectedNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    tools:text="C" />
             </FrameLayout>
 
             <LinearLayout

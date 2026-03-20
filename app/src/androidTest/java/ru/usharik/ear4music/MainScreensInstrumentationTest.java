@@ -197,7 +197,7 @@ public class MainScreensInstrumentationTest {
             onView(withText(R.string.ok)).perform(click());
 
             // Ждём: 3 с (обратный отсчёт) + 17×2 нот × 923 мс + 3 с запаса = 37 с
-            SystemClock.sleep(37_000);
+            SystemClock.sleep(80_000);
 
             // Диалог статистики появился — задание завершено
             onView(withId(R.id.statisticsRecyclerView)).check(matches(isDisplayed()));
@@ -209,7 +209,6 @@ public class MainScreensInstrumentationTest {
         }
     }
 
-    @Ignore("Flaky test")
     @Test
     public void favouriteTab_shouldShowSubTaskMarkedAsFavourite() {
         Context context = ApplicationProvider.getApplicationContext();

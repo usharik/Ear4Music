@@ -260,10 +260,17 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                 NoteEventListener.create(
                         noteInfo -> runOnUiThread(() -> {
                             binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                            binding.tvExpectedNote.setText(noteInfo.note.name());
                             invalidatePianoKeyboard();
                         }),
-                        () -> runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(null)),
-                        noteInfo -> runOnUiThread(() -> binding.pianoKeyboard.setCurrentNoteInfo(noteInfo)),
+                        () -> runOnUiThread(() -> {
+                            binding.pianoKeyboard.setCurrentNoteInfo(null);
+                            binding.tvExpectedNote.setText("");
+                        }),
+                        noteInfo -> runOnUiThread(() -> {
+                            binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                            binding.tvExpectedNote.setText(noteInfo.note.name());
+                        }),
                         noteInfo -> runOnUiThread(() -> updateProgressViews(noteInfo))
                 ),
                 statStore,
@@ -392,6 +399,7 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private void onTaskStop() {
         midiSupport.stop();
         binding.pianoKeyboard.setCurrentNoteInfo(null);
+        binding.tvExpectedNote.setText("");
         invalidatePianoKeyboard();
         taskStatePublishSubject.onNext(false);
     }

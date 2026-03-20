@@ -11,6 +11,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -170,7 +171,7 @@ public class MainScreensInstrumentationTest {
                         .perform(clickPianoKeyForExpectedNote());
 
                 // Wait for task to progress to next note
-                waitForExpectedNoteToChange(scenario, expectedNoteBefore[0], 5000);
+                waitForEvent(() -> onView(withId(R.id.tvExpectedNote)).check(matches(not(withText(expectedNoteBefore[0])))), 5000);
             }
 
             SystemClock.sleep(2000);

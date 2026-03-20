@@ -270,7 +270,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     // onNoteActive
                     noteInfo -> runOnUiThread(() -> {
                         currentActiveNoteInfo = noteInfo;
-                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        binding.pianoKeyboard.setExpectedNote(noteInfo.note, noteInfo.isHighlighted);
+                        binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         invalidatePianoKeyboard();
                     }),
@@ -296,7 +297,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     () -> runOnUiThread(() -> {
                         // Sequence mode: group started (playing notes)
                         currentActiveNoteInfo = null;
-                        binding.pianoKeyboard.setCurrentNoteInfo(null);
+                        binding.pianoKeyboard.clearExpectedNote();
+                        binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText("");
                         binding.tvTaskPlayedIndicator.setText("SEQ_PLAYING");
                     }),
@@ -304,7 +306,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
                     noteInfo -> runOnUiThread(() -> {
                         // Sequence mode: notes played, now waiting for answer
                         currentActiveNoteInfo = noteInfo;
-                        binding.pianoKeyboard.setCurrentNoteInfo(noteInfo);
+                        binding.pianoKeyboard.setExpectedNote(noteInfo.note, noteInfo.isHighlighted);
+                        binding.pianoKeyboard.clearAnswerFeedback();
                         binding.tvExpectedNote.setText(noteInfo.note.name());
                         binding.tvTaskPlayedIndicator.setText("SEQ_PLAYED");
                     }),
@@ -429,7 +432,8 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private void onTaskStop() {
         midiSupport.stop();
         currentActiveNoteInfo = null;
-        binding.pianoKeyboard.setCurrentNoteInfo(null);
+        binding.pianoKeyboard.clearExpectedNote();
+        binding.pianoKeyboard.clearAnswerFeedback();
         binding.tvExpectedNote.setText("");
         invalidatePianoKeyboard();
         taskStatePublishSubject.onNext(false);

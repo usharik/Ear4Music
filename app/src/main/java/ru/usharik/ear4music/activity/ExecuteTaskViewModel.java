@@ -12,9 +12,7 @@ import ru.usharik.ear4music.model.room.SubTaskWithTask;
 import ru.usharik.ear4music.repository.SubTaskRepository;
 import ru.usharik.ear4music.repository.TaskRepository;
 import ru.usharik.ear4music.service.AppState;
-import ru.usharik.ear4music.service.MelodyNoteGenerator;
-import ru.usharik.ear4music.service.NoteGenerator;
-import ru.usharik.ear4music.service.RandomNoteGenerator;
+import ru.usharik.ear4music.service.NoteSequenceEmitter;
 import ru.usharik.ear4music.service.StatisticsStorage;
 
 import java.util.List;
@@ -90,27 +88,13 @@ public class ExecuteTaskViewModel extends ViewModelObservable {
     }
 
     public Observable<NoteInfo[]> createNotesEmitterObservable(final List<NotesEnum> melody) {
-        final int longitude = (int) Math.round(60000.0 / notesPerMinute);
-
-        return Observable.create((e) -> {
-            long noteNumber = 0;
-            NoteGenerator noteGenerator = isWithNoteHighlighting ? new MelodyNoteGenerator(melody) : new RandomNoteGenerator(melody, sequencesInSubTask * notesInSequence);
-            while (!e.isDisposed() && noteGenerator.hasNextNote()) {
-                NoteInfo[] notes = new NoteInfo[notesInSequence];
-                for (int i = 0; i < notesInSequence; i++) {
-                    notes[i] = new NoteInfo(noteNumber++,
-                            noteGenerator.nextNote(),
-                            null,
-                            isPlayWithScale,
-                            isWithNoteHighlighting,
-                            longitude);
-                }
-                e.onNext(notes);
-            }
-            if (!e.isDisposed()) {
-                e.onComplete();
-            }
-        });
+        return new NoteSequenceEmitter(
+                notesPerMinute,
+                notesInSequence,
+                sequencesInSubTask,
+                isPlayWithScale,
+                isWithNoteHighlighting
+        ).createObservable(melody);
     }
 
     public long getTaskId() {

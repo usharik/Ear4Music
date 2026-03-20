@@ -150,9 +150,6 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
 
     private void loadInterstitialAd() {
         String adUnitId = BuildConfig.ADMOB_AFTER_START_INTERSTITIAL_AD_UNIT_ID;
-        if (adUnitId == null || adUnitId.trim().isEmpty()) {
-            return;
-        }
         InterstitialAd.load(this, adUnitId, new AdRequest.Builder().build(),
                 new InterstitialAdLoadCallback() {
                     @Override
@@ -237,16 +234,15 @@ public class ExecuteTaskActivity extends ViewActivity<ExecuteTaskViewModel> {
     private void runTask() {
         if (startedAfterAd || getViewModel().getSubTask().getNotesPerMinute() >= 40) {
             startedAfterAd = false;
-            countDownDialog(this::runTaskIntern);
+            countDownDialog(() -> runTaskIntern(binding.getViewModel().getNotesInSequence(), getMelodyFromString(getMelody())));
         } else {
-            runTaskIntern();
+            runTaskIntern(binding.getViewModel().getNotesInSequence(), getMelodyFromString(getMelody()));
         }
     }
 
-    private void runTaskIntern() {
-        final List<NotesEnum> melody = getMelodyFromString(getMelody());
-        final int notesInSequence = binding.getViewModel().getNotesInSequence();
-
+    private void runTaskIntern(
+            final int notesInSequence,
+            final List<NotesEnum> melody) {
         keyboardPublishSubject = PublishSubject.create();
         Observable<NoteInfo[]> notesEmitterObservable = getViewModel().createNotesEmitterObservable(melody);
         compositeDisposable = new CompositeDisposable();

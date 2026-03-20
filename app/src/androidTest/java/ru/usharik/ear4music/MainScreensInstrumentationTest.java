@@ -133,15 +133,6 @@ public class MainScreensInstrumentationTest {
         }
     }
 
-    /**
-     * Instrumentation-тест: задание «Все ноты без интонаций» (sub-task 10).
-     *
-     * <p>Sub-task 10: seed(15 bpm, playWithScale=false, withNoteHighlighting=false,
-     * notesInSequence=1, sequencesInSubTask=8). Single-note mode with 8 notes total.
-     * CountDownDialog отсутствует (15 bpm &lt; 40).
-     *
-     * <p>Test now actively presses piano keys based on status indicators.
-     */
     @Test
     public void allNotesNoIntonation_fullRun_showsStatisticsDialog() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ExecuteTaskActivity.class);
@@ -201,19 +192,7 @@ public class MainScreensInstrumentationTest {
         }
     }
 
-    /**
-     * Instrumentation-тест: задание «Последовательность из двух нот» (sub-task 20).
-     *
-     * <p>Sub-task 20: seed(65 bpm, playWithScale=false, withNoteHighlighting=false,
-     * notesInSequence=2, sequencesInSubTask=17). Длительность: 17 × 2 нот × 923 мс ≈ 31 с.
-     * CountDownDialog появляется (65 bpm ≥ 40) и авто-закрывается через 3 с.
-     *
-     * <p>Проверяем полный жизненный цикл: кнопка Start → диалог инструкции →
-     * обратный отсчёт (авто) → диалог статистики с результатами.
-     * Примечание: после нажатия Start инструкция появляется мгновенно (MIDI-драйвер
-     * уже инициализирован после первого теста), поэтому проверка кнопки Stop
-     * между нажатием Start и появлением инструкции невозможна.
-     */
+
     @Test
     public void twoNoteSequence_fullRun_showsStatisticsDialog() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ExecuteTaskActivity.class);

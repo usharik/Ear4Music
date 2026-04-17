@@ -95,7 +95,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0'
 
     implementation 'com.github.billthefarmer:mididriver:1.29@aar'
-    implementation 'com.google.android.gms:play-services-ads:25.1.0'
+    implementation 'com.google.android.gms:play-services-ads:25.2.0'
 
     implementation 'androidx.room:room-runtime:2.8.4'
     annotationProcessor 'androidx.room:room-compiler:2.8.4'

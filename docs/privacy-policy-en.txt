@@ -1,26 +1,48 @@
 Privacy Policy for Ear4Music
 
-Last updated: 2026-03-11
+Last updated: 2026-10-20
 
-Ear4Music is an ear-training app. Its learning features work locally on your device, and the current version also includes banner advertising.
+Ear4Music is an ear-training app for Android and iOS. Its learning features work locally on your device. This policy describes both versions; where they differ, it says so.
 
 1. Personal data
-The app does not require account registration and does not intentionally collect personal data such as your name, email address, phone number, contacts, location, photos, or microphone recordings.
+The app does not require an account and does not ask for personal data such as your name, email address, phone number, contacts, precise location, photos, or microphone recordings.
 
 2. Internet access
-The current version of the app requests Internet and network state access to load and display banner ads.
+Android: the app uses the Internet to load advertising, to communicate with Firebase services and with Google Play for the optional purchase.
+iOS: the current version works fully offline and sends no data to the developer or to third parties.
 
-3. Advertising and third-party services
-The app uses Google Mobile Ads SDK (AdMob) to display banner ads. When ads are requested or shown, Google and its partners may process technical and advertising-related data according to their own privacy policies, for example device identifiers, IP address, approximate location derived from IP, diagnostics, and ad interaction data. For more information, please refer to Google's Privacy Policy and AdMob documentation.
+3. Advertising (Android)
+The Android app uses Google Mobile Ads SDK (AdMob) to show banner ads on the task list and training screens and, occasionally, a full-screen (interstitial) ad before a training session or when you choose to open an exercise ahead of your progress. When ads are requested or shown, Google and its partners may process technical and advertising-related data according to their own privacy policies, for example device identifiers (such as the advertising ID), IP address, approximate location derived from the IP address, and ad interaction data. See Google's Privacy Policy (https://policies.google.com/privacy) and the AdMob documentation.
+The iOS app currently shows no ads. If advertising is added to it, this policy will be updated before that version is released, and you will be asked for consent where the law requires it (including Apple's App Tracking Transparency prompt).
 
-4. Data stored on your device
-The app may store training-related information on your device, such as exercise progress, results, favourites, and app preferences.
+4. Firebase services (Android)
+The Android app uses the following Firebase services provided by Google:
+- Firebase Analytics: anonymised usage data such as screen names and session information, to understand how the app is used.
+- Firebase Crashlytics: crash reports and device diagnostics, to find and fix technical problems.
+- Firebase Performance Monitoring: performance data such as app start-up time.
+This data is processed by Google in accordance with Google's Privacy Policy. The iOS app does not use Firebase.
 
-5. Backups
-Android system backup is enabled for the app. Depending on your device and Google backup settings, locally stored app data may be included in system backups.
+5. Purchases (Android)
+The Android app offers an optional one-time purchase that removes ads. Payment is handled entirely by Google Play; the app only receives confirmation of whether the purchase is owned and never sees your payment details.
 
-6. Data deletion
-You can delete the app data at any time in Android settings or by uninstalling the app.
+6. Reminders
+If you agree, the app shows a daily reminder to practise (around 11:00). Reminders are created and shown on your device: AlarmManager notifications on Android, local notifications on iOS. No data is sent anywhere to deliver them. You can turn them off at any time in the system notification settings.
 
-7. Changes to this policy
-This policy may be updated if the app functionality changes.
+7. Data stored on your device
+The app stores training data locally on your device: exercise progress and session results (notes played, correct, wrong and missed answers), the selected language and the reminder settings. This data is not transmitted to the developer or to any server.
+
+8. Backups
+Android: system backup is enabled for the app; depending on your device and Google backup settings, the locally stored app data may be included in your backups.
+iOS: the app's data may be included in your iCloud or computer backups of the device, according to your device settings.
+
+9. Data deletion
+You can delete all app data at any time by uninstalling the app, or on Android in Settings → Apps → Ear4Music → Storage → Clear data.
+
+10. Children
+The app is suitable for all ages and does not knowingly collect personal data from children. The advertising in the Android app is provided by Google under its own policies.
+
+11. Changes to this policy
+This policy is updated when the app's functionality changes; the date above shows the latest version.
+
+12. Contact
+Questions about this policy: see the app's page at https://usharik.dev/apps/ear4music/

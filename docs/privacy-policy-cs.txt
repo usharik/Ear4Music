@@ -1,26 +1,48 @@
 Zásady ochrany soukromí pro Ear4Music
 
-Poslední aktualizace: 2026-03-11
+Poslední aktualizace: 2026-10-20
 
-Ear4Music je aplikace pro rozvoj hudebního sluchu. Její výukové funkce fungují lokálně v zařízení a aktuální verze také zobrazuje reklamní bannery.
+Ear4Music je aplikace pro trénink hudebního sluchu pro Android a iOS. Výukové funkce fungují lokálně ve vašem zařízení. Tyto zásady popisují obě verze; kde se liší, je to uvedeno.
 
 1. Osobní údaje
-Aplikace nevyžaduje registraci účtu a úmyslně neshromažďuje osobní údaje, jako jsou jméno, e-mailová adresa, telefonní číslo, kontakty, poloha, fotografie nebo záznamy z mikrofonu.
+Aplikace nevyžaduje účet a nežádá osobní údaje, jako je jméno, e-mailová adresa, telefonní číslo, kontakty, přesná poloha, fotografie nebo nahrávky z mikrofonu.
 
 2. Přístup k internetu
-Aktuální verze aplikace vyžaduje přístup k internetu a ke stavu sítě, aby mohla načítat a zobrazovat reklamní bannery.
+Android: aplikace používá internet k načítání reklam, ke komunikaci se službami Firebase a s Google Play při volitelném nákupu.
+iOS: současná verze funguje zcela offline a neodesílá žádná data vývojáři ani třetím stranám.
 
-3. Reklama a služby třetích stran
-Aplikace používá Google Mobile Ads SDK (AdMob) k zobrazování bannerové reklamy. Při načítání nebo zobrazování reklam mohou Google a jeho partneři zpracovávat technické a reklamní údaje podle svých vlastních zásad ochrany soukromí, například identifikátory zařízení, IP adresu, přibližnou polohu odvozenou z IP, diagnostická data a údaje o interakci s reklamou. Další informace najdete v zásadách ochrany soukromí Google a v dokumentaci AdMob.
+3. Reklama (Android)
+Aplikace pro Android používá Google Mobile Ads SDK (AdMob) k zobrazování bannerů na obrazovkách seznamu úkolů a tréninku a občas reklamy na celou obrazovku (interstitial) před tréninkem nebo když se rozhodnete otevřít cvičení dříve, než k němu dojdete. Při vyžádání a zobrazení reklam mohou Google a jeho partneři zpracovávat technické a reklamní údaje podle svých vlastních zásad ochrany soukromí, například identifikátory zařízení (včetně reklamního ID), IP adresu, přibližnou polohu odvozenou z IP adresy a údaje o interakci s reklamou. Více v Zásadách ochrany soukromí Google (https://policies.google.com/privacy) a v dokumentaci AdMob.
+Aplikace pro iOS v současnosti reklamy nezobrazuje. Pokud do ní reklama přibude, budou tyto zásady aktualizovány před vydáním takové verze a tam, kde to vyžaduje zákon, budete požádáni o souhlas (včetně systémového dotazu App Tracking Transparency od Apple).
 
-4. Data ukládaná do zařízení
-Aplikace může do zařízení ukládat údaje související s tréninkem, například průběh cvičení, výsledky, oblíbené položky a nastavení aplikace.
+4. Služby Firebase (Android)
+Aplikace pro Android používá tyto služby Firebase od Googlu:
+- Firebase Analytics: anonymizované údaje o používání, například názvy obrazovek a informace o relacích, abychom porozuměli, jak se aplikace používá.
+- Firebase Crashlytics: zprávy o pádech a diagnostické údaje zařízení, abychom mohli nacházet a opravovat technické chyby.
+- Firebase Performance Monitoring: údaje o výkonu, například dobu spuštění aplikace.
+Tyto údaje zpracovává Google v souladu se Zásadami ochrany soukromí Google. Aplikace pro iOS Firebase nepoužívá.
 
-5. Zálohy
-Pro aplikaci je povoleno systémové zálohování Androidu. V závislosti na nastavení zařízení a zálohování Google mohou být lokálně uložená data aplikace zahrnuta do systémových záloh.
+5. Nákupy (Android)
+Aplikace pro Android nabízí volitelný jednorázový nákup, který odstraní reklamy. Platbu zcela zajišťuje Google Play; aplikace dostává pouze potvrzení, zda je nákup vlastněn, a nikdy nevidí vaše platební údaje.
 
-6. Odstranění dat
-Data aplikace můžete kdykoli smazat v nastavení Androidu nebo odinstalováním aplikace.
+6. Připomínky
+Pokud souhlasíte, aplikace zobrazuje denní připomínku k procvičování (kolem 11:00). Připomínky se vytvářejí a zobrazují přímo v zařízení: oznámení AlarmManager v Androidu, místní oznámení v iOS. K jejich doručení se nikam neodesílají žádná data. Kdykoli je můžete vypnout v systémovém nastavení oznámení.
 
-7. Změny těchto zásad
-Tyto zásady mohou být aktualizovány, pokud se změní funkce aplikace.
+7. Data uložená v zařízení
+Aplikace ukládá údaje o tréninku lokálně ve vašem zařízení: postup ve cvičeních a výsledky lekcí (zahrané tóny, správné, chybné a vynechané odpovědi), zvolený jazyk a nastavení připomínek. Tato data se nepředávají vývojáři ani na žádný server.
+
+8. Zálohy
+Android: pro aplikaci je zapnuté systémové zálohování; v závislosti na zařízení a nastavení zálohování Google mohou být lokální data aplikace součástí vašich záloh.
+iOS: data aplikace mohou být součástí záloh zařízení na iCloudu nebo v počítači podle nastavení vašeho zařízení.
+
+9. Smazání dat
+Všechna data aplikace můžete kdykoli smazat odinstalováním aplikace, v Androidu také v Nastavení → Aplikace → Ear4Music → Úložiště → Vymazat data.
+
+10. Děti
+Aplikace je vhodná pro všechny věkové kategorie a vědomě neshromažďuje osobní údaje dětí. Reklamu v aplikaci pro Android poskytuje Google podle svých vlastních pravidel.
+
+11. Změny těchto zásad
+Zásady se aktualizují při změně funkcí aplikace; datum výše označuje poslední verzi.
+
+12. Kontakt
+Dotazy k těmto zásadám: stránka aplikace https://usharik.dev/cs/apps/ear4music/

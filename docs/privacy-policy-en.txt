@@ -1,6 +1,6 @@
 Privacy Policy for Ear4Music
 
-Last updated: 2026-10-20
+Last updated: 2026-10-21
 
 Ear4Music is an ear-training app for Android and iOS. Its learning features work locally on your device. This policy describes both versions; where they differ, it says so.
 
@@ -9,18 +9,18 @@ The app does not require an account and does not ask for personal data such as y
 
 2. Internet access
 Android: the app uses the Internet to load advertising, to communicate with Firebase services and with Google Play for the optional purchase.
-iOS: the current version works fully offline and sends no data to the developer or to third parties.
+iOS: the learning features work offline; the app uses the Internet only to send data to the Firebase services described below.
 
 3. Advertising (Android)
 The Android app uses Google Mobile Ads SDK (AdMob) to show banner ads on the task list and training screens and, occasionally, a full-screen (interstitial) ad before a training session or when you choose to open an exercise ahead of your progress. When ads are requested or shown, Google and its partners may process technical and advertising-related data according to their own privacy policies, for example device identifiers (such as the advertising ID), IP address, approximate location derived from the IP address, and ad interaction data. See Google's Privacy Policy (https://policies.google.com/privacy) and the AdMob documentation.
 The iOS app currently shows no ads. If advertising is added to it, this policy will be updated before that version is released, and you will be asked for consent where the law requires it (including Apple's App Tracking Transparency prompt).
 
-4. Firebase services (Android)
-The Android app uses the following Firebase services provided by Google:
-- Firebase Analytics: anonymised usage data such as screen names and session information, to understand how the app is used.
+4. Firebase services
+The Android and iOS apps use the following Firebase services provided by Google:
+- Firebase Analytics: anonymised usage data such as screen names, session information and approximate location (country, city) derived from the IP address, to understand how the app is used.
 - Firebase Crashlytics: crash reports and device diagnostics, to find and fix technical problems.
 - Firebase Performance Monitoring: performance data such as app start-up time.
-This data is processed by Google in accordance with Google's Privacy Policy. The iOS app does not use Firebase.
+This data is processed by Google in accordance with Google's Privacy Policy. The iOS app does not access the advertising identifier (IDFA) and does not track you across other companies' apps and websites.
 
 5. Purchases (Android)
 The Android app offers an optional one-time purchase that removes ads. Payment is handled entirely by Google Play; the app only receives confirmation of whether the purchase is owned and never sees your payment details.

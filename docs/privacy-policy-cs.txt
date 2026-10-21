@@ -1,6 +1,6 @@
 Zásady ochrany soukromí pro Ear4Music
 
-Poslední aktualizace: 2026-10-20
+Poslední aktualizace: 2026-10-21
 
 Ear4Music je aplikace pro trénink hudebního sluchu pro Android a iOS. Výukové funkce fungují lokálně ve vašem zařízení. Tyto zásady popisují obě verze; kde se liší, je to uvedeno.
 
@@ -9,18 +9,18 @@ Aplikace nevyžaduje účet a nežádá osobní údaje, jako je jméno, e-mailov
 
 2. Přístup k internetu
 Android: aplikace používá internet k načítání reklam, ke komunikaci se službami Firebase a s Google Play při volitelném nákupu.
-iOS: současná verze funguje zcela offline a neodesílá žádná data vývojáři ani třetím stranám.
+iOS: výukové funkce fungují offline; internet aplikace používá jen k odesílání dat do služeb Firebase popsaných níže.
 
 3. Reklama (Android)
 Aplikace pro Android používá Google Mobile Ads SDK (AdMob) k zobrazování bannerů na obrazovkách seznamu úkolů a tréninku a občas reklamy na celou obrazovku (interstitial) před tréninkem nebo když se rozhodnete otevřít cvičení dříve, než k němu dojdete. Při vyžádání a zobrazení reklam mohou Google a jeho partneři zpracovávat technické a reklamní údaje podle svých vlastních zásad ochrany soukromí, například identifikátory zařízení (včetně reklamního ID), IP adresu, přibližnou polohu odvozenou z IP adresy a údaje o interakci s reklamou. Více v Zásadách ochrany soukromí Google (https://policies.google.com/privacy) a v dokumentaci AdMob.
 Aplikace pro iOS v současnosti reklamy nezobrazuje. Pokud do ní reklama přibude, budou tyto zásady aktualizovány před vydáním takové verze a tam, kde to vyžaduje zákon, budete požádáni o souhlas (včetně systémového dotazu App Tracking Transparency od Apple).
 
-4. Služby Firebase (Android)
-Aplikace pro Android používá tyto služby Firebase od Googlu:
-- Firebase Analytics: anonymizované údaje o používání, například názvy obrazovek a informace o relacích, abychom porozuměli, jak se aplikace používá.
+4. Služby Firebase
+Aplikace pro Android a iOS používají tyto služby Firebase od Googlu:
+- Firebase Analytics: anonymizované údaje o používání, například názvy obrazovek, informace o relacích a přibližnou polohu (země, město) odvozenou z IP adresy, abychom porozuměli, jak se aplikace používá.
 - Firebase Crashlytics: zprávy o pádech a diagnostické údaje zařízení, abychom mohli nacházet a opravovat technické chyby.
 - Firebase Performance Monitoring: údaje o výkonu, například dobu spuštění aplikace.
-Tyto údaje zpracovává Google v souladu se Zásadami ochrany soukromí Google. Aplikace pro iOS Firebase nepoužívá.
+Tyto údaje zpracovává Google v souladu se Zásadami ochrany soukromí Google. Aplikace pro iOS nepřistupuje k reklamnímu identifikátoru (IDFA) a nesleduje vás v aplikacích a na webech jiných společností.
 
 5. Nákupy (Android)
 Aplikace pro Android nabízí volitelný jednorázový nákup, který odstraní reklamy. Platbu zcela zajišťuje Google Play; aplikace dostává pouze potvrzení, zda je nákup vlastněn, a nikdy nevidí vaše platební údaje.

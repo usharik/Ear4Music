@@ -8,22 +8,21 @@ Ear4Music je aplikace pro trénink hudebního sluchu pro Android a iOS. Výukov�
 Aplikace nevyžaduje účet a nežádá osobní údaje, jako je jméno, e-mailová adresa, telefonní číslo, kontakty, přesná poloha, fotografie nebo nahrávky z mikrofonu.
 
 2. Přístup k internetu
-Android: aplikace používá internet k načítání reklam, ke komunikaci se službami Firebase (pouze pokud jste souhlasili, viz bod 4) a s Google Play při volitelném nákupu.
-iOS: aplikace používá internet pouze ke komunikaci se službami Firebase, a to pouze pokud jste souhlasili (viz bod 4). Jinak funguje zcela offline a neodesílá žádná data vývojáři ani třetím stranám.
+Aplikace používá internet k načítání reklam (pokud jste si nekoupili verzi bez reklam), ke komunikaci se službami Firebase (pouze pokud jste souhlasili, viz bod 4) a s Google Play nebo App Store při volitelném nákupu. Samotné výukové funkce fungují offline.
 
-3. Reklama (Android)
-Aplikace pro Android používá Google Mobile Ads SDK (AdMob) k zobrazování bannerů na obrazovkách seznamu úkolů a tréninku a občas reklamy na celou obrazovku (interstitial) před tréninkem nebo když se rozhodnete otevřít cvičení dříve, než k němu dojdete. Při vyžádání a zobrazení reklam mohou Google a jeho partneři zpracovávat technické a reklamní údaje podle svých vlastních zásad ochrany soukromí, například identifikátory zařízení (včetně reklamního ID), IP adresu, přibližnou polohu odvozenou z IP adresy a údaje o interakci s reklamou. Více v Zásadách ochrany soukromí Google (https://policies.google.com/privacy) a v dokumentaci AdMob.
-Aplikace pro iOS v současnosti reklamy nezobrazuje. Pokud do ní reklama přibude, budou tyto zásady aktualizovány před vydáním takové verze a tam, kde to vyžaduje zákon, budete požádáni o souhlas (včetně systémového dotazu App Tracking Transparency od Apple).
+3. Reklama (Android a iOS)
+Aplikace používá Google Mobile Ads SDK (AdMob) k zobrazování bannerů na obrazovkách seznamu úkolů a tréninku a občas reklamy na celou obrazovku (interstitial) před tréninkem nebo když se rozhodnete otevřít cvičení dříve, než k němu dojdete. Při vyžádání a zobrazení reklam mohou Google a jeho partneři zpracovávat technické a reklamní údaje podle svých vlastních zásad ochrany soukromí, například identifikátory zařízení (reklamní ID na Androidu; na iOS reklamní identifikátor IDFA pouze s vaším svolením), IP adresu, přibližnou polohu odvozenou z IP adresy a údaje o interakci s reklamou. Více v Zásadách ochrany soukromí Google (https://policies.google.com/privacy) a v dokumentaci AdMob.
+iOS: před první reklamou se iOS zeptá dotazem App Tracking Transparency, zda smí Ear4Music použít váš reklamní identifikátor. Pokud zvolíte „Požádat aplikaci o nesledování“, reklamy se zobrazují dál, ale nejsou personalizované. Tam, kde to vyžaduje zákon (Evropský hospodářský prostor, Spojené království, Švýcarsko), se nejprve zobrazí formulář souhlasu od Googlu a volby v něm platí pro reklamy. Jednorázový nákup všechny reklamy odstraní (bod 5).
 
 4. Služby Firebase (Android a iOS) — pouze s vaším souhlasem
 Při prvním spuštění se aplikace zeptá, zda ji chcete pomoci vylepšit sdílením statistik používání a hlášení o pádech. Dokud nesouhlasíte, nic se nesbírá, a svou volbu můžete kdykoli změnit přepínačem „Data o používání“ v dolní části seznamu úkolů. Pokud souhlasíte, obě aplikace používají tyto služby Firebase od Googlu:
 - Firebase Analytics: údaje o používání, například názvy obrazovek, události a výsledky cvičení (skóre, počet správných, chybných a vynechaných odpovědí) a informace o relacích, abychom porozuměli, jak se aplikace používá.
 - Firebase Crashlytics: zprávy o pádech a diagnostické údaje zařízení (model zařízení, verze systému a aplikace), abychom mohli nacházet a opravovat technické chyby.
 - Firebase Performance Monitoring: údaje o výkonu, například dobu spuštění aplikace a délku tréninku.
-Každou instalaci označuje náhodný identifikátor instalace Firebase (aplikace pro iOS nečte identifikátor dodavatele, IDFV) a Google z IP adresy každého požadavku odvozuje přibližnou polohu (zemi nebo město) pro regionální statistiky. Google uchovává údaje Analytics nejvýše 14 měsíců a hlášení o pádech 90 dní. Tyto údaje nejsou spojeny s vaší identitou, nepoužívají se k reklamě ani ke sledování napříč aplikacemi a weby jiných společností; aplikace pro iOS nečte reklamní identifikátor (IDFA), a proto nezobrazuje dotaz App Tracking Transparency. Údaje zpracovává Google v souladu se Zásadami ochrany soukromí Google (https://policies.google.com/privacy).
+Každou instalaci označuje náhodný identifikátor instalace Firebase (aplikace pro iOS nečte identifikátor dodavatele, IDFV) a Google z IP adresy každého požadavku odvozuje přibližnou polohu (zemi nebo město) pro regionální statistiky. Google uchovává údaje Analytics nejvýše 14 měsíců a hlášení o pádech 90 dní. Tyto údaje nejsou spojeny s vaší identitou, nepoužívají se k reklamě ani ke sledování napříč aplikacemi a weby jiných společností; Firebase reklamní identifikátor nepoužívá (dotaz App Tracking Transparency se týká pouze reklamy, bod 3). Údaje zpracovává Google v souladu se Zásadami ochrany soukromí Google (https://policies.google.com/privacy).
 
-5. Nákupy (Android)
-Aplikace pro Android nabízí volitelný jednorázový nákup, který odstraní reklamy. Platbu zcela zajišťuje Google Play; aplikace dostává pouze potvrzení, zda je nákup vlastněn, a nikdy nevidí vaše platební údaje.
+5. Nákupy (Android a iOS)
+Aplikace nabízí volitelný jednorázový nákup, který odstraní reklamy. Platbu zcela zajišťuje Google Play nebo App Store; aplikace dostává pouze potvrzení, zda je nákup vlastněn, a nikdy nevidí vaše platební údaje. „Obnovit nákup“ jej přenese na nové zařízení.
 
 6. Připomínky
 Pokud souhlasíte, aplikace zobrazuje denní připomínku k procvičování (kolem 11:00). Připomínky se vytvářejí a zobrazují přímo v zařízení: oznámení AlarmManager v Androidu, místní oznámení v iOS. K jejich doručení se nikam neodesílají žádná data. Kdykoli je můžete vypnout v systémovém nastavení oznámení.
@@ -39,7 +38,7 @@ iOS: data aplikace mohou být součástí záloh zařízení na iCloudu nebo v p
 Všechna data aplikace můžete kdykoli smazat odinstalováním aplikace, v Androidu také v Nastavení → Aplikace → Ear4Music → Úložiště → Vymazat data. Data již odeslaná do Firebase se automaticky mažou po uplynutí lhůt z bodu 4; vypnutí sdílení dat o používání zastaví další odesílání. O dřívější smazání můžete požádat přes kontakt v bodě 12.
 
 10. Děti
-Aplikace je vhodná pro všechny věkové kategorie a vědomě neshromažďuje osobní údaje dětí. Reklamu v aplikaci pro Android poskytuje Google podle svých vlastních pravidel.
+Aplikace je vhodná pro všechny věkové kategorie a vědomě neshromažďuje osobní údaje dětí. Reklamu poskytuje Google podle svých vlastních pravidel.
 
 11. Změny těchto zásad
 Zásady se aktualizují při změně funkcí aplikace; datum výše označuje poslední verzi.

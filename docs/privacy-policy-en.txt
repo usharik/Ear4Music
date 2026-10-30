@@ -8,22 +8,21 @@ Ear4Music is an ear-training app for Android and iOS. Its learning features work
 The app does not require an account and does not ask for personal data such as your name, email address, phone number, contacts, precise location, photos, or microphone recordings.
 
 2. Internet access
-Android: the app uses the Internet to load advertising, to communicate with Firebase services (only if you agreed, see section 4) and with Google Play for the optional purchase.
-iOS: the app uses the Internet only to communicate with Firebase services, and only if you agreed (see section 4). Otherwise it works fully offline and sends no data to the developer or to third parties.
+The app uses the Internet to load advertising (unless you bought the ad-free version), to communicate with Firebase services (only if you agreed, see section 4) and with Google Play or the App Store for the optional purchase. The learning features themselves work offline.
 
-3. Advertising (Android)
-The Android app uses Google Mobile Ads SDK (AdMob) to show banner ads on the task list and training screens and, occasionally, a full-screen (interstitial) ad before a training session or when you choose to open an exercise ahead of your progress. When ads are requested or shown, Google and its partners may process technical and advertising-related data according to their own privacy policies, for example device identifiers (such as the advertising ID), IP address, approximate location derived from the IP address, and ad interaction data. See Google's Privacy Policy (https://policies.google.com/privacy) and the AdMob documentation.
-The iOS app currently shows no ads. If advertising is added to it, this policy will be updated before that version is released, and you will be asked for consent where the law requires it (including Apple's App Tracking Transparency prompt).
+3. Advertising (Android and iOS)
+The app uses Google Mobile Ads SDK (AdMob) to show banner ads on the task list and training screens and, occasionally, a full-screen (interstitial) ad before a training session or when you choose to open an exercise ahead of your progress. When ads are requested or shown, Google and its partners may process technical and advertising-related data according to their own privacy policies, for example device identifiers (the advertising ID on Android; on iOS the advertising identifier, IDFA, only with your permission), IP address, approximate location derived from the IP address, and ad interaction data. See Google's Privacy Policy (https://policies.google.com/privacy) and the AdMob documentation.
+iOS: before the first ad, iOS asks with the App Tracking Transparency prompt whether Ear4Music may use your advertising identifier. If you choose "Ask App Not to Track", ads are still shown, but they are not personalized. Where the law requires it (European Economic Area, United Kingdom, Switzerland), Google's consent form is shown first and the choices made there apply to the ads. A one-time purchase removes all ads (section 5).
 
 4. Firebase services (Android and iOS) — only with your consent
 On first launch the app asks whether you want to help improve it by sharing usage statistics and crash reports. Nothing is collected until you agree, and you can change your answer at any time with the "Usage data" switch at the bottom of the task list. If you agree, both apps use the following Firebase services provided by Google:
 - Firebase Analytics: usage data such as screen names, exercise events and results (score, correct, wrong and missed counts) and session information, to understand how the app is used.
 - Firebase Crashlytics: crash reports and device diagnostics (device model, OS and app version), to find and fix technical problems.
 - Firebase Performance Monitoring: performance data such as app start-up time and the duration of a training session.
-Each installation is identified by a random Firebase installation identifier (the iOS app does not read the identifier for vendor, IDFV), and Google derives an approximate location (country or city) from the IP address of each request for regional statistics. Google keeps Analytics data for at most 14 months and crash reports for 90 days. This data is not linked to your identity, is not used for advertising and is not used to track you across other companies' apps or websites; the iOS app does not read the advertising identifier (IDFA) and therefore shows no App Tracking Transparency prompt. The data is processed by Google in accordance with Google's Privacy Policy (https://policies.google.com/privacy).
+Each installation is identified by a random Firebase installation identifier (the iOS app does not read the identifier for vendor, IDFV), and Google derives an approximate location (country or city) from the IP address of each request for regional statistics. Google keeps Analytics data for at most 14 months and crash reports for 90 days. This data is not linked to your identity, is not used for advertising and is not used to track you across other companies' apps or websites; Firebase does not use the advertising identifier (the App Tracking Transparency prompt concerns advertising only, section 3). The data is processed by Google in accordance with Google's Privacy Policy (https://policies.google.com/privacy).
 
-5. Purchases (Android)
-The Android app offers an optional one-time purchase that removes ads. Payment is handled entirely by Google Play; the app only receives confirmation of whether the purchase is owned and never sees your payment details.
+5. Purchases (Android and iOS)
+The app offers an optional one-time purchase that removes ads. Payment is handled entirely by Google Play or the App Store; the app only receives confirmation of whether the purchase is owned and never sees your payment details. "Restore purchase" brings it back on a new device.
 
 6. Reminders
 If you agree, the app shows a daily reminder to practise (around 11:00). Reminders are created and shown on your device: AlarmManager notifications on Android, local notifications on iOS. No data is sent anywhere to deliver them. You can turn them off at any time in the system notification settings.
@@ -39,7 +38,7 @@ iOS: the app's data may be included in your iCloud or computer backups of the de
 You can delete all app data at any time by uninstalling the app, or on Android in Settings → Apps → Ear4Music → Storage → Clear data. Data already sent to Firebase is deleted automatically after the retention periods in section 4; turning usage data off stops any further sending. To have it deleted earlier, contact us (section 12).
 
 10. Children
-The app is suitable for all ages and does not knowingly collect personal data from children. The advertising in the Android app is provided by Google under its own policies.
+The app is suitable for all ages and does not knowingly collect personal data from children. The advertising is provided by Google under its own policies.
 
 11. Changes to this policy
 This policy is updated when the app's functionality changes; the date above shows the latest version.
